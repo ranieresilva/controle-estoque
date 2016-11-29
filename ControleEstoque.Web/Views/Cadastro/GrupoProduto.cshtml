@@ -2,47 +2,137 @@
 @{
     ViewBag.Title = "Cadastro de Grupo de Produtos";
 }
+<style>
+    #grid_cadastro > thead > tr th:nth-child(2) {
+        width: 110px;
+    }
+
+    #grid_cadastro > thead > tr th:nth-child(3) {
+        width: 200px;
+    }
+
+    #cadastro {
+        width: 70%;
+        margin: 0 auto;
+    }
+
+    #cadastro_cabecalho {
+        border-bottom: 1px #dddddd solid;
+    }
+
+    #cadastro_conteudo {
+        margin-top: 20px;
+    }
+
+    #cabecalho_grid {
+        margin-bottom: 20px;
+    }
+</style>
 <div id="cadastro">
     <section id="cadastro_cabecalho">
         <h1>@ViewBag.Title</h1>
     </section>
     <section id="cadastro_conteudo">
+        <div id="cabecalho_grid" class="row">
+            <div class="col-md-12">
+                <a id="btn_incluir" class="btn btn-success" role="button"><i class="glyphicon glyphicon-plus"></i> Incluir</a>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-12">
-                <div class="box">
-                    <div id="cabecalho_grid" class="row">
-                        <div class="col-md-12">
-                            <a id="btn_incluir" class="btn btn-success" role="button"><i class="glyphicon glyphicon-plus"></i> Incluir</a>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table id="grid_cadastro" class="table table-bordered table-striped table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Nome</th>
-                                        <th>Ativo</th>
-                                        <th>Ação</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model)
-                                    {
-                                        <tr>
-                                            <td>@item.Nome</td>
-                                            <td>@{var ativo = (item.Ativo ? "SIM" : "NÃO");}@ativo</td>
-                                            <td>
-                                                <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
-                                                <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
-                                            </td>
-                                        </tr>
-                                                }
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                <table id="grid_cadastro" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Ativo</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr data-id="@item.Id">
+                                <td>@item.Nome</td>
+                                <td>@{var ativo = (item.Ativo ? "SIM" : "NÃO");}@ativo</td>
+                                <td>
+                                    <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                                    <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                                </td>
+                            </tr>
+                                    }
+                    </tbody>
+                </table>
             </div>
         </div>
     </section>
 </div>
+<div id="modal_cadastro" class="form-horizontal invisivel" role="dialog">
+    <fieldset>
+        <div class="row">
+            <div class="form-group">
+                @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
+                <div class="col-md-12">
+                    @Html.TextBox("txt_nome", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
+                <div class="col-md-12">
+                    @Html.CheckBox("cbx_ativo")
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="modal-footer">
+                        <a id="btn_sair" class="btn btn-default" role="button" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> Sair</a>
+                        <a id="btn_confirmar" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-ok"></i> Salvar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>
+@section Scripts{
+    <script>
+        function abrir_form(dados) {
+            $('#txt_nome').val(dados.Nome);
+            $('#cbx_ativo').prop('checked', dados.Ativo);
+
+            var modal_cadastro = $('#modal_cadastro');
+
+            bootbox.dialog({
+                title: '@ViewBag.Title',
+                message: modal_cadastro
+            })
+            .on('shown.bs.modal', function () {
+                modal_cadastro.show(0, function () {
+                    $('#txt_nome').focus();
+                });
+            })
+            .on('hidden.bs.modal', function () {
+                modal_cadastro.hide().appendTo('body');
+            });
+        }
+
+        $(document).on('click', '#btn_incluir', function () {
+            abrir_form({ Id: 0, Nome: '', Ativo: true });
+        })
+        .on('click', '.btn-alterar', function () {
+            var btn = $(this),
+                id = btn.closest('tr').attr('data-id'),
+                url = '@Url.Action("RecuperarGrupoProduto", "Cadastro")',
+                param = { 'id': id };
+
+            $.post(url, param, function (response) {
+                if (response) {
+                    abrir_form(response);
+                }
+            });
+        })
+        .on('click', '.btn-excluir', function () {
+            alert('3');
+        })
+    </script>
+}
