@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
@@ -20,9 +21,11 @@ namespace ControleEstoque.Web.Models
                 using (var comando = new SqlCommand())
                 {
                     comando.Connection = conexao;
-                    comando.CommandText = string.Format(
-                        "select count(*) from usuario where login='{0}' and senha='{1}'",
-                        login, CriptoHelper.HashMD5(senha));
+                    comando.CommandText = "select count(*) from usuario where login=@login and senha=@senha";
+
+                    comando.Parameters.Add("@login", SqlDbType.VarChar).Value = login;
+                    comando.Parameters.Add("@senha", SqlDbType.VarChar).Value = CriptoHelper.HashMD5(senha);
+
                     ret = ((int)comando.ExecuteScalar() > 0);
                 }
             }
