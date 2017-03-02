@@ -70,6 +70,7 @@
 <div id="modal_cadastro" class="form-horizontal invisivel" role="dialog">
     <div id="msg_mensagem_aviso" class="text-danger invisivel"></div>
     <fieldset>
+        @Html.AntiForgeryToken()
         <div class="row">
             <div class="form-group">
                 @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
@@ -100,6 +101,11 @@
 </div>
 @section Scripts{
     <script>
+        function add_anti_forgery_token(data) {
+            data.__RequestVerificationToken = $('[name=__RequestVerificationToken]').val();
+            return data;
+        }
+
         function abrir_form(dados) {
             $('#id_cadastro').val(dados.Id);
             $('#txt_nome').val(dados.Nome);
@@ -149,7 +155,7 @@
                 url = '@Url.Action("RecuperarGrupoProduto", "Cadastro")',
                 param = { 'id': id };
 
-            $.post(url, param, function (response) {
+            $.post(url, add_anti_forgery_token(param), function (response) {
                 if (response) {
                     abrir_form(response);
                 }
@@ -176,7 +182,7 @@
                 },
                 callback: function (result) {
                     if (result) {
-                        $.post(url, param, function (response) {
+                        $.post(url, add_anti_forgery_token(param), function (response) {
                             if (response) {
                                 tr.remove();
                             }
@@ -194,7 +200,7 @@
                     Ativo: $('#cbx_ativo').prop('checked')
                 };
 
-            $.post(url, param, function (response) {
+            $.post(url, add_anti_forgery_token(param), function (response) {
                 if (response.Resultado == "OK") {
                     if (param.Id == 0) {
                         param.Id = response.IdSalvo;

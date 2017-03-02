@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
@@ -30,7 +28,13 @@ namespace ControleEstoque.Web
                 Response.Write("{ \"Resultado\":\"AVISO\",\"Mensagens\":[\"Somente texto sem caracteres especiais pode ser enviado.\"],\"IdSalvo\":\"\"}");
                 Response.End();
             }
+            else if (ex is HttpAntiForgeryException)
+            {
+                Response.Clear();
+                Response.StatusCode = 200;
+                Response.End();
+                // gravar LOG
+            }
         }
-
     }
 }
