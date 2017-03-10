@@ -1,2 +1,254 @@
-﻿<h2>Usuario</h2>
+﻿@model List<ControleEstoque.Web.Models.UsuarioModel>
+@{
+    ViewBag.Title = "Cadastro de Usuários";
+}
+<style>
+    #grid_cadastro > thead > tr th:nth-child(2) {
+        width: 110px;
+    }
 
+    #grid_cadastro > thead > tr th:nth-child(3) {
+        width: 200px;
+    }
+
+    #cadastro {
+        width: 70%;
+        margin: 0 auto;
+    }
+
+    #cadastro_cabecalho {
+        border-bottom: 1px #dddddd solid;
+    }
+
+    #cadastro_conteudo {
+        margin-top: 20px;
+    }
+
+    #cabecalho_grid {
+        margin-bottom: 20px;
+    }
+</style>
+<div id="cadastro">
+    <section id="cadastro_cabecalho">
+        <h1>@ViewBag.Title</h1>
+    </section>
+    <section id="cadastro_conteudo">
+        <div id="cabecalho_grid" class="row">
+            <div class="col-md-12">
+                <a id="btn_incluir" class="btn btn-success" role="button"><i class="glyphicon glyphicon-plus"></i> Incluir</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table id="grid_cadastro" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Login</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                        <tr data-id="@item.Id">
+                            <td>@item.Nome</td>
+                            <td>@item.Login</td>
+                            <td>
+                                <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                                <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+</div>
+@Html.Hidden("id_cadastro")
+<div id="modal_cadastro" class="form-horizontal invisivel" role="dialog">
+    <div id="msg_mensagem_aviso" class="text-danger invisivel"></div>
+    <fieldset>
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="form-group">
+                @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
+                <div class="col-md-12">
+                    @Html.TextBox("txt_nome", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("txt_login", "Login", new { @class = "col-md-3 control-label" })
+                <div class="col-md-12">
+                    @Html.TextBox("txt_login", null, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.Label("txt_senha", "Senha", new { @class = "col-md-3 control-label" })
+                <div class="col-md-12">
+                    @Html.TextBox("txt_senha", null, new { @class = "form-control", type = "password" })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="modal-footer">
+                        <a id="btn_sair" class="btn btn-default" role="button" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> Sair</a>
+                        <a id="btn_confirmar" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-ok"></i> Salvar</a>
+                    </div>
+                    <div id="msg_aviso" class="alert alert-warning invisivel">Falta preencher os campos acima.</div>
+                    <div id="msg_erro" class="alert alert-danger invisible">Ops! Deus ruim!</div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>
+@section Scripts{
+    <script>
+        function add_anti_forgery_token(data) {
+            data.__RequestVerificationToken = $('[name=__RequestVerificationToken]').val();
+            return data;
+        }
+
+        function abrir_form(dados) {
+            $('#id_cadastro').val(dados.Id);
+            $('#txt_nome').val(dados.Nome);
+            $('#txt_login').val(dados.Login);
+            $('#txt_senha').val(dados.Senha);
+
+            var modal_cadastro = $('#modal_cadastro');
+
+            $('#msg_mensagem_aviso').empty();
+            $('#msg_aviso').hide();
+            $('#msg_mensagem_aviso').hide();
+            $('#msg_erro').hide();
+
+            bootbox.dialog({
+                title: '@ViewBag.Title',
+                message: modal_cadastro
+            })
+            .on('shown.bs.modal', function () {
+                modal_cadastro.show(0, function () {
+                    $('#txt_nome').focus();
+                });
+            })
+            .on('hidden.bs.modal', function () {
+                modal_cadastro.hide().appendTo('body');
+            });
+        }
+
+        function criar_linha_grid(dados) {
+            var ret =
+                '<tr data-id=' + dados.Id + '>' +
+                '<td>' + dados.Nome + '</td>' +
+                '<td>' + dados.Login + '</td>' +
+                '<td>' +
+                '<a class="btn btn-primary btn-alterar" role="button" style="margin-right: 3px"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>' +
+                '<a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>' +
+                '</td>' +
+                '</tr>';
+
+            return ret;
+        }
+
+        $(document).on('click', '#btn_incluir', function () {
+            abrir_form({ Id: 0, Nome: '', Login: '', Senha: '' });
+        })
+        .on('click', '.btn-alterar', function () {
+            var btn = $(this),
+                id = btn.closest('tr').attr('data-id'),
+                url = '@Url.Action("RecuperarUsuario", "Cadastro")',
+                param = { 'id': id };
+
+            $.post(url, add_anti_forgery_token(param), function (response) {
+                if (response) {
+                    response.Senha = '@ViewBag.SenhaPadrao';
+                    abrir_form(response);
+                }
+            });
+        })
+        .on('click', '.btn-excluir', function () {
+            var btn = $(this),
+                tr = btn.closest('tr'),
+                id = tr.attr('data-id'),
+                url = '@Url.Action("ExcluirUsuario", "Cadastro")',
+                param = { 'id': id };
+
+            bootbox.confirm({
+                message: "Realmente deseja excluir o usuário?",
+                buttons: {
+                    confirm: {
+                        label: 'Sim',
+                        className: 'btn-danger'
+                    },
+                    cancel: {
+                        label: 'Não',
+                        className: 'btn-success'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+                        $.post(url, add_anti_forgery_token(param), function (response) {
+                            if (response) {
+                                tr.remove();
+                            }
+                        });
+                    }
+                }
+            });
+        })
+        .on('click', '#btn_confirmar', function () {
+            var btn = $(this),
+                url = '@Url.Action("SalvarUsuario", "Cadastro")',
+                param = {
+                    Id: $('#id_cadastro').val(),
+                    Nome: $('#txt_nome').val(),
+                    Login: $('#txt_login').val(),
+                    Senha: $('#txt_senha').val()
+                };
+
+            $.post(url, add_anti_forgery_token(param), function (response) {
+                if (response.Resultado == "OK") {
+                    if (param.Id == 0) {
+                        param.Id = response.IdSalvo;
+                        var table = $('#grid_cadastro').find('tbody'),
+                            linha = criar_linha_grid(param);
+
+                        table.append(linha);
+                    }
+                    else {
+                        var linha = $('#grid_cadastro').find('tr[data-id=' + param.Id + ']').find('td');
+                        linha
+                            .eq(0).html(param.Nome).end()
+                            .eq(1).html(param.Login);
+                    }
+
+                    $('#modal_cadastro').parents('.bootbox').modal('hide');
+                }
+                else if (response.Resultado == "ERRO") {
+                    $('#msg_aviso').hide();
+                    $('#msg_mensagem_aviso').hide();
+                    $('#msg_erro').show();
+                }
+                else if (response.Resultado == "AVISO") {
+                    $('#msg_mensagem_aviso').html(formatar_mensagem_aviso(response.Mensagens));
+                    $('#msg_aviso').show();
+                    $('#msg_mensagem_aviso').show();
+                    $('#msg_erro').hide();
+                }
+            });
+        });
+
+        function formatar_mensagem_aviso(mensagens) {
+            var ret = '';
+
+            for (var i = 0; i < mensagens.length; i++) {
+                ret += '<li>' + mensagens[i] + '</li>';
+            }
+
+            return '<ul>' + ret + '</ul>';
+        }
+    </script>
+}

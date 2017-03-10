@@ -8,7 +8,7 @@ namespace ControleEstoque.Web.Models
 {
     public class LoginViewModel
     {
-        [Required(ErrorMessage ="Informe o usuário")]
+        [Required(ErrorMessage = "Informe o usuário")]
         [Display(Name = "Usuário:")]
         public string Usuario { get; set; }
 
