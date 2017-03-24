@@ -85,15 +85,7 @@ namespace ControleEstoque.Web.Controllers
         [Authorize]
         public ActionResult GrupoProduto()
         {
-            var lista = GrupoProdutoModel.RecuperarLista();
-
-            ViewBag.QuantMaxLinhasPorPagina = 5;
-            ViewBag.PaginaAtual = 1;
-
-            var difQuantPaginas = (lista.Count % ViewBag.QuantMaxLinhasPorPagina) > 0 ? 1 : 0;
-            ViewBag.QuantPaginas = (lista.Count / ViewBag.QuantMaxLinhasPorPagina) + difQuantPaginas;
-
-            return View(lista);
+			return View(GrupoProdutoModel.RecuperarLista());
         }
 
         [HttpPost]
