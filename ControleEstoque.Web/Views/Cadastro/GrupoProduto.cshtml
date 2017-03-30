@@ -79,7 +79,7 @@
         {
         <div class="row">
             <div class="col-md-12">
-                <nav aria-label="Page navigation example">
+                <nav>
                     <ul class="pagination">
                         <li class="page-item active"><a class="page-link" href="#">1</a></li>
                         @for (int i = 2; i <= ViewBag.QuantPaginas; i++)
@@ -255,6 +255,25 @@
                     $('#msg_aviso').show();
                     $('#msg_mensagem_aviso').show();
                     $('#msg_erro').hide();
+                }
+            });
+        })
+        .on('click', '.page-item', function () {
+            var btn = $(this),
+                pagina = btn.text(),
+                url = '@Url.Action("GrupoProdutoPagina", "Cadastro")';
+
+            $.post(url, add_anti_forgery_token({ pagina }), function (response) {
+                if (response) {
+                    var table = $('#grid_cadastro').find('tbody');
+
+                    table.empty();
+                    for (var i = 0; i < response.length; i++) {
+                        table.append(criar_linha_grid(response[i]));
+                    }
+
+                    btn.siblings().removeClass('active');
+                    btn.addClass('active');
                 }
             });
         });
