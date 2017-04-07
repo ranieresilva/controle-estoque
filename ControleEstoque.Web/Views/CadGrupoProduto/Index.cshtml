@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Cadastro de Grupo de Produtos";
 }
+<link href="~/Content/bootstrap-select.css" rel="stylesheet" />
 <style>
     #grid_cadastro > thead > tr th:nth-child(2) {
         width: 110px;
@@ -36,6 +37,7 @@
         <div id="cabecalho_grid" class="row">
             <div class="col-md-12">
                 <a id="btn_incluir" class="btn btn-success" role="button"><i class="glyphicon glyphicon-plus"></i> Incluir</a>
+                @Html.DropDownList("ddl_tam_pag", (SelectList)ViewBag.ListaTamPag, new { @class = "selectpicker" })
             </div>
         </div>
         <div class="row">
@@ -127,6 +129,7 @@
     </fieldset>
 </div>
 @section Scripts{
+    <script src="~/Scripts/bootstrap-select.js"></script>
     <script>
         function add_anti_forgery_token(data) {
             data.__RequestVerificationToken = $('[name=__RequestVerificationToken]').val();
@@ -179,7 +182,7 @@
         .on('click', '.btn-alterar', function () {
             var btn = $(this),
                 id = btn.closest('tr').attr('data-id'),
-                url = '@Url.Action("RecuperarGrupoProduto", "Cadastro")',
+                url = '@Url.Action("RecuperarGrupoProduto", "CadGrupoProduto")',
                 param = { 'id': id };
 
             $.post(url, add_anti_forgery_token(param), function (response) {
@@ -192,7 +195,7 @@
             var btn = $(this),
                 tr = btn.closest('tr'),
                 id = tr.attr('data-id'),
-                url = '@Url.Action("ExcluirGrupoProduto", "Cadastro")',
+                url = '@Url.Action("ExcluirGrupoProduto", "CadGrupoProduto")',
                 param = { 'id': id };
 
             bootbox.confirm({
@@ -220,7 +223,7 @@
         })
         .on('click', '#btn_confirmar', function () {
             var btn = $(this),
-                url = '@Url.Action("SalvarGrupoProduto", "Cadastro")',
+                url = '@Url.Action("SalvarGrupoProduto", "CadGrupoProduto")',
                 param = {
                     Id: $('#id_cadastro').val(),
                     Nome: $('#txt_nome').val(),
@@ -260,10 +263,33 @@
         })
         .on('click', '.page-item', function () {
             var btn = $(this),
+                tamPag = $('#ddl_tam_pag').val(),
                 pagina = btn.text(),
-                url = '@Url.Action("GrupoProdutoPagina", "Cadastro")';
+                url = '@Url.Action("GrupoProdutoPagina", "CadGrupoProduto")',
+                param = { 'pagina': pagina, 'tamPag': tamPag };
 
-            $.post(url, add_anti_forgery_token({ pagina }), function (response) {
+            $.post(url, add_anti_forgery_token(param), function (response) {
+                if (response) {
+                    var table = $('#grid_cadastro').find('tbody');
+
+                    table.empty();
+                    for (var i = 0; i < response.length; i++) {
+                        table.append(criar_linha_grid(response[i]));
+                    }
+
+                    btn.siblings().removeClass('active');
+                    btn.addClass('active');
+                }
+            });
+        })
+        .on('change', '#ddl_tam_pag', function () {
+            var ddl = $(this),
+                tamPag = ddl.val(),
+                pagina = 1,
+                url = '@Url.Action("GrupoProdutoPagina", "CadGrupoProduto")',
+                param = { 'pagina': pagina, 'tamPag': tamPag };
+
+            $.post(url, add_anti_forgery_token(param), function (response) {
                 if (response) {
                     var table = $('#grid_cadastro').find('tbody');
 
