@@ -1,317 +1,73 @@
 ﻿@model List<ControleEstoque.Web.Models.GrupoProdutoModel>
 @{
+    Layout = "~/Views/Shared/_Cadastro.cshtml";
     ViewBag.Title = "Cadastro de Grupo de Produtos";
 }
-<link href="~/Content/bootstrap-select.css" rel="stylesheet" />
-<style>
-    #grid_cadastro > thead > tr th:nth-child(2) {
-        width: 110px;
-    }
 
-    #grid_cadastro > thead > tr th:nth-child(3) {
-        width: 200px;
-    }
+@section Styles {
+    <link href="~/Content/bootstrap-select.css" rel="stylesheet" />
+    <link href="~/Content/Cadastro/GrupoProduto.css" rel="stylesheet" />
+}
 
-    #cadastro {
-        width: 70%;
-        margin: 0 auto;
-    }
+@section TituloGrid {
+    <th>Nome</th>
+    <th>Ativo</th>
+    <th>Ação</th>
+}
 
-    #cadastro_cabecalho {
-        border-bottom: 1px #dddddd solid;
-    }
-
-    #cadastro_conteudo {
-        margin-top: 20px;
-    }
-
-    #cabecalho_grid {
-        margin-bottom: 20px;
-    }
-</style>
-<div id="cadastro">
-    <section id="cadastro_cabecalho">
-        <h1>@ViewBag.Title</h1>
-    </section>
-    <section id="cadastro_conteudo">
-        <div id="cabecalho_grid" class="row">
-            <div class="col-md-12">
-                <a id="btn_incluir" class="btn btn-success" role="button"><i class="glyphicon glyphicon-plus"></i> Incluir</a>
-                @Html.DropDownList("ddl_tam_pag", (SelectList)ViewBag.ListaTamPag, new { @class = "selectpicker" })
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <table id="grid_cadastro" class="table table-bordered table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Ativo</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @{
-                            var linha = 0;
-                            foreach (var item in Model)
-                            {
-                                linha++;
-                                if (linha <= ViewBag.QuantMaxLinhasPorPagina)
-                                {
-                                    <tr data-id="@item.Id">
-                                        <td>@item.Nome</td>
-                                        <td>@{var ativo = (item.Ativo ? "SIM" : "NÃO");}@ativo</td>
-                                        <td>
-                                            <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
-                                            <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
-                                        </td>
-                                    </tr>
-                                }
-                                else
-                                {
-                                    break;
-                                }
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        @if (ViewBag.QuantPaginas > 1)
+@section LinhaGrid {
+    @{
+        var linha = 0;
+        foreach (var item in Model)
         {
-        <div class="row">
-            <div class="col-md-12">
-                <nav>
-                    <ul class="pagination">
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        @for (int i = 2; i <= ViewBag.QuantPaginas; i++)
-                        {
-                            <li class="page-item"><a class="page-link" href="#">@i</a></li>
-                        }
-                    </ul>
-                </nav>
-            </div>
-        </div>
+            linha++;
+            if (linha <= ViewBag.QuantMaxLinhasPorPagina)
+            {
+                var ativo = (item.Ativo ? "SIM" : "NÃO");
+
+                <tr data-id="@item.Id">
+                    <td>@item.Nome</td>
+                    <td>@ativo</td>
+                    <td>
+                        <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                        <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                break;
+            }
         }
-    </section>
-</div>
-@Html.Hidden("id_cadastro")
-<div id="modal_cadastro" class="form-horizontal invisivel" role="dialog">
-    <div id="msg_mensagem_aviso" class="text-danger invisivel"></div>
-    <fieldset>
-        @Html.AntiForgeryToken()
-        <div class="row">
-            <div class="form-group">
-                @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
-                <div class="col-md-12">
-                    @Html.TextBox("txt_nome", null, new { @class = "form-control" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
-                <div class="col-md-12">
-                    @Html.CheckBox("cbx_ativo")
-                </div>
-            </div>
-        </div>
-        <div class="row">
+    }
+}
+
+@section CamposCadastro {
+    <div class="row">
+        <div class="form-group">
+            @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
             <div class="col-md-12">
-                <div class="form-group">
-                    <div class="modal-footer">
-                        <a id="btn_sair" class="btn btn-default" role="button" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> Sair</a>
-                        <a id="btn_confirmar" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-ok"></i> Salvar</a>
-                    </div>
-                    <div id="msg_aviso" class="alert alert-warning invisivel">Falta preencher os campos acima.</div>
-                    <div id="msg_erro" class="alert alert-danger invisible">Ops! Deus ruim!</div>
-                </div>
+                @Html.TextBox("txt_nome", null, new { @class = "form-control" })
             </div>
         </div>
-    </fieldset>
-</div>
+        <div class="form-group">
+            @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
+            <div class="col-md-12">
+                @Html.CheckBox("cbx_ativo")
+            </div>
+        </div>
+    </div>
+}
+
 @section Scripts{
     <script src="~/Scripts/bootstrap-select.js"></script>
     <script>
-        function add_anti_forgery_token(data) {
-            data.__RequestVerificationToken = $('[name=__RequestVerificationToken]').val();
-            return data;
-        }
-
-        function abrir_form(dados) {
-            $('#id_cadastro').val(dados.Id);
-            $('#txt_nome').val(dados.Nome);
-            $('#cbx_ativo').prop('checked', dados.Ativo);
-
-            var modal_cadastro = $('#modal_cadastro');
-
-            $('#msg_mensagem_aviso').empty();
-            $('#msg_aviso').hide();
-            $('#msg_mensagem_aviso').hide();
-            $('#msg_erro').hide();
-
-            bootbox.dialog({
-                title: '@ViewBag.Title',
-                message: modal_cadastro
-            })
-            .on('shown.bs.modal', function () {
-                modal_cadastro.show(0, function () {
-                    $('#txt_nome').focus();
-                });
-            })
-            .on('hidden.bs.modal', function () {
-                modal_cadastro.hide().appendTo('body');
-            });
-        }
-
-        function criar_linha_grid(dados) {
-            var ret =
-                '<tr data-id=' + dados.Id + '>' +
-                '<td>' + dados.Nome + '</td>' +
-                '<td>' + (dados.Ativo ? 'SIM' : 'NÃO') + '</td>' +
-                '<td>' +
-                '<a class="btn btn-primary btn-alterar" role="button" style="margin-right: 3px"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>' +
-                '<a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>' +
-                '</td>' +
-                '</tr>';
-
-            return ret;
-        }
-
-        $(document).on('click', '#btn_incluir', function () {
-            abrir_form({ Id: 0, Nome: '', Ativo: true });
-        })
-        .on('click', '.btn-alterar', function () {
-            var btn = $(this),
-                id = btn.closest('tr').attr('data-id'),
-                url = '@Url.Action("RecuperarGrupoProduto", "CadGrupoProduto")',
-                param = { 'id': id };
-
-            $.post(url, add_anti_forgery_token(param), function (response) {
-                if (response) {
-                    abrir_form(response);
-                }
-            });
-        })
-        .on('click', '.btn-excluir', function () {
-            var btn = $(this),
-                tr = btn.closest('tr'),
-                id = tr.attr('data-id'),
-                url = '@Url.Action("ExcluirGrupoProduto", "CadGrupoProduto")',
-                param = { 'id': id };
-
-            bootbox.confirm({
-                message: "Realmente deseja excluir o grupo de produto?",
-                buttons: {
-                    confirm: {
-                        label: 'Sim',
-                        className: 'btn-danger'
-                    },
-                    cancel: {
-                        label: 'Não',
-                        className: 'btn-success'
-                    }
-                },
-                callback: function (result) {
-                    if (result) {
-                        $.post(url, add_anti_forgery_token(param), function (response) {
-                            if (response) {
-                                tr.remove();
-                            }
-                        });
-                    }
-                }
-            });
-        })
-        .on('click', '#btn_confirmar', function () {
-            var btn = $(this),
-                url = '@Url.Action("SalvarGrupoProduto", "CadGrupoProduto")',
-                param = {
-                    Id: $('#id_cadastro').val(),
-                    Nome: $('#txt_nome').val(),
-                    Ativo: $('#cbx_ativo').prop('checked')
-                };
-
-            $.post(url, add_anti_forgery_token(param), function (response) {
-                if (response.Resultado == "OK") {
-                    if (param.Id == 0) {
-                        param.Id = response.IdSalvo;
-                        var table = $('#grid_cadastro').find('tbody'),
-                            linha = criar_linha_grid(param);
-
-                        table.append(linha);
-                    }
-                    else {
-                        var linha = $('#grid_cadastro').find('tr[data-id=' + param.Id + ']').find('td');
-                        linha
-                            .eq(0).html(param.Nome).end()
-                            .eq(1).html(param.Ativo ? 'SIM' : 'NÃO');
-                    }
-
-                    $('#modal_cadastro').parents('.bootbox').modal('hide');
-                }
-                else if (response.Resultado == "ERRO") {
-                    $('#msg_aviso').hide();
-                    $('#msg_mensagem_aviso').hide();
-                    $('#msg_erro').show();
-                }
-                else if (response.Resultado == "AVISO") {
-                    $('#msg_mensagem_aviso').html(formatar_mensagem_aviso(response.Mensagens));
-                    $('#msg_aviso').show();
-                    $('#msg_mensagem_aviso').show();
-                    $('#msg_erro').hide();
-                }
-            });
-        })
-        .on('click', '.page-item', function () {
-            var btn = $(this),
-                tamPag = $('#ddl_tam_pag').val(),
-                pagina = btn.text(),
-                url = '@Url.Action("GrupoProdutoPagina", "CadGrupoProduto")',
-                param = { 'pagina': pagina, 'tamPag': tamPag };
-
-            $.post(url, add_anti_forgery_token(param), function (response) {
-                if (response) {
-                    var table = $('#grid_cadastro').find('tbody');
-
-                    table.empty();
-                    for (var i = 0; i < response.length; i++) {
-                        table.append(criar_linha_grid(response[i]));
-                    }
-
-                    btn.siblings().removeClass('active');
-                    btn.addClass('active');
-                }
-            });
-        })
-        .on('change', '#ddl_tam_pag', function () {
-            var ddl = $(this),
-                tamPag = ddl.val(),
-                pagina = 1,
-                url = '@Url.Action("GrupoProdutoPagina", "CadGrupoProduto")',
-                param = { 'pagina': pagina, 'tamPag': tamPag };
-
-            $.post(url, add_anti_forgery_token(param), function (response) {
-                if (response) {
-                    var table = $('#grid_cadastro').find('tbody');
-
-                    table.empty();
-                    for (var i = 0; i < response.length; i++) {
-                        table.append(criar_linha_grid(response[i]));
-                    }
-
-                    btn.siblings().removeClass('active');
-                    btn.addClass('active');
-                }
-            });
-        });
-
-        function formatar_mensagem_aviso(mensagens) {
-            var ret = '';
-
-            for (var i = 0; i < mensagens.length; i++) {
-                ret += '<li>' + mensagens[i] + '</li>';
-            }
-
-            return '<ul>' + ret + '</ul>';
-        }
+        var tituloPagina = '@ViewBag.Title';
+        var url_excluir = '@Url.Action("ExcluirGrupoProduto", "CadGrupoProduto")';
+        var url_confirmar = '@Url.Action("SalvarGrupoProduto", "CadGrupoProduto")';
+        var url_page_click = '@Url.Action("GrupoProdutoPagina", "CadGrupoProduto")';
+        var url_tam_pag_change = '@Url.Action("GrupoProdutoPagina", "CadGrupoProduto")';
+        var url_alterar = '@Url.Action("RecuperarGrupoProduto", "CadGrupoProduto")';
     </script>
+    <script src="~/Scripts/Cadastro/GrupoProduto.js"></script>
 }

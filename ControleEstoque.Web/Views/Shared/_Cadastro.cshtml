@@ -1,0 +1,78 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model List<ControleEstoque.Web.Models.GrupoProdutoModel>
+@{
+    ViewBag.Title = "Cadastro de Grupo de Produtos";
+}
+
+@RenderSection("Styles", true)
+@RenderBody()
+
+<div id="cadastro">
+    <section id="cadastro_cabecalho">
+        <h1>@ViewBag.Title</h1>
+    </section>
+    <section id="cadastro_conteudo">
+        <div id="cabecalho_grid" class="row">
+            <div class="col-md-12">
+                <a id="btn_incluir" class="btn btn-success" role="button"><i class="glyphicon glyphicon-plus"></i> Incluir</a>
+                @Html.DropDownList("ddl_tam_pag", (SelectList)ViewBag.ListaTamPag, new { @class = "selectpicker" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table id="grid_cadastro" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr>
+                            @RenderSection("TituloGrid", true)
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @RenderSection("LinhaGrid", true)
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @if (ViewBag.QuantPaginas > 1)
+        {
+        <div class="row">
+            <div class="col-md-12">
+                <nav>
+                    <ul class="pagination">
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        @for (int i = 2; i <= ViewBag.QuantPaginas; i++)
+                            {
+                            <li class="page-item"><a class="page-link" href="#">@i</a></li>
+                            }
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        }
+    </section>
+</div>
+@Html.Hidden("id_cadastro")
+<div id="modal_cadastro" class="form-horizontal invisivel" role="dialog">
+    <div id="msg_mensagem_aviso" class="text-danger invisivel"></div>
+    <fieldset>
+        @Html.AntiForgeryToken()
+        @RenderSection("CamposCadastro", true)
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <div class="modal-footer">
+                        <a id="btn_sair" class="btn btn-default" role="button" data-dismiss="modal"><i class="glyphicon glyphicon-remove"></i> Sair</a>
+                        <a id="btn_confirmar" class="btn btn-primary" role="button"><i class="glyphicon glyphicon-ok"></i> Salvar</a>
+                    </div>
+                    <div id="msg_aviso" class="alert alert-warning invisivel">Falta preencher os campos acima.</div>
+                    <div id="msg_erro" class="alert alert-danger invisible">Ops! Deus ruim!</div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+</div>
+@section Scripts{
+    @RenderSection("Scripts", true)
+}
