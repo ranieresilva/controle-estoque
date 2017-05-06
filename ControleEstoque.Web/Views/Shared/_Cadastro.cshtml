@@ -1,10 +1,6 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
-}
-
-@model List<ControleEstoque.Web.Models.GrupoProdutoModel>
-@{
-    ViewBag.Title = "Cadastro de Grupo de Produtos";
+    ViewBag.Title = "Cadastro de " + ViewBag.Title;
 }
 
 @RenderSection("Styles", true)
@@ -37,19 +33,19 @@
         </div>
         @if (ViewBag.QuantPaginas > 1)
         {
-        <div class="row">
-            <div class="col-md-12">
-                <nav>
-                    <ul class="pagination">
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        @for (int i = 2; i <= ViewBag.QuantPaginas; i++)
+            <div class="row">
+                <div class="col-md-12">
+                    <nav>
+                        <ul class="pagination">
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            @for (int i = 2; i <= ViewBag.QuantPaginas; i++)
                             {
-                            <li class="page-item"><a class="page-link" href="#">@i</a></li>
+                                <li class="page-item"><a class="page-link" href="#">@i</a></li>
                             }
-                    </ul>
-                </nav>
+                        </ul>
+                    </nav>
+                </div>
             </div>
-        </div>
         }
     </section>
 </div>
@@ -74,5 +70,6 @@
     </fieldset>
 </div>
 @section Scripts{
+    <script src="~/Scripts/Cadastro/CadBase.js"></script>
     @RenderSection("Scripts", true)
 }
