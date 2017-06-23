@@ -1,0 +1,28 @@
+﻿#grid_cadastro > thead > tr th:nth-child(2) {
+    width: 110px;
+}
+
+#grid_cadastro > thead > tr th:nth-child(3) {
+    width: 70px;
+}
+
+#grid_cadastro > thead > tr th:nth-child(4) {
+    width: 200px;
+}
+
+#cadastro {
+    width: 70%;
+    margin: 0 auto;
+}
+
+#cadastro_cabecalho {
+    border-bottom: 1px #dddddd solid;
+}
+
+#cadastro_conteudo {
+    margin-top: 20px;
+}
+
+#cabecalho_grid {
+    margin-bottom: 20px;
+}
