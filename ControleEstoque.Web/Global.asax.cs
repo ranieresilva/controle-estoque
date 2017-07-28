@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using System.Web.Security;
 
 namespace ControleEstoque.Web
 {
@@ -34,6 +36,30 @@ namespace ControleEstoque.Web
                 Response.StatusCode = 200;
                 Response.End();
                 // gravar LOG
+            }
+        }
+
+        protected void Application_AuthenticateRequest(Object sender, EventArgs e)
+        {
+            var cookie = Context.Request.Cookies[FormsAuthentication.FormsCookieName];
+            if (cookie != null && cookie.Value != string.Empty)
+            {
+                FormsAuthenticationTicket ticket;
+                try
+                {
+                    ticket = FormsAuthentication.Decrypt(cookie.Value);
+                }
+                catch
+                {
+                    return;
+                }
+
+                var perfis = ticket.UserData.Split(';');
+
+                if (Context.User != null)
+                {
+                    Context.User = new GenericPrincipal(Context.User.Identity, perfis);
+                }
             }
         }
     }
