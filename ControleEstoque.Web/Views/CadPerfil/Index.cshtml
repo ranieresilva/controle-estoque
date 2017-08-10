@@ -1,17 +1,17 @@
-﻿@model List<ControleEstoque.Web.Models.UsuarioModel>
+﻿@model List<ControleEstoque.Web.PerfilModel>
 @{
     Layout = "~/Views/Shared/_Cadastro.cshtml";
-    ViewBag.Title = "Usuário";
+    ViewBag.Title = "Grupo de Perfis";
 }
 
 @section Styles {
     <link href="~/Content/bootstrap-select.css" rel="stylesheet" />
-    <link href="~/Content/Cadastro/Usuario.css" rel="stylesheet" />
+    <link href="~/Content/Cadastro/Perfil.css" rel="stylesheet" />
 }
 
 @section TituloGrid {
     <th>Nome</th>
-    <th>Login</th>
+    <th>Ativo</th>
     <th>Ação</th>
 }
 
@@ -23,9 +23,11 @@
             linha++;
             if (linha <= ViewBag.QuantMaxLinhasPorPagina)
             {
+                var ativo = (item.Ativo ? "SIM" : "NÃO");
+
                 <tr data-id="@item.Id">
                     <td>@item.Nome</td>
-                    <td>@item.Login</td>
+                    <td>@ativo</td>
                     <td>
                         <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
                         <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
@@ -49,21 +51,9 @@
             </div>
         </div>
         <div class="form-group">
-            @Html.Label("txt_login", "Login", new { @class = "col-md-3 control-label" })
+            @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
             <div class="col-md-12">
-                @Html.TextBox("txt_login", null, new { @class = "form-control" })
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.Label("txt_senha", "Senha", new { @class = "col-md-3 control-label" })
-            <div class="col-md-12">
-                @Html.TextBox("txt_senha", null, new { @class = "form-control", type = "password" })
-            </div>
-        </div>
-        <div class="form-group">
-            @Html.Label("txt_perfil", "Perfil", new { @class = "col-md-3 control-label" })
-            <div class="col-md-12">
-                @Html.DropDownList("ddl_perfil", new SelectList(ViewBag.ListaPerfil, "Id", "Nome"), new { @class = "form-control" })
+                @Html.CheckBox("cbx_ativo")
             </div>
         </div>
     </div>
@@ -73,11 +63,11 @@
     <script src="~/Scripts/bootstrap-select.js"></script>
     <script>
         var tituloPagina = '@ViewBag.Title';
-        var url_excluir = '@Url.Action("ExcluirUsuario", "CadUsuario")';
-        var url_confirmar = '@Url.Action("SalvarUsuario", "CadUsuario")';
-        var url_page_click = '@Url.Action("UsuarioPagina", "CadUsuario")';
-        var url_tam_pag_change = '@Url.Action("UsuarioPagina", "CadUsuario")';
-        var url_alterar = '@Url.Action("RecuperarUsuario", "CadUsuario")';
+        var url_excluir = '@Url.Action("ExcluirPerfil", "CadPerfil")';
+        var url_confirmar = '@Url.Action("SalvarPerfil", "CadPerfil")';
+        var url_page_click = '@Url.Action("PerfilPagina", "CadPerfil")';
+        var url_tam_pag_change = '@Url.Action("PerfilPagina", "CadPerfil")';
+        var url_alterar = '@Url.Action("RecuperarPerfil", "CadPerfil")';
     </script>
-    <script src="~/Scripts/Cadastro/Usuario.js"></script>
+    <script src="~/Scripts/Cadastro/Perfil.js"></script>
 }
