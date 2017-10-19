@@ -20,9 +20,6 @@ namespace ControleEstoque.Web.Models
         [Required(ErrorMessage = "Informe o nome")]
         public string Nome { get; set; }
 
-        [Required(ErrorMessage = "Informe o perfil")]
-        public int IdPerfil { get; set; }
-
         public static UsuarioModel ValidarUsuario(string login, string senha)
         {
             UsuarioModel ret = null;
@@ -47,8 +44,7 @@ namespace ControleEstoque.Web.Models
                             Id = (int)reader["id"],
                             Login = (string)reader["login"],
                             Senha = (string)reader["senha"],
-                            Nome = (string)reader["nome"],
-                            IdPerfil = (int)reader["id_perfil"]
+                            Nome = (string)reader["nome"]
                         };
                     }
                 }
@@ -99,8 +95,7 @@ namespace ControleEstoque.Web.Models
                         {
                             Id = (int)reader["id"],
                             Nome = (string)reader["nome"],
-                            Login = (string)reader["login"],
-                            IdPerfil = (int)reader["id_perfil"]
+                            Login = (string)reader["login"]
                         });
                     }
                 }
@@ -131,8 +126,7 @@ namespace ControleEstoque.Web.Models
                         {
                             Id = (int)reader["id"],
                             Nome = (string)reader["nome"],
-                            Login = (string)reader["login"],
-                            IdPerfil = (int)reader["id_perfil"]
+                            Login = (string)reader["login"]
                         };
                     }
                 }
@@ -182,25 +176,23 @@ namespace ControleEstoque.Web.Models
 
                     if (model == null)
                     {
-                        comando.CommandText = "insert into usuario (nome, login, senha, id_perfil) values (@nome, @login, @senha, @id_perfil); select convert(int, scope_identity())";
+                        comando.CommandText = "insert into usuario (nome, login, senha) values (@nome, @login, @senha); select convert(int, scope_identity())";
 
                         comando.Parameters.Add("@nome", SqlDbType.VarChar).Value = this.Nome;
                         comando.Parameters.Add("@login", SqlDbType.VarChar).Value = this.Login;
                         comando.Parameters.Add("@senha", SqlDbType.VarChar).Value = CriptoHelper.HashMD5(this.Senha);
-                        comando.Parameters.Add("@id_perfil", SqlDbType.Int).Value = this.IdPerfil;
 
                         ret = (int)comando.ExecuteScalar();
                     }
                     else
                     {
                         comando.CommandText =
-                            "update usuario set nome=@nome, login=@login, id_perfil=@id_perfil" +
+                            "update usuario set nome=@nome, login=@login" +
                             (!string.IsNullOrEmpty(this.Senha) ? ", senha=@senha" : "") +
                             " where id = @id";
 
                         comando.Parameters.Add("@nome", SqlDbType.VarChar).Value = this.Nome;
                         comando.Parameters.Add("@login", SqlDbType.VarChar).Value = this.Login;
-                        comando.Parameters.Add("@id_perfil", SqlDbType.Int).Value = this.IdPerfil;
 
                         if (!string.IsNullOrEmpty(this.Senha))
                         {
@@ -213,6 +205,35 @@ namespace ControleEstoque.Web.Models
                         {
                             ret = this.Id;
                         }
+                    }
+                }
+            }
+
+            return ret;
+        }
+
+        public string RecuperarStringNomePerfis()
+        {
+            var ret = string.Empty;
+
+            using (var conexao = new SqlConnection())
+            {
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                conexao.Open();
+                using (var comando = new SqlCommand())
+                {
+                    comando.Connection = conexao;
+                    comando.CommandText = string.Format(
+                        "select p.nome " +
+                        "from perfil_usuario pu, perfil p " +
+                        "where (pu.id_usuario = @id_usuario) and (pu.id_perfil = p.id) and (p.ativo = 1)");
+
+                    comando.Parameters.Add("@id_usuario", SqlDbType.Int).Value = this.Id;
+
+                    var reader = comando.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        ret += (ret != string.Empty ? ";" : string.Empty) + (string)reader["nome"];
                     }
                 }
             }

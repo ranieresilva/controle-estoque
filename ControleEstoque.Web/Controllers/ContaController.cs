@@ -31,7 +31,7 @@ namespace ControleEstoque.Web.Controllers
             if (usuario != null)
             {
                 var tiket = FormsAuthentication.Encrypt(new FormsAuthenticationTicket(
-                    1, usuario.Nome, DateTime.Now, DateTime.Now.AddHours(12), login.LembrarMe, PerfilModel.RecuperarPeloId(usuario.IdPerfil).Nome));
+                    1, usuario.Nome, DateTime.Now, DateTime.Now.AddHours(12), login.LembrarMe, usuario.RecuperarStringNomePerfis()));
                 var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, tiket);
                 Response.Cookies.Add(cookie);
 
