@@ -1,4 +1,4 @@
-﻿@model List<ControleEstoque.Web.PerfilModel>
+﻿@model List<ControleEstoque.Web.Models.PerfilModel>
 @{
     Layout = "~/Views/Shared/_Cadastro.cshtml";
     ViewBag.Title = "Grupo de Perfis";
@@ -54,6 +54,23 @@
             @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
             <div class="col-md-12">
                 @Html.CheckBox("cbx_ativo")
+            </div>
+        </div>
+        <div class="form-group" style="margin: 0 10px 0 10px">
+            <div class="col-md-12">
+                <h4 class="text-center">Usuários</h4>
+                <div class="well" style="max-height: 300px; padding: 5px; margin: 0; overflow: auto">
+                    <ul id="lista_usuario" class="list-group checked-list-box" style="margin-bottom: 0">
+                        @foreach (var usuario in (List<ControleEstoque.Web.Models.UsuarioModel>)ViewBag.ListaUsuario)
+                        {
+                            <li class="list-group-item">
+                                <label style="margin-bottom: 0">
+                                    <input type="checkbox" data-id-usuario="@usuario.Id" /> @usuario.Nome
+                                </label>
+                            </li>
+                        }
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

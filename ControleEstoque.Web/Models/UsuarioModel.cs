@@ -72,7 +72,7 @@ namespace ControleEstoque.Web.Models
             return ret;
         }
 
-        public static List<UsuarioModel> RecuperarLista(int pagina, int tamPagina)
+        public static List<UsuarioModel> RecuperarLista(int pagina = -1, int tamPagina = -1)
         {
             var ret = new List<UsuarioModel>();
 
@@ -85,9 +85,18 @@ namespace ControleEstoque.Web.Models
                     var pos = (pagina - 1) * tamPagina;
 
                     comando.Connection = conexao;
-                    comando.CommandText = string.Format(
-                        "select * from usuario order by nome offset {0} rows fetch next {1} rows only",
-                        pos > 0 ? pos - 1 : 0, tamPagina);
+
+                    if (pagina == -1 || tamPagina == -1)
+                    {
+                        comando.CommandText = "select * from usuario order by nome";
+                    }
+                    else
+                    {
+                        comando.CommandText = string.Format(
+                            "select * from usuario order by nome offset {0} rows fetch next {1} rows only",
+                            pos > 0 ? pos - 1 : 0, tamPagina);
+                    }
+
                     var reader = comando.ExecuteReader();
                     while (reader.Read())
                     {
