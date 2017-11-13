@@ -46,3 +46,18 @@ CREATE TABLE [dbo].[usuario] (
 GO
 ALTER TABLE [dbo].[usuario]  WITH CHECK ADD FOREIGN KEY([id_perfil]) REFERENCES [dbo].[perfil] ([id])
 GO
+
+CREATE TABLE [dbo].[marca_produto] (
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[nome] [varchar](50) NOT NULL,
+	[ativo] [bit] NOT NULL,
+	CONSTRAINT [PK_marca_produto] PRIMARY KEY ([id])
+)
+GO
+CREATE TABLE [dbo].[local_armazenamento] (
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[nome] [varchar](50) NOT NULL,
+	[ativo] [bit] NOT NULL,
+	CONSTRAINT [PK_local_armazenamento] PRIMARY KEY ([id])
+)
+GO

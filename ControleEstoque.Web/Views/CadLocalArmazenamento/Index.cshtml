@@ -1,13 +1,14 @@
-﻿@model List<ControleEstoque.Web.Models.PerfilModel>
+﻿@model List<ControleEstoque.Web.Models.LocalArmazenamentoModel>
 @{
     Layout = "~/Views/Shared/_Cadastro.cshtml";
-    ViewBag.Title = "Grupo de Perfis";
+    ViewBag.Title = "Locais de Armazenamento";
+    ViewBag.Lista = Model;
     ViewBag.Lista = Model;
 }
 
 @section Styles {
     <link href="~/Content/bootstrap-select.css" rel="stylesheet" />
-    <link href="~/Content/Cadastro/Perfil.css" rel="stylesheet" />
+    <link href="~/Content/Cadastro/LocalArmazenamento.css" rel="stylesheet" />
 }
 
 @section TituloGrid {
@@ -57,23 +58,6 @@
                 @Html.CheckBox("cbx_ativo")
             </div>
         </div>
-        <div class="form-group" style="margin: 0 10px 0 10px">
-            <div class="col-md-12">
-                <h4 class="text-center">Usuários</h4>
-                <div class="well" style="max-height: 300px; padding: 5px; margin: 0; overflow: auto">
-                    <ul id="lista_usuario" class="list-group checked-list-box" style="margin-bottom: 0">
-                        @foreach (var usuario in (List<ControleEstoque.Web.Models.UsuarioModel>)ViewBag.ListaUsuario)
-                        {
-                            <li class="list-group-item">
-                                <label style="margin-bottom: 0">
-                                    <input type="checkbox" data-id-usuario="@usuario.Id" /> @usuario.Nome
-                                </label>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            </div>
-        </div>
     </div>
 }
 
@@ -81,11 +65,11 @@
     <script src="~/Scripts/bootstrap-select.js"></script>
     <script>
         var tituloPagina = '@ViewBag.Title';
-        var url_excluir = '@Url.Action("ExcluirPerfil", "CadPerfil")';
-        var url_confirmar = '@Url.Action("SalvarPerfil", "CadPerfil")';
-        var url_page_click = '@Url.Action("PerfilPagina", "CadPerfil")';
-        var url_tam_pag_change = '@Url.Action("PerfilPagina", "CadPerfil")';
-        var url_alterar = '@Url.Action("RecuperarPerfil", "CadPerfil")';
+        var url_excluir = '@Url.Action("ExcluirLocalArmazenamento", "CadLocalArmazenamento")';
+        var url_confirmar = '@Url.Action("SalvarLocalArmazenamento", "CadLocalArmazenamento")';
+        var url_page_click = '@Url.Action("LocalArmazenamentoPagina", "CadLocalArmazenamento")';
+        var url_tam_pag_change = '@Url.Action("LocalArmazenamentoPagina", "CadLocalArmazenamento")';
+        var url_alterar = '@Url.Action("RecuperarLocalArmazenamento", "CadLocalArmazenamento")';
     </script>
-    <script src="~/Scripts/Cadastro/Perfil.js"></script>
+    <script src="~/Scripts/Cadastro/LocalArmazenamento.js"></script>
 }
