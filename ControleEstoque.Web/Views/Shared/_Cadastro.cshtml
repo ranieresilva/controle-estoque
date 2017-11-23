@@ -17,8 +17,17 @@
     <section id="cadastro_conteudo">
         <div id="cabecalho_grid" class="row">
             <div class="col-md-12">
-                <a id="btn_incluir" class="btn btn-success" role="button"><i class="glyphicon glyphicon-plus"></i> Incluir</a>
-                @Html.DropDownList("ddl_tam_pag", (SelectList)ViewBag.ListaTamPag, new { @class = "selectpicker" })
+                <div class="row">
+                    <div class="col-md-2">
+                        <a id="btn_incluir" class="btn btn-success" role="button"><i class="glyphicon glyphicon-plus"></i> Incluir</a>
+                    </div>
+                    <div class="col-md-4">
+                        @Html.DropDownList("ddl_tam_pag", (SelectList)ViewBag.ListaTamPag, new { @class = "selectpicker" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.TextBox("txt_filtro", null, new { @class = "form-control" })
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row">
