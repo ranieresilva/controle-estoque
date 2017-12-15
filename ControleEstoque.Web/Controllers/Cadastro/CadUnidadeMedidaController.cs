@@ -30,9 +30,9 @@ namespace ControleEstoque.Web.Controllers.Cadastro
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public JsonResult UnidadeMedidaPagina(int pagina, int tamPag, string filtro)
+        public JsonResult UnidadeMedidaPagina(int pagina, int tamPag)
         {
-            var lista = UnidadeMedidaModel.RecuperarLista(pagina, tamPag, filtro);
+            var lista = UnidadeMedidaModel.RecuperarLista(pagina, tamPag);
 
             return Json(lista);
         }

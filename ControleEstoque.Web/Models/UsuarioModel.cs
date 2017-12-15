@@ -72,7 +72,7 @@ namespace ControleEstoque.Web.Models
             return ret;
         }
 
-        public static List<UsuarioModel> RecuperarLista(int pagina = -1, int tamPagina = -1, string filtro = "")
+        public static List<UsuarioModel> RecuperarLista(int pagina = -1, int tamPagina = -1)
         {
             var ret = new List<UsuarioModel>();
 
@@ -84,26 +84,16 @@ namespace ControleEstoque.Web.Models
                 {
                     var pos = (pagina - 1) * tamPagina;
 
-                    var filtroWhere = "";
-                    if (!string.IsNullOrEmpty(filtro))
-                    {
-                        filtroWhere = string.Format(" where lower(nome) like '%{0}%'", filtro.ToLower());
-                    }
-
                     comando.Connection = conexao;
 
                     if (pagina == -1 || tamPagina == -1)
                     {
-                        comando.CommandText = "select * from usuario " + filtroWhere + " order by nome";
+                        comando.CommandText = "select * from usuario order by nome";
                     }
                     else
                     {
                         comando.CommandText = string.Format(
-                            "select *" +
-                            " from usuario" +
-                            filtroWhere +
-                            " order by nome" +
-                            " offset {0} rows fetch next {1} rows only",
+                            "select * from usuario order by nome offset {0} rows fetch next {1} rows only",
                             pos > 0 ? pos - 1 : 0, tamPagina);
                     }
 

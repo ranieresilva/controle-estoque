@@ -63,6 +63,9 @@ $(document).on('click', '#btn_incluir', function () {
         if (response) {
             abrir_form(response);
         }
+    })
+    .fail(function () {
+        swal('Aviso', 'Não foi possível recuperar as informações. Tente novamente em instantes.', 'warning');
     });
 })
 .on('click', '.btn-excluir', function () {
@@ -95,6 +98,9 @@ $(document).on('click', '#btn_incluir', function () {
                             $('#mensagem_grid').removeClass('invisivel');
                         }
                     }
+                })
+                .fail(function () {
+                    swal('Aviso', 'Não foi possível excluir. Tente novamente em instantes.', 'warning');
                 });
             }
         }
@@ -134,6 +140,9 @@ $(document).on('click', '#btn_incluir', function () {
             $('#msg_mensagem_aviso').show();
             $('#msg_erro').hide();
         }
+    })
+    .fail(function () {
+        swal('Aviso', 'Não foi possível salvar. Tente novamente em instantes.', 'warning');
     });
 })
 .on('click', '.page-item', function () {
@@ -165,6 +174,9 @@ $(document).on('click', '#btn_incluir', function () {
             btn.siblings().removeClass('active');
             btn.addClass('active');
         }
+    })
+    .fail(function () {
+        swal('Aviso', 'Não foi possível recuperar as informações. Tente novamente em instantes.', 'warning');
     });
 })
 .on('change', '#ddl_tam_pag', function () {
@@ -196,6 +208,9 @@ $(document).on('click', '#btn_incluir', function () {
             ddl.siblings().removeClass('active');
             ddl.addClass('active');
         }
+    })
+    .fail(function () {
+        swal('Aviso', 'Não foi possível recuperar as informações. Tente novamente em instantes.', 'warning');
     });
 })
 .on('keyup', '#txt_filtro', function () {
@@ -227,5 +242,8 @@ $(document).on('click', '#btn_incluir', function () {
             ddl.siblings().removeClass('active');
             ddl.addClass('active');
         }
+    })
+    .fail(function () {
+        swal('Aviso', 'Não foi possível recuperar as informações. Tente novamente em instantes.', 'warning');
     });
 });

@@ -184,6 +184,7 @@
     <Content Include="Content\Cadastro\Perfil.css" />
     <Content Include="Content\Cadastro\UnidadeMedida.css" />
     <Content Include="Content\Cadastro\Usuario.css" />
+    <Content Include="Content\sweetalert2.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -216,6 +217,7 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\sweetalert2.min.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
