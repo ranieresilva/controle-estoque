@@ -39,8 +39,7 @@ namespace ControleEstoque.Web.Controllers
         [ValidateAntiForgeryToken]
         public JsonResult RecuperarMarcaProduto(int id)
         {
-            return Json(false);
-            //return Json(MarcaProdutoModel.RecuperarPeloId(id));
+            return Json(MarcaProdutoModel.RecuperarPeloId(id));
         }
 
         [HttpPost]
