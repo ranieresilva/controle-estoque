@@ -1,0 +1,83 @@
+﻿@model List<ControleEstoque.Web.Models.PaisModel>
+@{
+    Layout = "~/Views/Shared/_Cadastro.cshtml";
+    ViewBag.Title = "Países";
+    ViewBag.Lista = Model;
+    ViewBag.Lista = Model;
+}
+
+@section Styles {
+    <link href="~/Content/bootstrap-select.css" rel="stylesheet" />
+    <link href="~/Content/Cadastro/Pais.css" rel="stylesheet" />
+}
+
+@section TituloGrid {
+    <th>Nome</th>
+    <th>Código</th>
+    <th>Ativo</th>
+    <th>Ação</th>
+}
+
+@section LinhaGrid {
+    @{
+        var linha = 0;
+        foreach (var item in Model)
+        {
+            linha++;
+            if (linha <= ViewBag.QuantMaxLinhasPorPagina)
+            {
+                var ativo = (item.Ativo ? "SIM" : "NÃO");
+
+                <tr data-id="@item.Id">
+                    <td>@item.Nome</td>
+                    <td>@item.Codigo</td>
+                    <td>@ativo</td>
+                    <td>
+                        <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                        <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+}
+
+@section CamposCadastro {
+    <div class="row">
+        <div class="form-group">
+            @Html.Label("txt_nome", "Nome", new { @class = "col-md-4 control-label" })
+            <div class="col-md-8">
+                @Html.TextBox("txt_nome", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("txt_codigo", "Código Internacional", new { @class = "col-md-4 control-label" })
+            <div class="col-md-8">
+                @Html.TextBox("txt_codigo", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-4 control-label" })
+            <div class="col-md-8">
+                @Html.CheckBox("cbx_ativo")
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <script src="~/Scripts/bootstrap-select.js"></script>
+    <script>
+        var tituloPagina = '@ViewBag.Title';
+        var url_excluir = '@Url.Action("ExcluirPais", "CadPais")';
+        var url_confirmar = '@Url.Action("SalvarPais", "CadPais")';
+        var url_page_click = '@Url.Action("PaisPagina", "CadPais")';
+        var url_tam_pag_change = '@Url.Action("PaisPagina", "CadPais")';
+        var url_alterar = '@Url.Action("RecuperarPais", "CadPais")';
+    </script>
+    <script src="~/Scripts/Cadastro/Pais.js"></script>
+}

@@ -1,0 +1,88 @@
+﻿@model List<ControleEstoque.Web.Models.CidadeModel>
+@{
+    Layout = "~/Views/Shared/_Cadastro.cshtml";
+    ViewBag.Title = "Cidades";
+    ViewBag.Lista = Model;
+    ViewBag.Lista = Model;
+}
+
+@section Styles {
+    <link href="~/Content/bootstrap-select.css" rel="stylesheet" />
+    <link href="~/Content/Cadastro/Cidade.css" rel="stylesheet" />
+}
+
+@section TituloGrid {
+    <th>Nome</th>
+    <th>Ativo</th>
+    <th>Ação</th>
+}
+
+@section LinhaGrid {
+    @{
+        var linha = 0;
+        foreach (var item in Model)
+        {
+            linha++;
+            if (linha <= ViewBag.QuantMaxLinhasPorPagina)
+            {
+                var ativo = (item.Ativo ? "SIM" : "NÃO");
+
+                <tr data-id="@item.Id">
+                    <td>@item.Nome</td>
+                    <td>@ativo</td>
+                    <td>
+                        <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                        <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+                    </td>
+                </tr>
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+}
+
+@section CamposCadastro {
+    <div class="row">
+        <div class="form-group">
+            @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.TextBox("txt_nome", null, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("ddl_pais", "País", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.DropDownList("ddl_pais", new SelectList(ViewBag.Paises, "Id", "Nome"), new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("ddl_estado", "Estado", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.DropDownList("ddl_estado", new SelectList(""), new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.CheckBox("cbx_ativo")
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <script src="~/Scripts/bootstrap-select.js"></script>
+    <script>
+        var tituloPagina = '@ViewBag.Title';
+        var url_excluir = '@Url.Action("ExcluirCidade", "CadCidade")';
+        var url_confirmar = '@Url.Action("SalvarCidade", "CadCidade")';
+        var url_page_click = '@Url.Action("CidadePagina", "CadCidade")';
+        var url_tam_pag_change = '@Url.Action("CidadePagina", "CadCidade")';
+        var url_alterar = '@Url.Action("RecuperarCidade", "CadCidade")';
+        var url_listar_estados = '@Url.Action("RecuperarEstadosDoPais", "CadEstado")';
+    </script>
+    <script src="~/Scripts/Cadastro/Cidade.js"></script>
+}

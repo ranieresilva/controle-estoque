@@ -61,3 +61,32 @@ CREATE TABLE [dbo].[local_armazenamento] (
 	CONSTRAINT [PK_local_armazenamento] PRIMARY KEY ([id])
 )
 GO
+CREATE TABLE [dbo].[pais] (
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[nome] [varchar](30) NOT NULL,
+	[codigo] [varchar](3) NOT NULL,
+	[ativo] [bit] NOT NULL,
+	CONSTRAINT [PK_pais] PRIMARY KEY ([id])
+)
+GO
+CREATE TABLE [dbo].[estado] (
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[nome] [varchar](30) NOT NULL,
+	[uf] [varchar](2) NOT NULL,
+	[ativo] [bit] NOT NULL,
+	[id_pais] [int] NOT NULL,
+	CONSTRAINT [PK_unidade_medida] PRIMARY KEY ([id])
+)
+GO
+ALTER TABLE [dbo].[estado]  WITH CHECK ADD FOREIGN KEY([id_pais]) REFERENCES [dbo].[pais] ([id])
+GO
+CREATE TABLE [dbo].[cidade] (
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[nome] [varchar](30) NOT NULL,
+	[ativo] [bit] NOT NULL,
+	[id_estado] [int] NOT NULL,
+	CONSTRAINT [PK_cidade] PRIMARY KEY ([id])
+)
+GO
+ALTER TABLE [dbo].[cidade]  WITH CHECK ADD FOREIGN KEY([id_estado]) REFERENCES [dbo].[estado] ([id])
+GO

@@ -13,24 +13,6 @@ namespace ControleEstoque.Web.Controllers
         }
 
         [Authorize]
-        public ActionResult Pais()
-        {
-            return View();
-        }
-
-        [Authorize]
-        public ActionResult Estado()
-        {
-            return View();
-        }
-
-        [Authorize]
-        public ActionResult Cidade()
-        {
-            return View();
-        }
-
-        [Authorize]
         public ActionResult Fornecedor()
         {
             return View();
