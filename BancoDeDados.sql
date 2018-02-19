@@ -15,11 +15,6 @@ CREATE TABLE [dbo].[grupo_produto] (
 	CONSTRAINT [PK_grupo_produto] PRIMARY KEY ([id])
 )
 GO
-CREATE TABLE [dbo].[produto](
-	[id] [int] NULL,
-	[nome] [nchar](10) NULL
-) ON [PRIMARY]
-GO
 CREATE TABLE [dbo].[perfil] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[nome] [varchar](20) NOT NULL,
@@ -44,9 +39,13 @@ CREATE TABLE [dbo].[usuario] (
 	CONSTRAINT [PK_usuario] PRIMARY KEY ([id])
 )
 GO
-ALTER TABLE [dbo].[usuario]  WITH CHECK ADD FOREIGN KEY([id_perfil]) REFERENCES [dbo].[perfil] ([id])
+CREATE TABLE [dbo].[perfil_usuario] (
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[id_perfil] [int] NOT NULL,
+	[id_usuario] [int] NOT NULL,
+ CONSTRAINT [PK_perfil_usuario] PRIMARY KEY ([id])
+)
 GO
-
 CREATE TABLE [dbo].[marca_produto] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[nome] [varchar](50) NOT NULL,
@@ -75,10 +74,8 @@ CREATE TABLE [dbo].[estado] (
 	[uf] [varchar](2) NOT NULL,
 	[ativo] [bit] NOT NULL,
 	[id_pais] [int] NOT NULL,
-	CONSTRAINT [PK_unidade_medida] PRIMARY KEY ([id])
+	CONSTRAINT [PK_estado] PRIMARY KEY ([id])
 )
-GO
-ALTER TABLE [dbo].[estado]  WITH CHECK ADD FOREIGN KEY([id_pais]) REFERENCES [dbo].[pais] ([id])
 GO
 CREATE TABLE [dbo].[cidade] (
 	[id] [int] IDENTITY(1,1) NOT NULL,
@@ -88,5 +85,13 @@ CREATE TABLE [dbo].[cidade] (
 	CONSTRAINT [PK_cidade] PRIMARY KEY ([id])
 )
 GO
-ALTER TABLE [dbo].[cidade]  WITH CHECK ADD FOREIGN KEY([id_estado]) REFERENCES [dbo].[estado] ([id])
+ALTER TABLE [dbo].[usuario] WITH CHECK ADD FOREIGN KEY([id_perfil]) REFERENCES [dbo].[perfil] ([id])
+GO
+ALTER TABLE [dbo].[perfil_usuario] WITH CHECK ADD FOREIGN KEY([id_perfil]) REFERENCES [dbo].[perfil] ([id])
+GO
+ALTER TABLE [dbo].[perfil_usuario] WITH CHECK ADD FOREIGN KEY([id_usuario]) REFERENCES [dbo].[usuario] ([id])
+GO
+ALTER TABLE [dbo].[estado] WITH CHECK ADD FOREIGN KEY([id_pais]) REFERENCES [dbo].[pais] ([id])
+GO
+ALTER TABLE [dbo].[cidade] WITH CHECK ADD FOREIGN KEY([id_estado]) REFERENCES [dbo].[estado] ([id])
 GO
