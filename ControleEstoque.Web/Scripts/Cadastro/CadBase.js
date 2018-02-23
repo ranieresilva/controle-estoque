@@ -4,13 +4,14 @@
 }
 
 function formatar_mensagem_aviso(mensagens) {
-    var ret = '';
+    var template =
+        '<ul>' +
+        '{{ #. }}' +
+        '<li>{{ . }}</li>' +
+        '{{ /. }}' +
+        '</ul>';
 
-    for (var i = 0; i < mensagens.length; i++) {
-        ret += '<li>' + mensagens[i] + '</li>';
-    }
-
-    return '<ul>' + ret + '</ul>';
+    return Mustache.render(template, mensagens);
 }
 
 function abrir_form(dados) {
@@ -38,16 +39,8 @@ function abrir_form(dados) {
 }
 
 function criar_linha_grid(dados) {
-    var ret =
-        '<tr data-id=' + dados.Id + '>' +
-        set_dados_grid(dados) +
-        '<td>' +
-        '<a class="btn btn-primary btn-alterar" role="button" style="margin-right: 3px"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>' +
-        '<a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>' +
-        '</td>' +
-        '</tr>';
-
-    return ret;
+    var template = $('#template-grid').html();
+    return Mustache.render(template, dados);
 }
 
 $(document).on('click', '#btn_incluir', function () {
@@ -246,4 +239,11 @@ $(document).on('click', '#btn_incluir', function () {
     .fail(function () {
         swal('Aviso', 'Não foi possível recuperar as informações. Tente novamente em instantes.', 'warning');
     });
+});
+
+$(document).ready(function () {
+    var grid = $('#grid_cadastro > tbody');
+    for (var i = 0; i < linhas.length; i++) {
+        grid.append(criar_linha_grid(linhas[i]));
+    }
 });

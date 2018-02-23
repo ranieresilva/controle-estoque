@@ -10,12 +10,6 @@ function set_focus_form() {
     $('#txt_nome').focus();
 }
 
-function set_dados_grid(dados) {
-    return '<td>' + dados.Nome + '</td>' +
-           '<td>' + dados.UF + '</td>' +
-           '<td>' + (dados.Ativo ? 'SIM' : 'NÃO') + '</td>';
-}
-
 function get_dados_inclusao() {
     return {
         Id: 0,
