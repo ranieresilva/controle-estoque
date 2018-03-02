@@ -20,28 +20,26 @@
 
 @section CamposCadastro {
     <div class="row">
-        <div class="form-group">
-            @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
-            <div class="col-md-9">
-                @Html.TextBox("txt_nome", null, new { @class = "form-control" })
-            </div>
+        <div class="col-md-8">
+            @Html.Label("txt_nome", "Nome", new { @class = "control-label" })
+            @Html.TextBox("txt_nome", null, new { @class = "form-control" })
         </div>
-        <div class="form-group">
-            @Html.Label("txt_uf", "UF", new { @class = "col-md-3 control-label" })
-            <div class="col-md-9">
-                @Html.TextBox("txt_uf", null, new { @class = "form-control" })
-            </div>
+        <div class="col-md-4">
+            @Html.Label("txt_uf", "UF", new { @class = "control-label" })
+            @Html.TextBox("txt_uf", null, new { @class = "form-control" })
         </div>
-        <div class="form-group">
-            @Html.Label("ddl_pais", "País", new { @class = "col-md-3 control-label" })
-            <div class="col-md-9">
-                @Html.DropDownList("ddl_pais", new SelectList(ViewBag.Paises, "Id", "Nome"), new { @class = "form-control" })
-            </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            @Html.Label("ddl_pais", "País", new { @class = "control-label" })
+            @Html.DropDownList("ddl_pais", new SelectList(ViewBag.Paises, "Id", "Nome"), new { @class = "form-control" })
         </div>
-        <div class="form-group">
-            @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
-            <div class="col-md-9">
-                @Html.CheckBox("cbx_ativo")
+    </div>
+    <div class="row" style="margin-top: 15px">
+        <div class="col-md-12">
+            <div class="form-check">
+                @Html.CheckBox("cbx_ativo", new { @class = "form-check-input" })
+                @Html.Label("cbx_ativo", "Ativo", new { @class = "form-check-label" })
             </div>
         </div>
     </div>
@@ -66,7 +64,7 @@
                 if (linha <= ViewBag.QuantMaxLinhasPorPagina)
                 {
                     @:linhas.push(@Html.Raw(Json.Encode(item)));
-                }
+                                        }
                 else
                 {
                     break;

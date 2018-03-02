@@ -1,7 +1,7 @@
 ﻿@model List<ControleEstoque.Web.Models.PerfilModel>
 @{
     Layout = "~/Views/Shared/_Cadastro.cshtml";
-    ViewBag.Title = "Grupo de Perfis";
+    ViewBag.Title = "Perfis de Usuários";
     ViewBag.Lista = Model;
 }
 
@@ -18,18 +18,20 @@
 
 @section CamposCadastro {
     <div class="row">
-        <div class="form-group">
-            @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
-            <div class="col-md-12">
-                @Html.TextBox("txt_nome", null, new { @class = "form-control" })
+        <div class="col-md-12">
+            @Html.Label("txt_nome", "Nome", new { @class = "control-label" })
+            @Html.TextBox("txt_nome", null, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="row" style="margin-top: 15px">
+        <div class="col-md-12">
+            <div class="form-check">
+                @Html.CheckBox("cbx_ativo", new { @class = "form-check-input" })
+                @Html.Label("cbx_ativo", "Ativo", new { @class = "form-check-label" })
             </div>
         </div>
-        <div class="form-group">
-            @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
-            <div class="col-md-12">
-                @Html.CheckBox("cbx_ativo")
-            </div>
-        </div>
+    </div>
+    <div class="row">
         <div class="form-group" style="margin: 0 10px 0 10px">
             <div class="col-md-12">
                 <h4 class="text-center">Usuários</h4>
@@ -69,7 +71,7 @@
                 if (linha <= ViewBag.QuantMaxLinhasPorPagina)
                 {
                     @:linhas.push(@Html.Raw(Json.Encode(item)));
-                }
+                                                        }
                 else
                 {
                     break;

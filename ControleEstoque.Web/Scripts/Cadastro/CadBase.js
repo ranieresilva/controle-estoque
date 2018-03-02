@@ -26,7 +26,8 @@ function abrir_form(dados) {
 
     bootbox.dialog({
         title: 'Cadastro de ' + tituloPagina,
-        message: modal_cadastro
+        message: modal_cadastro,
+        className: 'dialogo',
     })
     .on('shown.bs.modal', function () {
         modal_cadastro.show(0, function () {

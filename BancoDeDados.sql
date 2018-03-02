@@ -85,6 +85,25 @@ CREATE TABLE [dbo].[cidade] (
 	CONSTRAINT [PK_cidade] PRIMARY KEY ([id])
 )
 GO
+CREATE TABLE [dbo].[fornecedor] (
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[nome] [varchar](60) NOT NULL,
+	[razao_social] [varchar](100) NULL,
+	[num_documento] [varchar](20) NULL,
+	[tipo] [int] NOT NULL,
+	[telefone] [varchar](20) NOT NULL,
+	[contato] [varchar](60) NOT NULL,
+	[logradouro] [varchar](100) NOT NULL,
+	[numero] [varchar](20) NOT NULL,
+	[complemento] [varchar](100) NULL,
+	[cep] [varchar](10) NULL,
+	[id_pais] [int] NOT NULL,
+	[id_estado] [int] NOT NULL,
+	[id_cidade] [int] NOT NULL,
+	[ativo] [bit] NOT NULL,
+	CONSTRAINT [PK_fornecedor] PRIMARY KEY ([id])
+)
+GO
 ALTER TABLE [dbo].[usuario] WITH CHECK ADD FOREIGN KEY([id_perfil]) REFERENCES [dbo].[perfil] ([id])
 GO
 ALTER TABLE [dbo].[perfil_usuario] WITH CHECK ADD FOREIGN KEY([id_perfil]) REFERENCES [dbo].[perfil] ([id])
@@ -94,4 +113,10 @@ GO
 ALTER TABLE [dbo].[estado] WITH CHECK ADD FOREIGN KEY([id_pais]) REFERENCES [dbo].[pais] ([id])
 GO
 ALTER TABLE [dbo].[cidade] WITH CHECK ADD FOREIGN KEY([id_estado]) REFERENCES [dbo].[estado] ([id])
+GO
+ALTER TABLE [dbo].[fornecedor] WITH CHECK ADD FOREIGN KEY([id_pais]) REFERENCES [dbo].[pais] ([id])
+GO
+ALTER TABLE [dbo].[fornecedor] WITH CHECK ADD FOREIGN KEY([id_estado]) REFERENCES [dbo].[estado] ([id])
+GO
+ALTER TABLE [dbo].[fornecedor] WITH CHECK ADD FOREIGN KEY([id_cidade]) REFERENCES [dbo].[cidade] ([id])
 GO

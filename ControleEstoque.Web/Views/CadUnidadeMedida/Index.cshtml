@@ -19,22 +19,20 @@
 
 @section CamposCadastro {
     <div class="row">
-        <div class="form-group">
-            @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
-            <div class="col-md-12">
-                @Html.TextBox("txt_nome", null, new { @class = "form-control" })
-            </div>
+        <div class="col-md-9">
+            @Html.Label("txt_nome", "Nome", new { @class = "control-label" })
+            @Html.TextBox("txt_nome", null, new { @class = "form-control" })
         </div>
-        <div class="form-group">
-            @Html.Label("txt_sigla", "Sigla", new { @class = "col-md-3 control-label" })
-            <div class="col-md-12">
-                @Html.TextBox("txt_sigla", null, new { @class = "form-control" })
-            </div>
+        <div class="col-md-3">
+            @Html.Label("txt_sigla", "Sigla", new { @class = "control-label" })
+            @Html.TextBox("txt_sigla", null, new { @class = "form-control" })
         </div>
-        <div class="form-group">
-            @Html.Label("cbx_ativo", "Ativo", new { @class = "col-md-3 control-label" })
-            <div class="col-md-12">
-                @Html.CheckBox("cbx_ativo")
+    </div>
+    <div class="row" style="margin-top: 15px">
+        <div class="col-md-12">
+            <div class="form-check">
+                @Html.CheckBox("cbx_ativo", new { @class = "form-check-input" })
+                @Html.Label("cbx_ativo", "Ativo", new { @class = "form-check-label" })
             </div>
         </div>
     </div>
@@ -59,7 +57,7 @@
                 if (linha <= ViewBag.QuantMaxLinhasPorPagina)
                 {
                     @:linhas.push(@Html.Raw(Json.Encode(item)));
-                }
+                                        }
                 else
                 {
                     break;

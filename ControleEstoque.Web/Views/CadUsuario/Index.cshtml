@@ -1,7 +1,7 @@
 ﻿@model List<ControleEstoque.Web.Models.UsuarioModel>
 @{
     Layout = "~/Views/Shared/_Cadastro.cshtml";
-    ViewBag.Title = "Usuário";
+    ViewBag.Title = "Usuários";
     ViewBag.Lista = Model;
 }
 
@@ -18,23 +18,21 @@
 
 @section CamposCadastro {
     <div class="row">
-        <div class="form-group">
-            @Html.Label("txt_nome", "Nome", new { @class = "col-md-3 control-label" })
-            <div class="col-md-12">
-                @Html.TextBox("txt_nome", null, new { @class = "form-control" })
-            </div>
+        <div class="col-md-12">
+            @Html.Label("txt_nome", "Nome", new { @class = "control-label" })
+            @Html.TextBox("txt_nome", null, new { @class = "form-control" })
         </div>
-        <div class="form-group">
-            @Html.Label("txt_login", "Login", new { @class = "col-md-3 control-label" })
-            <div class="col-md-12">
-                @Html.TextBox("txt_login", null, new { @class = "form-control" })
-            </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            @Html.Label("txt_login", "Login", new { @class = "control-label" })
+            @Html.TextBox("txt_login", null, new { @class = "form-control" })
         </div>
-        <div class="form-group">
-            @Html.Label("txt_senha", "Senha", new { @class = "col-md-3 control-label" })
-            <div class="col-md-12">
-                @Html.TextBox("txt_senha", null, new { @class = "form-control", type = "password" })
-            </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            @Html.Label("txt_senha", "Senha", new { @class = "control-label" })
+            @Html.TextBox("txt_senha", null, new { @class = "form-control", type = "password" })
         </div>
     </div>
 }
@@ -58,7 +56,7 @@
                 if (linha <= ViewBag.QuantMaxLinhasPorPagina)
                 {
                     @:linhas.push(@Html.Raw(Json.Encode(item)));
-                }
+                                                }
                 else
                 {
                     break;
