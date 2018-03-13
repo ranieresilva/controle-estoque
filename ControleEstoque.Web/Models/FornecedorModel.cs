@@ -219,20 +219,20 @@ namespace ControleEstoque.Web.Models
                     if (model == null)
                     {
                         comando.CommandText = "insert into fornecedor (nome, razao_social, num_documento, tipo, telefone, contato, logradouro," +
-                            " numero, complemento, cep, id_pais, id_estado, id_cidade, ativo) values (@nome, @nome, @razao_social, @num_documento," +
+                            " numero, complemento, cep, id_pais, id_estado, id_cidade, ativo) values (@nome, @razao_social, @num_documento," +
                             " @tipo, @telefone, @contato, @logradouro, @numero, @complemento, @cep, @id_pais, @id_estado, @id_cidade, @ativo);" +
                             " select convert(int, scope_identity())";
 
                         comando.Parameters.Add("@nome", SqlDbType.VarChar).Value = this.Nome;
-                        comando.Parameters.Add("@razao_social", SqlDbType.VarChar).Value = this.Numero;
-                        comando.Parameters.Add("@num_documento", SqlDbType.VarChar).Value = this.NumDocumento;
+                        comando.Parameters.Add("@razao_social", SqlDbType.VarChar).Value = this.RazaoSocial ?? "";
+                        comando.Parameters.Add("@num_documento", SqlDbType.VarChar).Value = this.NumDocumento ?? "";
                         comando.Parameters.Add("@tipo", SqlDbType.Int).Value = this.Tipo;
-                        comando.Parameters.Add("@telefone", SqlDbType.VarChar).Value = this.Telefone;
-                        comando.Parameters.Add("@contato", SqlDbType.VarChar).Value = this.Contato;
-                        comando.Parameters.Add("@logradouro", SqlDbType.VarChar).Value = this.Logradouro;
-                        comando.Parameters.Add("@numero", SqlDbType.VarChar).Value = this.Numero;
-                        comando.Parameters.Add("@complemento", SqlDbType.VarChar).Value = this.Complemento;
-                        comando.Parameters.Add("@cep", SqlDbType.VarChar).Value = this.Cep;
+                        comando.Parameters.Add("@telefone", SqlDbType.VarChar).Value = this.Telefone ?? "";
+                        comando.Parameters.Add("@contato", SqlDbType.VarChar).Value = this.Contato ?? "";
+                        comando.Parameters.Add("@logradouro", SqlDbType.VarChar).Value = this.Logradouro ?? "";
+                        comando.Parameters.Add("@numero", SqlDbType.VarChar).Value = this.Numero ?? "";
+                        comando.Parameters.Add("@complemento", SqlDbType.VarChar).Value = this.Complemento ?? "";
+                        comando.Parameters.Add("@cep", SqlDbType.VarChar).Value = this.Cep ?? "";
                         comando.Parameters.Add("@id_pais", SqlDbType.Int).Value = this.IdPais;
                         comando.Parameters.Add("@id_estado", SqlDbType.Int).Value = this.IdEstado;
                         comando.Parameters.Add("@id_cidade", SqlDbType.Int).Value = this.IdCidade;
@@ -246,15 +246,15 @@ namespace ControleEstoque.Web.Models
                             " cep=@cep, id_pais=@id_pais, id_estado=@id_estado, id_cidade=@id_cidade, ativo=@ativo where id = @id";
 
                         comando.Parameters.Add("@nome", SqlDbType.VarChar).Value = this.Nome;
-                        comando.Parameters.Add("@razao_social", SqlDbType.VarChar).Value = this.Numero;
-                        comando.Parameters.Add("@num_documento", SqlDbType.VarChar).Value = this.NumDocumento;
+                        comando.Parameters.Add("@razao_social", SqlDbType.VarChar).Value = this.RazaoSocial ?? "";
+                        comando.Parameters.Add("@num_documento", SqlDbType.VarChar).Value = this.NumDocumento ?? "";
                         comando.Parameters.Add("@tipo", SqlDbType.Int).Value = this.Tipo;
-                        comando.Parameters.Add("@telefone", SqlDbType.VarChar).Value = this.Telefone;
-                        comando.Parameters.Add("@contato", SqlDbType.VarChar).Value = this.Contato;
-                        comando.Parameters.Add("@logradouro", SqlDbType.VarChar).Value = this.Logradouro;
-                        comando.Parameters.Add("@numero", SqlDbType.VarChar).Value = this.Numero;
-                        comando.Parameters.Add("@complemento", SqlDbType.VarChar).Value = this.Complemento;
-                        comando.Parameters.Add("@cep", SqlDbType.VarChar).Value = this.Cep;
+                        comando.Parameters.Add("@telefone", SqlDbType.VarChar).Value = this.Telefone ?? "";
+                        comando.Parameters.Add("@contato", SqlDbType.VarChar).Value = this.Contato ?? "";
+                        comando.Parameters.Add("@logradouro", SqlDbType.VarChar).Value = this.Logradouro ?? "";
+                        comando.Parameters.Add("@numero", SqlDbType.VarChar).Value = this.Numero ?? "";
+                        comando.Parameters.Add("@complemento", SqlDbType.VarChar).Value = this.Complemento ?? "";
+                        comando.Parameters.Add("@cep", SqlDbType.VarChar).Value = this.Cep ?? "";
                         comando.Parameters.Add("@id_pais", SqlDbType.Int).Value = this.IdPais;
                         comando.Parameters.Add("@id_estado", SqlDbType.Int).Value = this.IdEstado;
                         comando.Parameters.Add("@id_cidade", SqlDbType.Int).Value = this.IdCidade;

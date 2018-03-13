@@ -36,21 +36,21 @@
         </div>
         <div class="col-md-3" style="line-height: 2.2em">
             <div class="form-check">
-                @Html.RadioButton("cbx_pessoa_juridica", new { @class = "form-check-input" })
+                @Html.RadioButton("cbx_pessoa", (int)ControleEstoque.Web.Models.TipoPessoa.Juridica, new { id = "cbx_pessoa_juridica", @class = "form-check-input" })
                 @Html.Label("cbx_pessoa_juridica", "Pessoa Jurídica", new { @class = "form-check-label" })
             </div>
             <div class="form-check">
-                @Html.RadioButton("cbx_pessoa_fisica", new { @class = "form-check-input" })
+                @Html.RadioButton("cbx_pessoa", (int)ControleEstoque.Web.Models.TipoPessoa.Fisica, new { id = "cbx_pessoa_fisica", @class = "form-check-input" })
                 @Html.Label("cbx_pessoa_fisica", "Pessoa Física", new { @class = "form-check-label" })
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
             @Html.Label("txt_num_documento", "CPF/CNPJ", new { @class = "control-label" })
             @Html.TextBox("txt_num_documento", null, new { @class = "form-control" })
         </div>
-        <div class="col-md-9">
+        <div class="col-md-8">
             <div id="container_razao_social">
                 @Html.Label("txt_razao_social", "Razão Social", new { @class = "control-label" })
                 @Html.TextBox("txt_razao_social", null, new { @class = "form-control" })
@@ -58,11 +58,11 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
             @Html.Label("txt_telefone", "Telefone", new { @class = "control-label" })
             @Html.TextBox("txt_telefone", null, new { @class = "form-control" })
         </div>
-        <div class="col-md-9">
+        <div class="col-md-8">
             @Html.Label("txt_contato", "Contato", new { @class = "control-label" })
             @Html.TextBox("txt_contato", null, new { @class = "form-control" })
         </div>
@@ -95,7 +95,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             @Html.Label("ddl_pais", "País", new { @class = "control-label" })
-                            @Html.DropDownList("ddl_pais", new SelectList(""), new { @class = "form-control" })
+                            @Html.DropDownList("ddl_pais", new SelectList(ViewBag.Paises, "Id", "Nome"), new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="row">
@@ -126,6 +126,7 @@
 
 @section Scripts{
     <script src="~/Scripts/bootstrap-select.js"></script>
+    <script src="~/Scripts/jquery.mask.min.js"></script>
     <script>
         var tituloPagina = '@ViewBag.Title';
         var url_excluir = '@Url.Action("ExcluirFornecedor", "CadFornecedor")';
@@ -133,6 +134,8 @@
         var url_page_click = '@Url.Action("FornecedorPagina", "CadFornecedor")';
         var url_tam_pag_change = '@Url.Action("FornecedorPagina", "CadFornecedor")';
         var url_alterar = '@Url.Action("RecuperarFornecedor", "CadFornecedor")';
+        var url_listar_estados = '@Url.Action("RecuperarEstadosDoPais", "CadEstado")';
+        var url_listar_cidades = '@Url.Action("RecuperarCidadesDoEstado", "CadCidade")';
         var linhas = [];
 
         @{

@@ -22,9 +22,7 @@ namespace ControleEstoque.Web.Controllers
 
             var difQuantPaginas = (quant % ViewBag.QuantMaxLinhasPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (quant / ViewBag.QuantMaxLinhasPorPagina) + difQuantPaginas;
-            //ViewBag.Paises = PaisModel.RecuperarLista();
-            //ViewBag.Estados = EstadoModel.RecuperarLista();
-            //ViewBag.Cidades = CidadeModel.RecuperarLista();
+            ViewBag.Paises = PaisModel.RecuperarLista();
 
             return View(lista);
         }
@@ -37,24 +35,6 @@ namespace ControleEstoque.Web.Controllers
 
             return Json(lista);
         }
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public JsonResult RecuperarEstadosDoPais(int idPais)
-        //{
-        //    var lista = EstadoModel.RecuperarLista(idPais: idPais);
-
-        //    return Json(lista);
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public JsonResult RecuperarCidadesDoEstado(int idEstado)
-        //{
-        //    var lista = CidadeModel.RecuperarLista(idEstado: idEstado);
-
-        //    return Json(lista);
-        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]
