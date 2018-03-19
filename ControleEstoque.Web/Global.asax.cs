@@ -54,11 +54,13 @@ namespace ControleEstoque.Web
                     return;
                 }
 
-                var perfis = ticket.UserData.Split(';');
+                var partes = ticket.UserData.Split('|');
+                var id = Convert.ToInt32(partes[0]);
+                var perfis = partes[1].Split(';');
 
                 if (Context.User != null)
                 {
-                    Context.User = new GenericPrincipal(Context.User.Identity, perfis);
+                    Context.User = new AplicacaoPrincipal(Context.User.Identity, perfis, id);
                 }
             }
         }

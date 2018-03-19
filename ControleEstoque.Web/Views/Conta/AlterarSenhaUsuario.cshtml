@@ -1,0 +1,64 @@
+﻿@model ControleEstoque.Web.Models.AlteracaoSenhaUsuarioViewModel
+@{
+    ViewBag.Title = "Alterar Senha";
+}
+
+<style>
+    .container-tela {
+        width: 400px;
+        margin: 0 auto;
+    }
+</style>
+
+<div class="container-tela">
+    <div class="row">
+        <h3 class="titulo">@ViewBag.Title</h3>
+    </div>
+    <div class="row">
+        <section>
+            @using (Html.BeginForm("AlterarSenhaUsuario", "Conta", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(m => m.SenhaAtual, new { @class = "control-label" })
+                    @Html.PasswordFor(m => m.SenhaAtual, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.SenhaAtual, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.NovaSenha, new { @class = "control-label" })
+                    @Html.PasswordFor(m => m.NovaSenha, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.NovaSenha, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.ConfirmacaoNovaSenha, new { @class = "control-label" })
+                    @Html.PasswordFor(m => m.ConfirmacaoNovaSenha, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.ConfirmacaoNovaSenha, "", new { @class = "text-danger" })
+                </div>
+
+                if (ViewBag.Mensagem != null)
+                {
+                    if (ViewBag.Mensagem[0] == "ok")
+                    {
+                        <div class="alert alert-success">
+                            <strong>Sucesso!</strong> @ViewBag.Mensagem[1]
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <strong>Aviso!</strong> @ViewBag.Mensagem[1]
+                        </div>
+                    }
+                }
+
+                <div class="form-group">
+                    <input type="submit" class="btn btn-success" value="Alterar" />
+                </div>
+            }
+        </section>
+    </div>
+</div>
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+}
