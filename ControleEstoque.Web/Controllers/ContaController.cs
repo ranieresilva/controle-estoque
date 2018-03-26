@@ -1,7 +1,10 @@
 ﻿using ControleEstoque.Web.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -97,6 +100,51 @@ namespace ControleEstoque.Web.Controllers
                 ModelState.Clear();
                 return View();
             }
+        }
+
+        [AllowAnonymous]
+        public ActionResult EsqueciMinhaSenha(EsqueciMinhaSenhaViewModel model)
+        {
+            ViewBag.EmailEnviado = true;
+            if (HttpContext.Request.HttpMethod.ToUpper() == "GET")
+            {
+                ViewBag.EmailEnviado = false;
+                ModelState.Clear();
+            }
+            else
+            {
+                var usuario = UsuarioModel.RecuperarPeloLogin(model.Login);
+                if (usuario != null)
+                {
+                    EnviarEmailRedefinicaoSenha(usuario);
+                }
+            }
+
+            return View(model);
+        }
+
+        private void EnviarEmailRedefinicaoSenha(UsuarioModel usuario)
+        {
+            var callbackUrl = Url.Action("RedefinirSenha", "Conta", new { id = usuario.Id }, protocol: Request.Url.Scheme);
+            var client = new SmtpClient()
+            {
+                Host = ConfigurationManager.AppSettings["EmailServidor"],
+                Port = Convert.ToInt32(ConfigurationManager.AppSettings["EmailPorta"]),
+                EnableSsl = (ConfigurationManager.AppSettings["EmailSsl"] == "S"),
+                UseDefaultCredentials = false,
+                Credentials = new NetworkCredential(
+                    ConfigurationManager.AppSettings["EmailUsuario"],
+                    ConfigurationManager.AppSettings["EmailSenha"])
+            };
+
+            var mensagem = new MailMessage();
+            mensagem.From = new MailAddress(ConfigurationManager.AppSettings["EmailOrigem"], "Controle de Estoque - Como Programar Melhor");
+            mensagem.To.Add(usuario.Email);
+            mensagem.Subject = "Redefinição de senha";
+            mensagem.Body = string.Format("Redefina a sua senha <a href='{0}'>aqui</a>", callbackUrl);
+            mensagem.IsBodyHtml = true;
+
+            client.Send(mensagem);
         }
     }
 }

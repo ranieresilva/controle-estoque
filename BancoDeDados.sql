@@ -35,6 +35,7 @@ CREATE TABLE [dbo].[usuario] (
 	[login] [nvarchar](50) NOT NULL,
 	[senha] [nvarchar](32) NOT NULL,
 	[nome] [nvarchar](100) NOT NULL,
+	[email] [nvarchar](150) NOT NULL,
 	[id_perfil] [int] NOT NULL,
 	CONSTRAINT [PK_usuario] PRIMARY KEY ([id])
 )
@@ -119,4 +120,6 @@ GO
 ALTER TABLE [dbo].[fornecedor] WITH CHECK ADD FOREIGN KEY([id_estado]) REFERENCES [dbo].[estado] ([id])
 GO
 ALTER TABLE [dbo].[fornecedor] WITH CHECK ADD FOREIGN KEY([id_cidade]) REFERENCES [dbo].[cidade] ([id])
+GO
+ALTER TABLE [dbo].[usuario] ADD CONSTRAINT unique_usuario_email unique ([email])
 GO

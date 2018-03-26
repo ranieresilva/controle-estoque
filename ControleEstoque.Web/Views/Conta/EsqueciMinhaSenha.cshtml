@@ -1,0 +1,37 @@
+﻿@model ControleEstoque.Web.Models.EsqueciMinhaSenhaViewModel
+
+@{
+    ViewBag.Title = "Esqueci Minha Senha";
+}
+
+<div class="container-esqueci-senha">
+    <div class="row">
+        <h3 class="titulo">@ViewBag.Title</h3>
+    </div>
+    <div class="row">
+        <section>
+            @using (Html.BeginForm("EsqueciMinhaSenha", "Conta", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Login, new { @class = "control-label" })
+                    @Html.PasswordFor(m => m.Login, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Login, "", new { @class = "text-danger" })
+                </div>
+                if (ViewBag.EmailEnviado)
+                {
+                    <div class="alert alert-success">
+                        <strong>Sucesso!</strong> Um e-mail com o link de redefinição da sua senha foi enviado para a sua caixa de e-mail.
+                    </div>
+                }
+                <div class="form-group">
+                    <input type="submit" class="btn btn-success" value="Enviar" />
+                </div>
+            }
+        </section>
+    </div>
+</div>
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+}

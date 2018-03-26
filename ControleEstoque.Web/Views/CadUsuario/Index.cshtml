@@ -25,6 +25,12 @@
     </div>
     <div class="row">
         <div class="col-md-12">
+            @Html.Label("txt_email", "E-mail", new { @class = "control-label" })
+            @Html.TextBox("txt_email", null, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             @Html.Label("txt_login", "Login", new { @class = "control-label" })
             @Html.TextBox("txt_login", null, new { @class = "form-control" })
         </div>
@@ -56,7 +62,7 @@
                 if (linha <= ViewBag.QuantMaxLinhasPorPagina)
                 {
                     @:linhas.push(@Html.Raw(Json.Encode(item)));
-                                                }
+                                                        }
                 else
                 {
                     break;

@@ -21,6 +21,11 @@
     margin: 0 auto;
 }
 
+.container-esqueci-senha {
+    width: 300px;
+    margin: 0 auto;
+}
+
 .titulo {
     margin-bottom: 30px;
     text-transform: uppercase;

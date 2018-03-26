@@ -26,9 +26,12 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
+                    <div class="col-md-offset-2 col-md-4">
                         @Html.CheckBoxFor(m => m.LembrarMe)
                         @Html.LabelFor(m => m.LembrarMe)
+                    </div>
+                    <div class="col-md-6" style="text-align:right">
+                        @Html.ActionLink("Esqueci minha senha", "EsqueciMinhaSenha", "Conta", null, new { @class="btn btn-primary" })
                     </div>
                 </div>
                 <div class="form-group">

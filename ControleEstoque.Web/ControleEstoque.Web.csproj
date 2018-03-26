@@ -171,6 +171,7 @@
     <Compile Include="Helpers\CriptoHelper.cs" />
     <Compile Include="Models\AlteracaoSenhaUsuarioViewModel.cs" />
     <Compile Include="Models\CidadeModel.cs" />
+    <Compile Include="Models\EsqueciMinhaSenhaViewModel.cs" />
     <Compile Include="Models\FornecedorModel.cs" />
     <Compile Include="Models\GrupoProdutoModel.cs" />
     <Compile Include="Models\LocalArmazenamentoModel.cs" />
@@ -279,6 +280,7 @@
     <Content Include="Views\CadCidade\Index.cshtml" />
     <Content Include="Views\CadFornecedor\Index.cshtml" />
     <Content Include="Views\Conta\AlterarSenhaUsuario.cshtml" />
+    <Content Include="Views\Conta\EsqueciMinhaSenha.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
