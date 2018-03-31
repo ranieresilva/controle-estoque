@@ -15,7 +15,7 @@
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 <div class="form-group">
                     @Html.LabelFor(m => m.Login, new { @class = "control-label" })
-                    @Html.PasswordFor(m => m.Login, new { @class = "form-control" })
+                    @Html.TextBoxFor(m => m.Login, new { @class = "form-control" })
                     @Html.ValidationMessageFor(m => m.Login, "", new { @class = "text-danger" })
                 </div>
                 if (ViewBag.EmailEnviado)

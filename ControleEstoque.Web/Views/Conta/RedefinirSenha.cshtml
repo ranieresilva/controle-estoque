@@ -1,0 +1,43 @@
+﻿@model ControleEstoque.Web.Models.NovaSenhaViewModel
+
+@{
+    ViewBag.Title = "Redefinir Senha";
+}
+
+<div class="container-redefinir-senha">
+    <div class="row">
+        <h3 class="titulo">@ViewBag.Title</h3>
+    </div>
+    <div class="row">
+        <section>
+            @using (Html.BeginForm("RedefinirSenha", "Conta", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(m => m.Usuario)
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Senha, new { @class = "control-label" })
+                    @Html.PasswordFor(m => m.Senha, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Senha, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.ConfirmacaoSenha, new { @class = "control-label" })
+                    @Html.PasswordFor(m => m.ConfirmacaoSenha, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.ConfirmacaoSenha, "", new { @class = "text-danger" })
+                </div>
+                if (ViewBag.Mensagem != null)
+                {
+                    <div class="form-group">
+                        <h4>@ViewBag.Mensagem</h4>
+                    </div>
+                }
+                <div class="form-group">
+                    <input type="submit" class="btn btn-success" value="Enviar" />
+                </div>
+            }
+        </section>
+    </div>
+</div>
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+}

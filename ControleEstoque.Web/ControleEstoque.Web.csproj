@@ -178,6 +178,7 @@
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\MarcaProdutoModel.cs" />
     <Compile Include="Models\EstadoModel.cs" />
+    <Compile Include="Models\NovaSenhaViewModel.cs" />
     <Compile Include="Models\PaisModel.cs" />
     <Compile Include="Models\PerfilModel.cs" />
     <Compile Include="Models\Tipos.cs" />
@@ -281,6 +282,7 @@
     <Content Include="Views\CadFornecedor\Index.cshtml" />
     <Content Include="Views\Conta\AlterarSenhaUsuario.cshtml" />
     <Content Include="Views\Conta\EsqueciMinhaSenha.cshtml" />
+    <Content Include="Views\Conta\RedefinirSenha.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

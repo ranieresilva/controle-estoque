@@ -21,7 +21,7 @@
     margin: 0 auto;
 }
 
-.container-esqueci-senha {
+.container-esqueci-senha, .container-redefinir-senha {
     width: 300px;
     margin: 0 auto;
 }

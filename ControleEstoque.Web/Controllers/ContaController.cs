@@ -123,6 +123,43 @@ namespace ControleEstoque.Web.Controllers
             return View(model);
         }
 
+        [AllowAnonymous]
+        public ActionResult RedefinirSenha(int id)
+        {
+            var usuario = UsuarioModel.RecuperarPeloId(id);
+            if (usuario == null)
+            {
+                id = -1;
+            }
+
+            var model = new NovaSenhaViewModel() { Usuario = id };
+
+            ViewBag.Mensagem = null;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public ActionResult RedefinirSenha(NovaSenhaViewModel model)
+        {
+            ViewBag.Mensagem = null;
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var usuario = UsuarioModel.RecuperarPeloId(model.Usuario);
+            if (usuario != null)
+            {
+                var ok = usuario.AlterarSenha(model.Senha);
+                ViewBag.Mensagem = ok ? "Senha alterada com sucesso!" : "Não foi possível alterar a senha!";
+            }
+
+            return View();
+        }
+
         private void EnviarEmailRedefinicaoSenha(UsuarioModel usuario)
         {
             var callbackUrl = Url.Action("RedefinirSenha", "Conta", new { id = usuario.Id }, protocol: Request.Url.Scheme);
