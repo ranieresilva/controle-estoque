@@ -105,6 +105,22 @@ CREATE TABLE [dbo].[fornecedor] (
 	CONSTRAINT [PK_fornecedor] PRIMARY KEY ([id])
 )
 GO
+CREATE TABLE [dbo].[produto] (
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[codigo] [varchar](10) NOT NULL,
+	[nome] [varchar](50) NOT NULL,
+	[preco_custo] [decimal](7, 2) NOT NULL,
+	[preco_venda] [decimal](7, 2) NOT NULL,
+	[quant_estoque] [int] NOT NULL,
+	[id_unidade_medida] [int] NOT NULL,
+	[id_grupo] [int] NOT NULL,
+	[id_marca] [int] NOT NULL,
+	[id_fornecedor] [int] NOT NULL,
+	[id_local_armazenamento] [int] NOT NULL,
+	[ativo] [bit] NOT NULL,
+ CONSTRAINT [PK_produto] PRIMARY KEY ([id])
+)
+GO
 ALTER TABLE [dbo].[usuario] WITH CHECK ADD FOREIGN KEY([id_perfil]) REFERENCES [dbo].[perfil] ([id])
 GO
 ALTER TABLE [dbo].[perfil_usuario] WITH CHECK ADD FOREIGN KEY([id_perfil]) REFERENCES [dbo].[perfil] ([id])
@@ -122,4 +138,14 @@ GO
 ALTER TABLE [dbo].[fornecedor] WITH CHECK ADD FOREIGN KEY([id_cidade]) REFERENCES [dbo].[cidade] ([id])
 GO
 ALTER TABLE [dbo].[usuario] ADD CONSTRAINT unique_usuario_email unique ([email])
+GO
+ALTER TABLE [dbo].[produto] WITH CHECK ADD FOREIGN KEY([id_fornecedor]) REFERENCES [dbo].[fornecedor] ([id])
+GO
+ALTER TABLE [dbo].[produto] WITH CHECK ADD FOREIGN KEY([id_grupo]) REFERENCES [dbo].[grupo_produto] ([id])
+GO
+ALTER TABLE [dbo].[produto] WITH CHECK ADD FOREIGN KEY([id_local_armazenamento]) REFERENCES [dbo].[local_armazenamento] ([id])
+GO
+ALTER TABLE [dbo].[produto] WITH CHECK ADD FOREIGN KEY([id_marca]) REFERENCES [dbo].[marca_produto] ([id])
+GO
+ALTER TABLE [dbo].[produto] WITH CHECK ADD FOREIGN KEY([id_unidade_medida]) REFERENCES [dbo].[unidade_medida] ([id])
 GO

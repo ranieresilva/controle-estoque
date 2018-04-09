@@ -155,6 +155,7 @@
     <Compile Include="Controllers\Cadastro\CadGrupoProdutoController.cs" />
     <Compile Include="Controllers\Cadastro\CadPaisController.cs" />
     <Compile Include="Controllers\Cadastro\CadPerfilController.cs" />
+    <Compile Include="Controllers\Cadastro\CadProdutoController.cs" />
     <Compile Include="Controllers\Cadastro\CadUnidadeMedidaController.cs" />
     <Compile Include="Controllers\Cadastro\CadFornecedorController.cs" />
     <Compile Include="Controllers\Cadastro\CadUsuarioController.cs" />
@@ -181,6 +182,7 @@
     <Compile Include="Models\NovaSenhaViewModel.cs" />
     <Compile Include="Models\PaisModel.cs" />
     <Compile Include="Models\PerfilModel.cs" />
+    <Compile Include="Models\ProdutoModel.cs" />
     <Compile Include="Models\Tipos.cs" />
     <Compile Include="Models\UnidadeMedidaModel.cs" />
     <Compile Include="Models\UsuarioModel.cs" />
@@ -199,6 +201,7 @@
     <Content Include="Content\Cadastro\Pais.css" />
     <Content Include="Content\Cadastro\MarcaProduto.css" />
     <Content Include="Content\Cadastro\Perfil.css" />
+    <Content Include="Content\Cadastro\Produto.css" />
     <Content Include="Content\Cadastro\UnidadeMedida.css" />
     <Content Include="Content\Cadastro\Usuario.css" />
     <Content Include="Content\sweetalert2.min.css" />
@@ -226,6 +229,7 @@
     <Content Include="Scripts\Cadastro\Pais.js" />
     <Content Include="Scripts\Cadastro\MarcaProduto.js" />
     <Content Include="Scripts\Cadastro\Perfil.js" />
+    <Content Include="Scripts\Cadastro\Produto.js" />
     <Content Include="Scripts\Cadastro\UnidadeMedida.js" />
     <Content Include="Scripts\Cadastro\Usuario.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -258,9 +262,6 @@
     <Content Include="Views\Home\Sobre.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\CadGrupoProduto\Index.cshtml" />
-    <Content Include="Views\Cadastro\MarcaProduto.cshtml" />
-    <Content Include="Views\Cadastro\Produto.cshtml" />
-    <Content Include="Views\Cadastro\LocalProduto.cshtml" />
     <Content Include="Views\CadUsuario\Index.cshtml" />
     <Content Include="Views\Grafico\PerdaMes.cshtml" />
     <Content Include="Views\Grafico\EntradaSaidaMesa.cshtml" />
@@ -283,6 +284,7 @@
     <Content Include="Views\Conta\AlterarSenhaUsuario.cshtml" />
     <Content Include="Views\Conta\EsqueciMinhaSenha.cshtml" />
     <Content Include="Views\Conta\RedefinirSenha.cshtml" />
+    <Content Include="Views\CadProduto\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

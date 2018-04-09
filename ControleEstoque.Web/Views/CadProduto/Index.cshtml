@@ -1,0 +1,126 @@
+﻿@model List<ControleEstoque.Web.Models.ProdutoModel>
+@{
+    Layout = "~/Views/Shared/_Cadastro.cshtml";
+    ViewBag.Title = "Produtos";
+    ViewBag.Lista = Model;
+}
+
+@section Styles {
+    <link href="~/Content/bootstrap-select.css" rel="stylesheet" />
+    <link href="~/Content/Cadastro/Produto.css" rel="stylesheet" />
+    <style>
+        .dialogo > .modal-dialog {
+            width: 700px !important;
+        }
+    </style>
+}
+
+@section TituloGrid {
+    <th>Código</th>
+    <th>Nome</th>
+    <th>Quantidade</th>
+    <th>Ativo</th>
+    <th>Ação</th>
+}
+
+@section CamposCadastro {
+    <div class="row">
+        <div class="col-md-4">
+            @Html.Label("txt_codigo", "Código", new { @class = "control-label" })
+            @Html.TextBox("txt_codigo", null, new { @class = "form-control" })
+        </div>
+        <div class="col-md-8">
+            @Html.Label("txt_nome", "Nome", new { @class = "control-label" })
+            @Html.TextBox("txt_nome", null, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            @Html.Label("txt_preco_custo", "Preço de Custo", new { @class = "control-label" })
+            @Html.TextBox("txt_preco_custo", null, new { @class = "form-control" })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("txt_preco_venda", "Preço de Venda", new { @class = "control-label" })
+            @Html.TextBox("txt_preco_venda", null, new { @class = "form-control" })
+        </div>
+        <div class="col-md-4">
+            @Html.Label("txt_quant_estoque", "Quant Estoque", new { @class = "control-label", type = "number" })
+            @Html.TextBox("txt_quant_estoque", null, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            @Html.Label("ddl_unidade_medida", "Unidade de Medida", new { @class = "control-label" })
+            @Html.DropDownList("ddl_unidade_medida", new SelectList(ViewBag.UnidadesMedida, "Id", "Nome"), new { @class = "form-control" })
+        </div>
+        <div class="col-md-8">
+            @Html.Label("ddl_grupo", "Grupo", new { @class = "control-label" })
+            @Html.DropDownList("ddl_grupo", new SelectList(ViewBag.Grupos, "Id", "Nome"), new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            @Html.Label("ddl_marca", "Marca", new { @class = "control-label" })
+            @Html.DropDownList("ddl_marca", new SelectList(ViewBag.Marcas, "Id", "Nome"), new { @class = "form-control" })
+        </div>
+        <div class="col-md-8">
+            @Html.Label("ddl_fornecedor", "Fornecedor", new { @class = "control-label" })
+            @Html.DropDownList("ddl_fornecedor", new SelectList(ViewBag.Fornecedores, "Id", "Nome"), new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            @Html.Label("ddl_local_armazenamento", "Local Armazenamento", new { @class = "control-label" })
+            @Html.DropDownList("ddl_local_armazenamento", new SelectList(ViewBag.LocaisArmazenamento, "Id", "Nome"), new { @class = "form-control" })
+        </div>
+        <div class="col-md-8">
+            <div class="form-check" style="line-height: 6em; margin-bottom: -2em">
+                @Html.CheckBox("cbx_ativo", new { @class = "form-check-input" })
+                @Html.Label("cbx_ativo", "Ativo", new { @class = "form-check-label" })
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts{
+    <script src="~/Scripts/bootstrap-select.js"></script>
+    <script src="~/Scripts/jquery.mask.min.js"></script>
+    <script>
+        var tituloPagina = '@ViewBag.Title';
+        var url_excluir = '@Url.Action("ExcluirProduto", "CadProduto")';
+        var url_confirmar = '@Url.Action("SalvarProduto", "CadProduto")';
+        var url_page_click = '@Url.Action("ProdutoPagina", "CadProduto")';
+        var url_tam_pag_change = '@Url.Action("ProdutoPagina", "CadProduto")';
+        var url_alterar = '@Url.Action("RecuperarProduto", "CadProduto")';
+        var linhas = [];
+
+        @{
+            var linha = 0;
+            foreach (var item in Model)
+            {
+                linha++;
+                if (linha <= ViewBag.QuantMaxLinhasPorPagina)
+                {
+                    @:linhas.push(@Html.Raw(Json.Encode(item)));
+                        }
+                else
+                {
+                    break;
+                }
+            }
+        }
+    </script>
+    <script id="template-grid" type="x-tmpl-mustache">
+        <tr data-id="{{ Id }}">
+            <td>{{ Codigo }}</td>
+            <td>{{ Nome }}</td>
+            <td>{{ QuantEstoque }}</td>
+            <td>{{ #Ativo }}SIM{{ /Ativo }}{{ ^Ativo }}NÃO{{ /Ativo }}</td>
+            <td>
+                <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>
+                <a class="btn btn-danger btn-excluir" role="button"><i class="glyphicon glyphicon-trash"></i> Excluir</a>
+            </td>
+        </tr>
+    </script>
+    <script src="~/Scripts/Cadastro/Produto.js"></script>
+}
