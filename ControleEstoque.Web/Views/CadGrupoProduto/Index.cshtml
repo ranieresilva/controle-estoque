@@ -11,8 +11,8 @@
 }
 
 @section TituloGrid {
-    <th>Nome</th>
-    <th>Ativo</th>
+    <th><span class="coluna-ordenacao" data-campo="nome">Nome</span></th>
+    <th><span class="coluna-ordenacao" data-campo="ativo">Ativo</span></th>
     <th>Ação</th>
 }
 
@@ -53,7 +53,7 @@
                 if (linha <= ViewBag.QuantMaxLinhasPorPagina)
                 {
                     @:linhas.push(@Html.Raw(Json.Encode(item)));
-                                                        }
+                                                                }
                 else
                 {
                     break;

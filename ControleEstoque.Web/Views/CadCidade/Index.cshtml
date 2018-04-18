@@ -12,8 +12,8 @@
 }
 
 @section TituloGrid {
-    <th>Nome</th>
-    <th>Ativo</th>
+    <th><span class="coluna-ordenacao" data-campo="c.nome">Nome</span></th>
+    <th><span class="coluna-ordenacao" data-campo="c.ativo">Ativo</span></th>
     <th>Ação</th>
 }
 
@@ -54,6 +54,7 @@
         var url_confirmar = '@Url.Action("SalvarCidade", "CadCidade")';
         var url_page_click = '@Url.Action("CidadePagina", "CadCidade")';
         var url_tam_pag_change = '@Url.Action("CidadePagina", "CadCidade")';
+        var url_filtro_change = '@Url.Action("CidadePagina", "CadCidade")';
         var url_alterar = '@Url.Action("RecuperarCidade", "CadCidade")';
         var url_listar_estados = '@Url.Action("RecuperarEstadosDoPais", "CadEstado")';
         var linhas = [];

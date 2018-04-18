@@ -12,9 +12,9 @@
 }
 
 @section TituloGrid {
-    <th>Nome</th>
-    <th>UF</th>
-    <th>Ativo</th>
+    <th><span class="coluna-ordenacao" data-campo="nome">Nome</span></th>
+    <th><span class="coluna-ordenacao" data-campo="uf">UF</span></th>
+    <th><span class="coluna-ordenacao" data-campo="ativo">Ativo</span></th>
     <th>Ação</th>
 }
 
@@ -52,6 +52,7 @@
         var url_excluir = '@Url.Action("ExcluirEstado", "CadEstado")';
         var url_confirmar = '@Url.Action("SalvarEstado", "CadEstado")';
         var url_page_click = '@Url.Action("EstadoPagina", "CadEstado")';
+        var url_filtro_change = '@Url.Action("EstadoPagina", "CadEstado")';
         var url_tam_pag_change = '@Url.Action("EstadoPagina", "CadEstado")';
         var url_alterar = '@Url.Action("RecuperarEstado", "CadEstado")';
         var linhas = [];

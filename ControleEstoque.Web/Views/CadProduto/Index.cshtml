@@ -16,10 +16,10 @@
 }
 
 @section TituloGrid {
-    <th>Código</th>
-    <th>Nome</th>
-    <th>Quantidade</th>
-    <th>Ativo</th>
+    <th><span class="coluna-ordenacao" data-campo="codigo">Código</span></th>
+    <th><span class="coluna-ordenacao" data-campo="nome">Nome</span></th>
+    <th><span class="coluna-ordenacao" data-campo="quant_estoque">Quantidade</span></th>
+    <th><span class="coluna-ordenacao" data-campo="ativo">Ativo</span></th>
     <th>Ação</th>
 }
 
@@ -91,6 +91,7 @@
         var url_confirmar = '@Url.Action("SalvarProduto", "CadProduto")';
         var url_page_click = '@Url.Action("ProdutoPagina", "CadProduto")';
         var url_tam_pag_change = '@Url.Action("ProdutoPagina", "CadProduto")';
+        var url_filtro_change = '@Url.Action("ProdutoPagina", "CadProduto")';
         var url_alterar = '@Url.Action("RecuperarProduto", "CadProduto")';
         var linhas = [];
 
@@ -102,7 +103,7 @@
                 if (linha <= ViewBag.QuantMaxLinhasPorPagina)
                 {
                     @:linhas.push(@Html.Raw(Json.Encode(item)));
-                        }
+                }
                 else
                 {
                     break;

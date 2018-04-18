@@ -73,7 +73,7 @@ namespace ControleEstoque.Web.Models
             return ret;
         }
 
-        public static List<FornecedorModel> RecuperarLista(int pagina = 0, int tamPagina = 0, string filtro = "")
+        public static List<FornecedorModel> RecuperarLista(int pagina = 0, int tamPagina = 0, string filtro = "", string ordem = "")
         {
             var ret = new List<FornecedorModel>();
 
@@ -103,7 +103,7 @@ namespace ControleEstoque.Web.Models
                         "select *" +
                         " from fornecedor" +
                         filtroWhere +
-                        " order by nome" +
+                        " order by " + (!string.IsNullOrEmpty(ordem) ? ordem : "nome") +
                         paginacao;
 
                     var reader = comando.ExecuteReader();

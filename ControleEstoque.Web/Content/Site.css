@@ -49,3 +49,7 @@ body.modal-open, .modal-open .navbar-fixed-top, .modal-open .navbar-fixed-bottom
     border: 1px solid #dddddd;
     line-height: 100px;
 }
+
+#grid_cadastro thead tr th span {
+    cursor: pointer;
+}

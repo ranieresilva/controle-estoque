@@ -29,9 +29,9 @@ namespace ControleEstoque.Web.Controllers.Cadastro
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult PerfilPagina(int pagina, int tamPag)
+        public JsonResult PerfilPagina(int pagina, int tamPag, string ordem)
         {
-            var lista = PerfilModel.RecuperarLista(pagina, tamPag);
+            var lista = PerfilModel.RecuperarLista(pagina, tamPag, ordem: ordem);
 
             return Json(lista);
         }

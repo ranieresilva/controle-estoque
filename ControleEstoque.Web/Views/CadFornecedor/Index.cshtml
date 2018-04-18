@@ -21,10 +21,10 @@
 }
 
 @section TituloGrid {
-    <th>Nome</th>
-    <th>Telefone</th>
-    <th>Contato</th>
-    <th>Ativo</th>
+    <th><span class="coluna-ordenacao" data-campo="nome">Nome</span></th>
+    <th><span class="coluna-ordenacao" data-campo="telefone">Telefone</span></th>
+    <th><span class="coluna-ordenacao" data-campo="contato">Contato</span></th>
+    <th><span class="coluna-ordenacao" data-campo="ativo">Ativo</span></th>
     <th>Ação</th>
 }
 
@@ -133,6 +133,7 @@
         var url_confirmar = '@Url.Action("SalvarFornecedor", "CadFornecedor")';
         var url_page_click = '@Url.Action("FornecedorPagina", "CadFornecedor")';
         var url_tam_pag_change = '@Url.Action("FornecedorPagina", "CadFornecedor")';
+        var url_filtro_change = '@Url.Action("FornecedorPagina", "CadFornecedor")';
         var url_alterar = '@Url.Action("RecuperarFornecedor", "CadFornecedor")';
         var url_listar_estados = '@Url.Action("RecuperarEstadosDoPais", "CadEstado")';
         var url_listar_cidades = '@Url.Action("RecuperarCidadesDoEstado", "CadCidade")';

@@ -29,9 +29,9 @@ namespace ControleEstoque.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult EstadoPagina(int pagina, int tamPag)
+        public JsonResult EstadoPagina(int pagina, int tamPag, string ordem)
         {
-            var lista = EstadoModel.RecuperarLista(pagina, tamPag);
+            var lista = EstadoModel.RecuperarLista(pagina, tamPag, ordem: ordem);
 
             return Json(lista);
         }

@@ -11,8 +11,8 @@
 }
 
 @section TituloGrid {
-    <th>Nome</th>
-    <th>Login</th>
+    <th><span class="coluna-ordenacao" data-campo="nome">Nome</span></th>
+    <th><span class="coluna-ordenacao" data-campo="login">Login</span></th>
     <th>Ação</th>
 }
 
@@ -51,6 +51,7 @@
         var url_confirmar = '@Url.Action("SalvarUsuario", "CadUsuario")';
         var url_page_click = '@Url.Action("UsuarioPagina", "CadUsuario")';
         var url_tam_pag_change = '@Url.Action("UsuarioPagina", "CadUsuario")';
+        var url_filtro_change = '@Url.Action("UsuarioPagina", "CadUsuario")';
         var url_alterar = '@Url.Action("RecuperarUsuario", "CadUsuario")';
         var linhas = [];
 
@@ -62,7 +63,7 @@
                 if (linha <= ViewBag.QuantMaxLinhasPorPagina)
                 {
                     @:linhas.push(@Html.Raw(Json.Encode(item)));
-                                                        }
+                }
                 else
                 {
                     break;

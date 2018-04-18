@@ -39,7 +39,7 @@ namespace ControleEstoque.Web.Models
             return ret;
         }
 
-        public static List<PaisModel> RecuperarLista(int pagina = 0, int tamPagina = 0, string filtro = "")
+        public static List<PaisModel> RecuperarLista(int pagina = 0, int tamPagina = 0, string filtro = "", string ordem = "")
         {
             var ret = new List<PaisModel>();
 
@@ -69,7 +69,7 @@ namespace ControleEstoque.Web.Models
                         "select *" +
                         " from pais" +
                         filtroWhere +
-                        " order by nome" +
+                        " order by " + (!string.IsNullOrEmpty(ordem) ? ordem : "nome") +
                         paginacao;
 
                     var reader = comando.ExecuteReader();
