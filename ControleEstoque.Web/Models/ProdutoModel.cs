@@ -63,7 +63,7 @@ namespace ControleEstoque.Web.Models
             return ret;
         }
 
-        public static List<ProdutoModel> RecuperarLista(int pagina = 0, int tamPagina = 0, string filtro = "", string ordem = "")
+        public static List<ProdutoModel> RecuperarLista(int pagina = 0, int tamPagina = 0, string filtro = "", string ordem = "", bool somenteAtivos = false)
         {
             var ret = new List<ProdutoModel>();
 
@@ -79,6 +79,11 @@ namespace ControleEstoque.Web.Models
                     if (!string.IsNullOrEmpty(filtro))
                     {
                         filtroWhere = string.Format(" where (lower(nome) like '%{0}%')", filtro.ToLower());
+                    }
+
+                    if (somenteAtivos)
+                    {
+                        filtroWhere = (string.IsNullOrEmpty(filtroWhere) ? " where" : " and") + "(ativo = 1)";
                     }
 
                     var paginacao = "";

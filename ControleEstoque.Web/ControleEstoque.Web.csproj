@@ -149,7 +149,6 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\CadastroController.cs" />
     <Compile Include="Controllers\Cadastro\CadCidadeController.cs" />
     <Compile Include="Controllers\Cadastro\CadEstadoController.cs" />
     <Compile Include="Controllers\Cadastro\CadGrupoProdutoController.cs" />
@@ -165,6 +164,7 @@
     <Compile Include="Controllers\GraficoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OperacaoController.cs" />
+    <Compile Include="Controllers\Operacao\OperEntradaProdutoController.cs" />
     <Compile Include="Controllers\RelatorioController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -265,7 +265,6 @@
     <Content Include="Views\CadUsuario\Index.cshtml" />
     <Content Include="Views\Grafico\PerdaMes.cshtml" />
     <Content Include="Views\Grafico\EntradaSaidaMesa.cshtml" />
-    <Content Include="Views\Operacao\EntradaEstoque.cshtml" />
     <Content Include="Views\Operacao\LancPerdaProduto.cshtml" />
     <Content Include="Views\Operacao\Inventario.cshtml" />
     <Content Include="Views\Operacao\SaidaEstoque.cshtml" />
@@ -285,6 +284,7 @@
     <Content Include="Views\Conta\EsqueciMinhaSenha.cshtml" />
     <Content Include="Views\Conta\RedefinirSenha.cshtml" />
     <Content Include="Views\CadProduto\Index.cshtml" />
+    <Content Include="Views\OperEntradaProduto\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
