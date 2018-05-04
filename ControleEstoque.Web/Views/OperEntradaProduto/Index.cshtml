@@ -68,6 +68,7 @@
 
 @section Scripts{
     <script src="~/Scripts/mustache.min.js"></script>
+    <script src="~/Scripts/comum.js"></script>
     <script>
         var sequencia = 1;
 
@@ -83,6 +84,7 @@
         }
 
         function limpar_tela() {
+            $('#txt_numero').val('');
             $('#grid tbody').empty();
             incluir_linha_produto();
         }
@@ -121,14 +123,27 @@
                 swal('Aviso', 'Para salvar, você deve informar produtos com quantidades.', 'warning');
             }
             else {
-                btn.text('POST...');
-                // post
+                var url = '@Url.Action("Salvar", "OperEntradaProduto")',
+                    dados = {
+                        data: $('#txt_data').val(),
+                        produtos: JSON.stringify(lista_entradas)
+                    };
+
+                $.post(url, add_anti_forgery_token(dados), function (response) {
+                    if (response.OK) {
+                        $('#txt_numero').val(response.Numero);
+                        swal('Sucesso', 'Entrada de produtos salva com sucesso.', 'info');
+                    }
+                })
+                .fail(function () {
+                    swal('Aviso', 'Não foi possível salvar a entrada de produtos.', 'warning');
+                });
             }
         })
         .on('click', '#btn_cancelar', function () {
             var lista_entradas = obter_lista_entradas();
 
-            if (lista_entradas.length == 0) {
+            if (lista_entradas.length == 0 || $('#txt_numero').val() != '') {
                 limpar_tela();
             }
             else {

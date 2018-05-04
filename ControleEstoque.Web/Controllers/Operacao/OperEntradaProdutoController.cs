@@ -11,5 +11,13 @@ namespace ControleEstoque.Web.Controllers
 
             return View();
         }
+
+        public JsonResult Salvar([ModelBinder(typeof(EntradaProdutoViewModelModelBinder))]EntradaProdutoViewModel dados)
+        {
+            var numPedido = ProdutoModel.SalvarPedidoEntrada(dados.Data, dados.Produtos);
+            var ok = (numPedido != "");
+
+            return Json(new { OK = ok, Numero = numPedido });
+        }
     }
 }

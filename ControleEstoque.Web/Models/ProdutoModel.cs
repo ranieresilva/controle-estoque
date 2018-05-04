@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Data;
@@ -255,6 +256,68 @@ namespace ControleEstoque.Web.Models
                         }
                     }
                 }
+            }
+
+            return ret;
+        }
+        public static string SalvarPedidoEntrada(DateTime data, Dictionary<int, int> produtos)
+        {
+            var ret = "";
+
+            try
+            {
+                using (var conexao = new SqlConnection())
+                {
+                    conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                    conexao.Open();
+
+                    var numPedido = "";
+                    using (var comando = new SqlCommand())
+                    {
+                        comando.Connection = conexao;
+                        comando.CommandText = "select next value for sec_entrada_produto";
+                        numPedido = ((int)comando.ExecuteScalar()).ToString("D10");
+                    }
+
+                    using (var transacao = conexao.BeginTransaction())
+                    {
+                        foreach (var produto in produtos)
+                        {
+                            using (var comando = new SqlCommand())
+                            {
+                                comando.Connection = conexao;
+                                comando.Transaction = transacao;
+                                comando.CommandText = "insert into entrada_produto (numero, data, id_produto, quant) values (@numero, @data, @id_produto, @quant)";
+
+                                comando.Parameters.Add("@numero", SqlDbType.VarChar).Value = numPedido;
+                                comando.Parameters.Add("@data", SqlDbType.Date).Value = data;
+                                comando.Parameters.Add("@id_produto", SqlDbType.Int).Value = produto.Key;
+                                comando.Parameters.Add("@quant", SqlDbType.Int).Value = produto.Value;
+
+                                comando.ExecuteNonQuery();
+                            }
+
+                            using (var comando = new SqlCommand())
+                            {
+                                comando.Connection = conexao;
+                                comando.Transaction = transacao;
+                                comando.CommandText = "update produto set quant_estoque = quant_estoque + @quant_estoque where (id = @id)";
+
+                                comando.Parameters.Add("@id", SqlDbType.Int).Value = produto.Key;
+                                comando.Parameters.Add("@quant_estoque", SqlDbType.Int).Value = produto.Value;
+
+                                comando.ExecuteNonQuery();
+                            }
+                        }
+
+                        transacao.Commit();
+
+                        ret = numPedido;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
             }
 
             return ret;

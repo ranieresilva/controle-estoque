@@ -171,7 +171,9 @@
     </Compile>
     <Compile Include="Helpers\CriptoHelper.cs" />
     <Compile Include="Models\AlteracaoSenhaUsuarioViewModel.cs" />
+    <Compile Include="Models\Binders\EntradaProdutoViewModelModelBinder.cs" />
     <Compile Include="Models\CidadeModel.cs" />
+    <Compile Include="Models\EntradaProdutoViewModel.cs" />
     <Compile Include="Models\EsqueciMinhaSenhaViewModel.cs" />
     <Compile Include="Models\FornecedorModel.cs" />
     <Compile Include="Models\GrupoProdutoModel.cs" />
@@ -232,6 +234,7 @@
     <Content Include="Scripts\Cadastro\Produto.js" />
     <Content Include="Scripts\Cadastro\UnidadeMedida.js" />
     <Content Include="Scripts\Cadastro\Usuario.js" />
+    <Content Include="Scripts\comum.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
