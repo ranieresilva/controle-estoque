@@ -164,6 +164,8 @@
     <Compile Include="Controllers\GraficoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OperacaoController.cs" />
+    <Compile Include="Controllers\Operacao\OperEntradaSaidaProdutoController.cs" />
+    <Compile Include="Controllers\Operacao\OperSaidaProdutoController.cs" />
     <Compile Include="Controllers\Operacao\OperEntradaProdutoController.cs" />
     <Compile Include="Controllers\RelatorioController.cs" />
     <Compile Include="Global.asax.cs">
@@ -171,9 +173,9 @@
     </Compile>
     <Compile Include="Helpers\CriptoHelper.cs" />
     <Compile Include="Models\AlteracaoSenhaUsuarioViewModel.cs" />
-    <Compile Include="Models\Binders\EntradaProdutoViewModelModelBinder.cs" />
+    <Compile Include="Models\Binders\EntradaSaidaProdutoViewModelModelBinder.cs" />
     <Compile Include="Models\CidadeModel.cs" />
-    <Compile Include="Models\EntradaProdutoViewModel.cs" />
+    <Compile Include="Models\EntradaSaidaProdutoViewModel.cs" />
     <Compile Include="Models\EsqueciMinhaSenhaViewModel.cs" />
     <Compile Include="Models\FornecedorModel.cs" />
     <Compile Include="Models\GrupoProdutoModel.cs" />
@@ -270,7 +272,6 @@
     <Content Include="Views\Grafico\EntradaSaidaMesa.cshtml" />
     <Content Include="Views\Operacao\LancPerdaProduto.cshtml" />
     <Content Include="Views\Operacao\Inventario.cshtml" />
-    <Content Include="Views\Operacao\SaidaEstoque.cshtml" />
     <Content Include="Views\Relatorio\PosicaoEstoque.cshtml" />
     <Content Include="Views\Relatorio\Ressuprimento.cshtml" />
     <Content Include="Views\Conta\Login.cshtml" />
@@ -288,6 +289,7 @@
     <Content Include="Views\Conta\RedefinirSenha.cshtml" />
     <Content Include="Views\CadProduto\Index.cshtml" />
     <Content Include="Views\OperEntradaProduto\Index.cshtml" />
+    <Content Include="Views\OperSaidaProduto\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

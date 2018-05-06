@@ -5,7 +5,7 @@ using System.Web.Mvc;
 
 namespace ControleEstoque.Web.Models
 {
-    public class EntradaProdutoViewModelModelBinder : DefaultModelBinder
+    public class EntradaSaidaProdutoViewModelModelBinder : DefaultModelBinder
     {
         public override object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
@@ -16,7 +16,7 @@ namespace ControleEstoque.Web.Models
 
             var valores = controllerContext.HttpContext.Request.Form;
 
-            var ret = new EntradaProdutoViewModel() { Produtos = new Dictionary<int, int>() };
+            var ret = new EntradaSaidaProdutoViewModel() { Produtos = new Dictionary<int, int>() };
 
             try
             {

@@ -260,7 +260,18 @@ namespace ControleEstoque.Web.Models
 
             return ret;
         }
+
         public static string SalvarPedidoEntrada(DateTime data, Dictionary<int, int> produtos)
+        {
+            return SalvarPedido(data, produtos, "entrada_produto", true);
+        }
+
+        public static string SalvarPedidoSaida(DateTime data, Dictionary<int, int> produtos)
+        {
+            return SalvarPedido(data, produtos, "saida_produto", false);
+        }
+
+        public static string SalvarPedido(DateTime data, Dictionary<int, int> produtos, string nomeTabela, bool entrada)
         {
             var ret = "";
 
@@ -275,7 +286,7 @@ namespace ControleEstoque.Web.Models
                     using (var comando = new SqlCommand())
                     {
                         comando.Connection = conexao;
-                        comando.CommandText = "select next value for sec_entrada_produto";
+                        comando.CommandText = $"select next value for sec_{nomeTabela}";
                         numPedido = ((int)comando.ExecuteScalar()).ToString("D10");
                     }
 
@@ -287,7 +298,7 @@ namespace ControleEstoque.Web.Models
                             {
                                 comando.Connection = conexao;
                                 comando.Transaction = transacao;
-                                comando.CommandText = "insert into entrada_produto (numero, data, id_produto, quant) values (@numero, @data, @id_produto, @quant)";
+                                comando.CommandText = $"insert into {nomeTabela} (numero, data, id_produto, quant) values (@numero, @data, @id_produto, @quant)";
 
                                 comando.Parameters.Add("@numero", SqlDbType.VarChar).Value = numPedido;
                                 comando.Parameters.Add("@data", SqlDbType.Date).Value = data;
@@ -299,9 +310,10 @@ namespace ControleEstoque.Web.Models
 
                             using (var comando = new SqlCommand())
                             {
+                                var sinal = (entrada ? "+" : "-");
                                 comando.Connection = conexao;
                                 comando.Transaction = transacao;
-                                comando.CommandText = "update produto set quant_estoque = quant_estoque + @quant_estoque where (id = @id)";
+                                comando.CommandText = $"update produto set quant_estoque = quant_estoque {sinal} @quant_estoque where (id = @id)";
 
                                 comando.Parameters.Add("@id", SqlDbType.Int).Value = produto.Key;
                                 comando.Parameters.Add("@quant_estoque", SqlDbType.Int).Value = produto.Value;

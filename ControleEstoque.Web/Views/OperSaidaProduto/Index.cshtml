@@ -1,0 +1,181 @@
+﻿@{
+    ViewBag.Title = "Saída de produtos";
+}
+
+<style>
+    #grid th:nth-child(2) {
+        width: 150px;
+    }
+
+    #saida_produtos .row {
+        margin: 15px 0;
+    }
+</style>
+
+<div class="row">
+    <div style="margin: 15px" class="col-md-12">
+        <div id="saida_produtos" class="col-md-6 col-md-offset-3">
+            <h3 class="text-center">@ViewBag.Title</h3>
+            <hr />
+            <div id="msg_mensagem_aviso" class="text-danger invisivel"></div>
+            <fieldset>
+                @Html.AntiForgeryToken()
+                <div class="row">
+                    <div class="col-md-6">
+                        @Html.Label("txt_data", "Data", new { @class = "control-label" })
+                        @Html.TextBox("txt_data", null, new { @class = "form-control", type = "date" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.Label("txt_numero", "Número", new { @class = "control-label" })
+                        @Html.TextBox("txt_numero", null, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-2">
+                        <a id="btn_incluir" class="btn btn-success" role="button">
+                            <i class="glyphicon glyphicon-plus"></i> Incluir Produto
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table id="grid" class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>Quantidade</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-right">
+                        <a id="btn_cancelar" class="btn btn-default" role="button">
+                            <i class="glyphicon glyphicon-remove"></i> Cancelar
+                        </a>
+                        <a id="btn_salvar" class="btn btn-primary" role="button">
+                            <i class="glyphicon glyphicon-ok"></i> Salvar
+                        </a>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="~/Scripts/mustache.min.js"></script>
+    <script src="~/Scripts/comum.js"></script>
+    <script>
+        var sequencia = 1;
+
+        function formatar_data(data) {
+            var dia = ('0' + data.getDate()).slice(-2);
+            var mes = ('0' + (data.getMonth() + 1)).slice(-2);
+            return data.getFullYear() + "-" + mes + "-" + dia;
+        }
+
+        function incluir_linha_produto() {
+            $('#grid tbody').append(Mustache.render($('#template-produto').html(), { Sequencia: sequencia }));
+            sequencia++;
+        }
+
+        function limpar_tela() {
+            $('#txt_numero').val('');
+            $('#grid tbody').empty();
+            incluir_linha_produto();
+        }
+
+        function obter_lista_saidas() {
+            var ret = [];
+
+            $('#grid tbody tr').each(function (index, item) {
+                var txt_quantidade = $(this).find('input'),
+                    ddl_produto = $(this).find('select'),
+                    quantidade = parseInt(txt_quantidade.val()),
+                    produto = parseInt(ddl_produto.val());
+
+                if (quantidade > 0) {
+                    ret.push({ IdProduto: produto, Quantidade: quantidade });
+                }
+            });
+
+            return ret;
+        }
+
+        $(document).ready(function () {
+            var hoje = new Date();
+            $('#txt_data').val(formatar_data(hoje));
+
+            limpar_tela();
+        })
+        .on('click', '#btn_incluir', function () {
+            incluir_linha_produto();
+        })
+        .on('click', '#btn_salvar', function () {
+            var btn = $(this);
+            var lista_saidas = obter_lista_saidas();
+
+            if (lista_saidas.length == 0) {
+                swal('Aviso', 'Para salvar, você deve informar produtos com quantidades.', 'warning');
+            }
+            else {
+                var url = '@Url.Action("Salvar", "OperSaidaProduto")',
+                    dados = {
+                        data: $('#txt_data').val(),
+                        produtos: JSON.stringify(lista_saidas)
+                    };
+
+                $.post(url, add_anti_forgery_token(dados), function (response) {
+                    if (response.OK) {
+                        $('#txt_numero').val(response.Numero);
+                        swal('Sucesso', 'saída de produtos salva com sucesso.', 'info');
+                    }
+                })
+                .fail(function () {
+                    swal('Aviso', 'Não foi possível salvar a saída de produtos.', 'warning');
+                });
+            }
+        })
+        .on('click', '#btn_cancelar', function () {
+            var lista_saidas = obter_lista_saidas();
+
+            if (lista_saidas.length == 0 || $('#txt_numero').val() != '') {
+                limpar_tela();
+            }
+            else {
+                swal({
+                    text: 'Deseja realmente cancelar a saída dos produtos?',
+                    type: 'info',
+                    showCancelButton: true,
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    cancelButtonText: 'Não',
+                    confirmButtonClass: 'btn-primary',
+                    confirmButtonText: 'Sim'
+                }).then(function (opcao) {
+                    if (opcao.value) {
+                        limpar_tela();
+                    }
+                });
+            }
+        });
+    </script>
+    <script id="template-produto" type="x-tmpl-mustache">
+        <tr>
+            <td>
+                <select class="form-control" id="ddl_produto_{{ Sequencia }}">
+                    @foreach (var produto in ViewBag.Produtos)
+                    {
+                        <option value="@produto.Id">@produto.Nome</option>
+                    }
+                </select>
+            </td>
+            <td>
+                <input type="number" id="txt_quantidade_{{ Sequencia }}" class="form-control" value="">
+            </td>
+        </tr>
+    </script>
+}

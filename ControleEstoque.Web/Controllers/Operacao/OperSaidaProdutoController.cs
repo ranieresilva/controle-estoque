@@ -2,11 +2,11 @@
 
 namespace ControleEstoque.Web.Controllers
 {
-    public class OperEntradaProdutoController : OperEntradaSaidaProdutoController
+    public class OperSaidaProdutoController : OperEntradaSaidaProdutoController
     {
         protected override string SalvarPedido(EntradaSaidaProdutoViewModel dados)
         {
-            return ProdutoModel.SalvarPedidoEntrada(dados.Data, dados.Produtos);
+            return ProdutoModel.SalvarPedidoSaida(dados.Data, dados.Produtos);
         }
     }
 }
