@@ -1,7 +1,9 @@
 ﻿using ControleEstoque.Web.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 
 namespace ControleEstoque.Web.Controllers
@@ -57,11 +59,36 @@ namespace ControleEstoque.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult SalvarProduto(ProdutoModel model)
+        public JsonResult SalvarProduto()
         {
             var resultado = "OK";
             var mensagens = new List<string>();
             var idSalvo = string.Empty;
+
+            var nomeArquivoImagem = "";
+            HttpPostedFileBase arquivo = null;
+            if (Request.Files.Count > 0)
+            {
+                arquivo = Request.Files[0];
+                nomeArquivoImagem = Path.GetFileName(arquivo.FileName);
+            }
+
+            var model = new ProdutoModel()
+            {
+                Id = Int32.Parse(Request.Form["Id"]),
+                Codigo = Request.Form["Codigo"],
+                Nome = Request.Form["Nome"],
+                PrecoCusto = Decimal.Parse(Request.Form["PrecoCusto"]),
+                PrecoVenda = Decimal.Parse(Request.Form["PrecoVenda"]),
+                QuantEstoque = Int32.Parse(Request.Form["QuantEstoque"]),
+                IdUnidadeMedida = Int32.Parse(Request.Form["IdUnidadeMedida"]),
+                IdGrupo = Int32.Parse(Request.Form["IdGrupo"]),
+                IdMarca = Int32.Parse(Request.Form["IdMarca"]),
+                IdFornecedor = Int32.Parse(Request.Form["IdFornecedor"]),
+                IdLocalArmazenamento = Int32.Parse(Request.Form["IdLocalArmazenamento"]),
+                Ativo = (Request.Form["Ativo"] == "true"),
+                Imagem = nomeArquivoImagem
+            };
 
             if (!ModelState.IsValid)
             {
@@ -76,6 +103,11 @@ namespace ControleEstoque.Web.Controllers
                     if (id > 0)
                     {
                         idSalvo = id.ToString();
+                        if (!string.IsNullOrEmpty(nomeArquivoImagem) && arquivo != null)
+                        {
+                            var caminhoArquivo = Path.Combine(Server.MapPath("~/Content/Imagens"), nomeArquivoImagem);
+                            arquivo.SaveAs(caminhoArquivo);
+                        }
                     }
                     else
                     {

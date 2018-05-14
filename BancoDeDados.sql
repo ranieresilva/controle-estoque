@@ -118,6 +118,7 @@ CREATE TABLE [dbo].[produto] (
 	[id_fornecedor] [int] NOT NULL,
 	[id_local_armazenamento] [int] NOT NULL,
 	[ativo] [bit] NOT NULL,
+	[imagem] [varchar](100) NOT NULL,
  CONSTRAINT [PK_produto] PRIMARY KEY ([id])
 )
 GO

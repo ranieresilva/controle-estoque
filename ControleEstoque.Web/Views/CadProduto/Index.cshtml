@@ -80,6 +80,12 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            @Html.Label("txt_imagem", "Imagem", new { @class = "control-label" })
+            @Html.TextBox("txt_imagem", null, new { @class = "form-control", type = "file", accept = "image/jpg,image/jpeg" })
+        </div>
+    </div>
 }
 
 @section Scripts{
@@ -103,7 +109,7 @@
                 if (linha <= ViewBag.QuantMaxLinhasPorPagina)
                 {
                     @:linhas.push(@Html.Raw(Json.Encode(item)));
-                }
+                                        }
                 else
                 {
                     break;

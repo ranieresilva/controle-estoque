@@ -1,4 +1,6 @@
-﻿function marcar_ordenacao_campo(coluna) {
+﻿var salvar_customizado = null;
+
+function marcar_ordenacao_campo(coluna) {
     var ordem_crescente = true,
         ordem = coluna.find('i');
 
@@ -83,6 +85,41 @@ function criar_linha_grid(dados) {
     return Mustache.render(template, dados);
 }
 
+function salvar_ok(response, param) {
+    if (response.Resultado == "OK") {
+        if (param.Id == 0) {
+            param.Id = response.IdSalvo;
+            var table = $('#grid_cadastro').find('tbody'),
+                linha = criar_linha_grid(param);
+
+            table.append(linha);
+            $('#grid_cadastro').removeClass('invisivel');
+            $('#mensagem_grid').addClass('invisivel');
+        }
+        else {
+            var linha = $('#grid_cadastro').find('tr[data-id=' + param.Id + ']').find('td');
+            preencher_linha_grid(param, linha);
+        }
+
+        $('#modal_cadastro').parents('.bootbox').modal('hide');
+    }
+    else if (response.Resultado == "ERRO") {
+        $('#msg_aviso').hide();
+        $('#msg_mensagem_aviso').hide();
+        $('#msg_erro').show();
+    }
+    else if (response.Resultado == "AVISO") {
+        $('#msg_mensagem_aviso').html(formatar_mensagem_aviso(response.Mensagens));
+        $('#msg_aviso').show();
+        $('#msg_mensagem_aviso').show();
+        $('#msg_erro').hide();
+    }
+}
+
+function salvar_erro() {
+    swal('Aviso', 'Não foi possível salvar. Tente novamente em instantes.', 'warning');
+}
+
 $(document).on('click', '#btn_incluir', function () {
     abrir_form(get_dados_inclusao());
 })
@@ -144,39 +181,17 @@ $(document).on('click', '#btn_incluir', function () {
         url = url_confirmar,
         param = get_dados_form();
 
-    $.post(url, add_anti_forgery_token(param), function (response) {
-        if (response.Resultado == "OK") {
-            if (param.Id == 0) {
-                param.Id = response.IdSalvo;
-                var table = $('#grid_cadastro').find('tbody'),
-                    linha = criar_linha_grid(param);
-
-                table.append(linha);
-                $('#grid_cadastro').removeClass('invisivel');
-                $('#mensagem_grid').addClass('invisivel');
-            }
-            else {
-                var linha = $('#grid_cadastro').find('tr[data-id=' + param.Id + ']').find('td');
-                preencher_linha_grid(param, linha);
-            }
-
-            $('#modal_cadastro').parents('.bootbox').modal('hide');
-        }
-        else if (response.Resultado == "ERRO") {
-            $('#msg_aviso').hide();
-            $('#msg_mensagem_aviso').hide();
-            $('#msg_erro').show();
-        }
-        else if (response.Resultado == "AVISO") {
-            $('#msg_mensagem_aviso').html(formatar_mensagem_aviso(response.Mensagens));
-            $('#msg_aviso').show();
-            $('#msg_mensagem_aviso').show();
-            $('#msg_erro').hide();
-        }
-    })
-    .fail(function () {
-        swal('Aviso', 'Não foi possível salvar. Tente novamente em instantes.', 'warning');
-    });
+    if (salvar_customizado && typeof (salvar_customizado) == 'function') {
+        salvar_customizado(url, param, salvar_ok, salvar_erro);
+    }
+    else {
+        $.post(url, add_anti_forgery_token(param), function (response) {
+            salvar_ok(response, param);
+        })
+        .fail(function () {
+            salvar_erro();
+        });
+    }
 })
 .on('click', '.page-item', function () {
     var ordem = obter_ordem_grid(),

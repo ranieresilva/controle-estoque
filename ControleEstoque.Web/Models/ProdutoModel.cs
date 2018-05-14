@@ -45,6 +45,8 @@ namespace ControleEstoque.Web.Models
 
         public bool Ativo { get; set; }
 
+        public string Imagem { get; set; }
+
         public static int RecuperarQuantidade()
         {
             var ret = 0;
@@ -62,6 +64,26 @@ namespace ControleEstoque.Web.Models
             }
 
             return ret;
+        }
+
+        private static ProdutoModel MontarProduto(SqlDataReader reader)
+        {
+            return new ProdutoModel
+            {
+                Id = (int)reader["id"],
+                Codigo = (string)reader["codigo"],
+                Nome = (string)reader["nome"],
+                PrecoCusto = (decimal)reader["preco_custo"],
+                PrecoVenda = (decimal)reader["preco_venda"],
+                QuantEstoque = (int)reader["quant_estoque"],
+                IdUnidadeMedida = (int)reader["id_unidade_medida"],
+                IdGrupo = (int)reader["id_grupo"],
+                IdMarca = (int)reader["id_marca"],
+                IdFornecedor = (int)reader["id_fornecedor"],
+                IdLocalArmazenamento = (int)reader["id_local_armazenamento"],
+                Ativo = (bool)reader["ativo"],
+                Imagem = (string)reader["imagem"],
+            };
         }
 
         public static List<ProdutoModel> RecuperarLista(int pagina = 0, int tamPagina = 0, string filtro = "", string ordem = "", bool somenteAtivos = false)
@@ -105,21 +127,7 @@ namespace ControleEstoque.Web.Models
                     var reader = comando.ExecuteReader();
                     while (reader.Read())
                     {
-                        ret.Add(new ProdutoModel
-                        {
-                            Id = (int)reader["id"],
-                            Codigo = (string)reader["codigo"],
-                            Nome = (string)reader["nome"],
-                            PrecoCusto = (decimal)reader["preco_custo"],
-                            PrecoVenda = (decimal)reader["preco_venda"],
-                            QuantEstoque = (int)reader["quant_estoque"],
-                            IdUnidadeMedida = (int)reader["id_unidade_medida"],
-                            IdGrupo = (int)reader["id_grupo"],
-                            IdMarca = (int)reader["id_marca"],
-                            IdFornecedor = (int)reader["id_fornecedor"],
-                            IdLocalArmazenamento = (int)reader["id_local_armazenamento"],
-                            Ativo = (bool)reader["ativo"]
-                        });
+                        ret.Add(MontarProduto(reader));
                     }
                 }
             }
@@ -145,21 +153,7 @@ namespace ControleEstoque.Web.Models
                     var reader = comando.ExecuteReader();
                     if (reader.Read())
                     {
-                        ret = new ProdutoModel
-                        {
-                            Id = (int)reader["id"],
-                            Codigo = (string)reader["codigo"],
-                            Nome = (string)reader["nome"],
-                            PrecoCusto = (decimal)reader["preco_custo"],
-                            PrecoVenda = (decimal)reader["preco_venda"],
-                            QuantEstoque = (int)reader["quant_estoque"],
-                            IdUnidadeMedida = (int)reader["id_unidade_medida"],
-                            IdGrupo = (int)reader["id_grupo"],
-                            IdMarca = (int)reader["id_marca"],
-                            IdFornecedor = (int)reader["id_fornecedor"],
-                            IdLocalArmazenamento = (int)reader["id_local_armazenamento"],
-                            Ativo = (bool)reader["ativo"]
-                        };
+                        ret = MontarProduto(reader);
                     }
                 }
             }
@@ -211,9 +205,9 @@ namespace ControleEstoque.Web.Models
                         comando.CommandText =
                             "insert into produto " +
                             "(codigo, nome, preco_custo, preco_venda, quant_estoque, id_unidade_medida, id_grupo, id_marca, " +
-                            "id_fornecedor, id_local_armazenamento, ativo) values " +
+                            "id_fornecedor, id_local_armazenamento, ativo, imagem) values " +
                             "(@codigo, @nome, @preco_custo, @preco_venda, @quant_estoque, @id_unidade_medida, @id_grupo, @id_marca, " +
-                            "@id_fornecedor, @id_local_armazenamento, @ativo); select convert(int, scope_identity())";
+                            "@id_fornecedor, @id_local_armazenamento, @ativo, @imagem); select convert(int, scope_identity())";
 
                         comando.Parameters.Add("@codigo", SqlDbType.VarChar).Value = this.Codigo;
                         comando.Parameters.Add("@nome", SqlDbType.VarChar).Value = this.Nome;
@@ -226,6 +220,7 @@ namespace ControleEstoque.Web.Models
                         comando.Parameters.Add("@id_fornecedor", SqlDbType.Int).Value = this.IdFornecedor;
                         comando.Parameters.Add("@id_local_armazenamento", SqlDbType.Int).Value = this.IdLocalArmazenamento;
                         comando.Parameters.Add("@ativo", SqlDbType.VarChar).Value = (this.Ativo ? 1 : 0);
+                        comando.Parameters.Add("@imagem", SqlDbType.VarChar).Value = this.Imagem;
 
                         ret = (int)comando.ExecuteScalar();
                     }
@@ -235,7 +230,7 @@ namespace ControleEstoque.Web.Models
                             "update produto set codigo=@codigo, nome=@nome, preco_custo=@preco_custo, " +
                             "preco_venda=@preco_venda, quant_estoque=@quant_estoque, id_unidade_medida=@id_unidade_medida, " +
                             "id_grupo=@id_grupo, id_marca=@id_marca, id_fornecedor=@id_fornecedor, " +
-                            "id_local_armazenamento=@id_local_armazenamento, ativo=@ativo where id = @id";
+                            "id_local_armazenamento=@id_local_armazenamento, ativo=@ativo, imagem=@imagem where id = @id";
 
                         comando.Parameters.Add("@id", SqlDbType.Int).Value = this.Id;
                         comando.Parameters.Add("@codigo", SqlDbType.VarChar).Value = this.Codigo;
@@ -249,6 +244,7 @@ namespace ControleEstoque.Web.Models
                         comando.Parameters.Add("@id_fornecedor", SqlDbType.Int).Value = this.IdFornecedor;
                         comando.Parameters.Add("@id_local_armazenamento", SqlDbType.Int).Value = this.IdLocalArmazenamento;
                         comando.Parameters.Add("@ativo", SqlDbType.VarChar).Value = (this.Ativo ? 1 : 0);
+                        comando.Parameters.Add("@imagem", SqlDbType.VarChar).Value = this.Imagem;
 
                         if (comando.ExecuteNonQuery() > 0)
                         {

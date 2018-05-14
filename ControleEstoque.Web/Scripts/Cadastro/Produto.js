@@ -33,25 +33,28 @@ function get_dados_inclusao() {
         IdMarca: 0,
         IdFornecedor: 0,
         IdLocalArmazenamento: 0,
-        Ativo: true
+        Ativo: true,
+        Imagem: '',
     };
 }
 
 function get_dados_form() {
-    return {
-        Id: $('#id_cadastro').val(),
-        Codigo: $('#txt_codigo').val(),
-        Nome: $('#txt_nome').val(),
-        PrecoCusto: $('#txt_preco_custo').val(),
-        PrecoVenda: $('#txt_preco_venda').val(),
-        QuantEstoque: $('#txt_quant_estoque').val(),
-        IdUnidadeMedida: $('#ddl_unidade_medida').val(),
-        IdGrupo: $('#ddl_grupo').val(),
-        IdMarca: $('#ddl_marca').val(),
-        IdFornecedor: $('#ddl_fornecedor').val(),
-        IdLocalArmazenamento: $('#ddl_local_armazenamento').val(),
-        Ativo: $('#cbx_ativo').prop('checked')
-    };
+    var form = new FormData();
+    form.append('Id', $('#id_cadastro').val());
+    form.append('Codigo', $('#txt_codigo').val());
+    form.append('Nome', $('#txt_nome').val());
+    form.append('PrecoCusto', $('#txt_preco_custo').val());
+    form.append('PrecoVenda', $('#txt_preco_venda').val());
+    form.append('QuantEstoque', $('#txt_quant_estoque').val());
+    form.append('IdUnidadeMedida', $('#ddl_unidade_medida').val());
+    form.append('IdGrupo', $('#ddl_grupo').val());
+    form.append('IdMarca', $('#ddl_marca').val());
+    form.append('IdFornecedor', $('#ddl_fornecedor').val());
+    form.append('IdLocalArmazenamento', $('#ddl_local_armazenamento').val());
+    form.append('Ativo', $('#cbx_ativo').prop('checked'));
+    form.append('Imagem', $('#txt_imagem').prop('files')[0]);
+    form.append('__RequestVerificationToken', $('[name=__RequestVerificationToken]').val());
+    return form;
 }
 
 function preencher_linha_grid(param, linha) {
@@ -60,6 +63,34 @@ function preencher_linha_grid(param, linha) {
         .eq(1).html(param.Nome).end()
         .eq(2).html(param.QuantEstoque).end()
         .eq(3).html(param.Ativo ? 'SIM' : 'NÃO');
+}
+
+function salvar_customizado(url, param, salvar_ok, salvar_erro) {
+    $.ajax({
+        type: 'POST',
+        processData: false,
+        contentType: false,
+        data: param,
+        url: url,
+        dataType: 'json',
+        success: function (response) {
+            salvar_ok(response, get_param());
+        },
+        error: function () {
+            salvar_erro();
+        }
+    });
+}
+
+function get_param() {
+    return {
+        Id: $('#id_cadastro').val(),
+        Codigo: $('#txt_codigo').val(),
+        Nome: $('#txt_nome').val(),
+        QuantEstoque: $('#txt_quant_estoque').val(),
+        Ativo: $('#cbx_ativo').prop('checked'),
+        Imagem: $('#txt_imagem').prop('files')[0]
+    };
 }
 
 $(document)
