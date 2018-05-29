@@ -36,7 +36,6 @@ CREATE TABLE [dbo].[usuario] (
 	[senha] [nvarchar](32) NOT NULL,
 	[nome] [nvarchar](100) NOT NULL,
 	[email] [nvarchar](150) NOT NULL,
-	[id_perfil] [int] NOT NULL,
 	CONSTRAINT [PK_usuario] PRIMARY KEY ([id])
 )
 GO

@@ -219,6 +219,7 @@ namespace ControleEstoque.Web.Models
                             comando.Parameters.Add("@ativo", SqlDbType.VarChar).Value = (this.Ativo ? 1 : 0);
 
                             ret = (int)comando.ExecuteScalar();
+                            this.Id = ret;
                         }
                         else
                         {

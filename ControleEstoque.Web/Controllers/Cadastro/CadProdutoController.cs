@@ -70,7 +70,7 @@ namespace ControleEstoque.Web.Controllers
             if (Request.Files.Count > 0)
             {
                 arquivo = Request.Files[0];
-                nomeArquivoImagem = Path.GetFileName(arquivo.FileName);
+                nomeArquivoImagem = Guid.NewGuid().ToString() + ".jpg";
             }
 
             var model = new ProdutoModel()
@@ -99,14 +99,28 @@ namespace ControleEstoque.Web.Controllers
             {
                 try
                 {
+                    var nomeArquivoImagemAnterior = "";
+                    if (model.Id > 0)
+                    {
+                        nomeArquivoImagemAnterior = ProdutoModel.RecuperarImagemPeloId(model.Id);
+                    }
+
                     var id = model.Salvar();
                     if (id > 0)
                     {
                         idSalvo = id.ToString();
                         if (!string.IsNullOrEmpty(nomeArquivoImagem) && arquivo != null)
                         {
-                            var caminhoArquivo = Path.Combine(Server.MapPath("~/Content/Imagens"), nomeArquivoImagem);
+                            var diretorio = Server.MapPath("~/Content/Imagens");
+
+                            var caminhoArquivo = Path.Combine(diretorio, nomeArquivoImagem);
                             arquivo.SaveAs(caminhoArquivo);
+
+                            if (!string.IsNullOrEmpty(nomeArquivoImagemAnterior))
+                            {
+                                var caminhoArquivoAnterior = Path.Combine(diretorio, nomeArquivoImagemAnterior);
+                                System.IO.File.Delete(caminhoArquivoAnterior);
+                            }
                         }
                     }
                     else

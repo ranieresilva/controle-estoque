@@ -161,6 +161,32 @@ namespace ControleEstoque.Web.Models
             return ret;
         }
 
+        public static string RecuperarImagemPeloId(int id)
+        {
+            string ret = "";
+
+            using (var conexao = new SqlConnection())
+            {
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                conexao.Open();
+                using (var comando = new SqlCommand())
+                {
+                    comando.Connection = conexao;
+                    comando.CommandText = "select imagem from produto where (id = @id)";
+
+                    comando.Parameters.Add("@id", SqlDbType.Int).Value = id;
+
+                    var reader = comando.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        ret = (string)reader["imagem"];
+                    }
+                }
+            }
+
+            return ret;
+        }
+
         public static bool ExcluirPeloId(int id)
         {
             var ret = false;
