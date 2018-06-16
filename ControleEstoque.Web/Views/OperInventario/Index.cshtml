@@ -1,0 +1,196 @@
+﻿
+@{
+    ViewBag.Title = "Inventário de Estoque";
+}
+
+<style>
+    #grid th:nth-child(1) {
+        width: 50px;
+    }
+
+    #grid th:nth-child(2) {
+        width: 150px;
+    }
+
+    #grid th:nth-child(3) {
+        width: 70px;
+    }
+
+    #grid th:nth-child(4) {
+        width: 150px;
+    }
+
+    #grid th:nth-child(5) {
+        width: 100px;
+    }
+
+    #grid th:nth-child(6) {
+        width: 130px;
+    }
+
+    #grid th:nth-child(7) {
+        width: 100px;
+    }
+
+    #grid th:nth-child(8) {
+        width: auto;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12" style="margin: 15px">
+        <h3 class="text-center">@ViewBag.Title</h3>
+        <hr />
+        <div id="msg_mensagem_aviso" class="text-danger invisivel"></div>
+        <fieldset>
+            @Html.AntiForgeryToken()
+            <div class="row" style="margin-bottom: 15px">
+                <div class="col-md-2">
+                    <a id="btn_incluir" class="btn btn-success" role="button">
+                        <i class="glyphicon glyphicon-plus"></i> Incluir Inventário
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table id="grid" class="table table-bordered table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Local</th>
+                                <th>Código</th>
+                                <th>Produto</th>
+                                <th>Quantidade</th>
+                                <th>Unidade Medida</th>
+                                <th>Contagem</th>
+                                <th>Motivo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-id="">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td><input type="number" class="form-control" value="" /></td>
+                                <td><input type="text" class="form-control" value="" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <a id="btn_salvar" class="btn btn-primary" role="button">
+                        <i class="glyphicon glyphicon-ok"></i> Salvar
+                    </a>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Scripts/comum.js"></script>
+    <script src="~/Scripts/sweetalert2.min.js"></script>
+    <script>
+        function limpar_tela() {
+            $('#grid tbody tr input').each(function (index, input) {
+                $(input).val('');
+            });
+        }
+
+        function verificar_preenchimento() {
+            var ret = false;
+
+            $('#grid tbody tr input[type=number]').each(function (index, input) {
+                if ($(input).val() != '') {
+                    ret = true;
+                    return false;
+                }
+            });
+
+            return ret;
+        }
+
+        function obter_dados_inventario() {
+            var ret = [];
+
+            $('#grid tbody tr').each(function (index, item) {
+                var tr = $(item),
+                    quant_estoque = parseInt(tr.find('td').eq(4).text()),
+                    id_produto = tr.attr('data-id'),
+                    quant_inventario = parseInt(tr.find('input[type=number]').val()),
+                    motivo = tr.find('input[type=text]').val();
+
+                if (quant_inventario > 0) {
+                    ret.push({
+                        IdProduto: id_produto,
+                        QuantidadeEstoque: quant_estoque,
+                        QuantidadeInventario: quant_inventario,
+                        Motivo: motivo
+                    });
+                }
+            });
+
+            return ret;
+        }
+
+        $(document).ready(function () {
+            limpar_tela();
+        })
+        .on('click', '#btn_incluir', function () {
+            if (verificar_preenchimento()) {
+                swal({
+                    html: 'Algumas quantidades já foram preenchidas.<br/>Deseja realmente limpar os dados para iniciar um novo inventário?',
+                    type: 'info',
+                    showCancelButton: true,
+                    allowEscapeKey: false,
+                    allowOutsideClick: false,
+                    cancelButtonText: 'Não',
+                    confirmButtonClass: 'btn-primary',
+                    confirmButtonText: 'Sim'
+                }).then(function (opcao) {
+                    if (opcao.value) {
+                        limpar_tela();
+                    }
+                });
+            }
+            else {
+                limpar_tela();
+            }
+        })
+        .on('click', '#btn_salvar', function () {
+            if (!verificar_preenchimento()) {
+                swal('Aviso', 'Para salvar, você deve preencher todas as quantidades.', 'warning');
+            }
+            else {
+                var url = '@Url.Action("Salvar", "OpeInventario")',
+                    dados = { dados: obter_dados_inventario() };
+
+                $.ajax({
+                    tyle: 'POST',
+                    processData: false,
+                    contentType: 'application/json',
+                    data: JSON.stringify(add_anti_forgery_token(dados)),
+                    url: url,
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.OK) {
+                            swal('Sucesso', 'Inventário salvo com sucesso.', 'info');
+                            limpar_tela();
+                        }
+                        else {
+                            swal('Aviso', 'Não foi possível salvar o inventário.', 'warning');
+                        }
+                    },
+                    error: function () {
+                        swal('Aviso', 'Não foi possível salvar o inventário.', 'warning');
+                    }
+                });
+            }
+        });
+    </script>
+}
