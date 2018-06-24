@@ -86,6 +86,18 @@ namespace ControleEstoque.Web.Models
             };
         }
 
+        private static ProdutoInventarioViewModel MontarProdutoInventario(SqlDataReader reader)
+        {
+            return new ProdutoInventarioViewModel
+            {
+                Id = (int)reader["id"],
+                Codigo = (string)reader["codigo"],
+                NomeProduto = (string)reader["nome_produto"],
+                QuantEstoque = (int)reader["quant_estoque"],
+                NomeUnidadeMedida = (string)reader["nome_unidade_medida"],
+                NomeLocalArmazenamento = (string)reader["nome_local_armazenamento"]
+            };
+        }
         public static List<ProdutoModel> RecuperarLista(int pagina = 0, int tamPagina = 0, string filtro = "", string ordem = "", bool somenteAtivos = false)
         {
             var ret = new List<ProdutoModel>();
@@ -352,6 +364,83 @@ namespace ControleEstoque.Web.Models
             }
             catch (Exception ex)
             {
+            }
+
+            return ret;
+        }
+
+        public static List<ProdutoInventarioViewModel> RecuperarListaParaInventario()
+        {
+            var ret = new List<ProdutoInventarioViewModel>();
+
+            using (var conexao = new SqlConnection())
+            {
+                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                conexao.Open();
+                using (var comando = new SqlCommand())
+                {
+                    comando.Connection = conexao;
+                    comando.CommandText =
+                        "select " +
+                        "p.id, p.codigo, p.nome as nome_produto, p.quant_estoque, " +
+                        "l.nome as nome_local_armazenamento, u.nome as nome_unidade_medida " +
+                        "from produto p, local_armazenamento l, unidade_medida u " +
+                        "where (p.ativo = 1) and " +
+                        "(p.id_local_armazenamento = l.id) and " +
+                        "(p.id_unidade_medida = u.id) " +
+                        "order by l.nome, p.nome";
+
+                    var reader = comando.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        ret.Add(MontarProdutoInventario(reader));
+                    }
+                }
+            }
+
+            return ret;
+        }
+
+        public static bool SalvarInventario(List<ItemInventarioViewModel> dados)
+        {
+            var ret = true;
+
+            try
+            {
+                var data = DateTime.Now;
+
+                using (var conexao = new SqlConnection())
+                {
+                    conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                    conexao.Open();
+
+                    using (var transacao = conexao.BeginTransaction())
+                    {
+                        foreach (var produtoInventario in dados)
+                        {
+                            using (var comando = new SqlCommand())
+                            {
+                                comando.Connection = conexao;
+                                comando.Transaction = transacao;
+                                comando.CommandText = "insert into inventario_estoque (data, id_produto, quant_estoque, quant_inventario, motivo) values (@data, @id_produto, @quant_estoque, @quant_inventario, @motivo)";
+
+                                comando.Parameters.Add("@data", SqlDbType.DateTime).Value = data;
+                                comando.Parameters.Add("@id_produto", SqlDbType.Int).Value = produtoInventario.IdProduto;
+                                comando.Parameters.Add("@quant_estoque", SqlDbType.Int).Value = produtoInventario.QuantidadeEstoque;
+                                comando.Parameters.Add("@quant_inventario", SqlDbType.Int).Value = produtoInventario.QuantidadeInventario;
+                                comando.Parameters.Add("@motivo", SqlDbType.VarChar).Value = produtoInventario.Motivo ?? "";
+
+                                comando.ExecuteNonQuery();
+                            }
+                        }
+
+                        transacao.Commit();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ret = false;
             }
 
             return ret;

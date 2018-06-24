@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ControleEstoque.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -10,7 +11,15 @@ namespace ControleEstoque.Web.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            var model = ProdutoModel.RecuperarListaParaInventario();
+            return View(model);
+        }
+
+        [HttpPost]
+        public JsonResult Salvar(List<ItemInventarioViewModel> dados)
+        {
+            var ok = ProdutoModel.SalvarInventario(dados);
+            return Json(new { OK = ok });
         }
     }
 }

@@ -139,6 +139,16 @@ CREATE TABLE [dbo].[saida_produto] (
  CONSTRAINT [PK_saida_produto] PRIMARY KEY ([id]) 
 )
 GO
+CREATE TABLE [dbo].[inventario_estoque] (
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[data] [datetime] NOT NULL,
+	[id_produto] [int] NOT NULL,
+	[quant_estoque] [int] NOT NULL,
+	[quant_inventario] [int] NOT NULL,
+	[motivo] [varchar](100),
+ CONSTRAINT [PK_inventario_estoque] PRIMARY KEY ([id]) 
+)
+GO
 ALTER TABLE [dbo].[usuario] WITH CHECK ADD FOREIGN KEY([id_perfil]) REFERENCES [dbo].[perfil] ([id])
 GO
 ALTER TABLE [dbo].[perfil_usuario] WITH CHECK ADD FOREIGN KEY([id_perfil]) REFERENCES [dbo].[perfil] ([id])
@@ -166,6 +176,12 @@ GO
 ALTER TABLE [dbo].[produto] WITH CHECK ADD FOREIGN KEY([id_marca]) REFERENCES [dbo].[marca_produto] ([id])
 GO
 ALTER TABLE [dbo].[produto] WITH CHECK ADD FOREIGN KEY([id_unidade_medida]) REFERENCES [dbo].[unidade_medida] ([id])
+GO
+ALTER TABLE [dbo].[entrada_produto] WITH CHECK ADD FOREIGN KEY([id_produto]) REFERENCES [dbo].[produto] ([id])
+GO
+ALTER TABLE [dbo].[saida_produto] WITH CHECK ADD FOREIGN KEY([id_produto]) REFERENCES [dbo].[produto] ([id])
+GO
+ALTER TABLE [dbo].[inventario_estoque] WITH CHECK ADD FOREIGN KEY([id_produto]) REFERENCES [dbo].[produto] ([id])
 GO
 CREATE SEQUENCE [dbo].[SEC_entrada_produto] AS [int] START WITH 1 INCREMENT BY 1
 GO
