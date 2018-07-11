@@ -1,11 +1,9 @@
-﻿using System;
+﻿using Dapper;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
-using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Web;
 
 namespace ControleEstoque.Web.Models
 {
@@ -29,12 +27,8 @@ namespace ControleEstoque.Web.Models
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
-                using (var comando = new SqlCommand())
-                {
-                    comando.Connection = conexao;
-                    comando.CommandText = "select count(*) from unidade_medida";
-                    ret = (int)comando.ExecuteScalar();
-                }
+
+                ret = conexao.ExecuteScalar<int>("select count(*) from unidade_medida");
             }
 
             return ret;
@@ -48,29 +42,17 @@ namespace ControleEstoque.Web.Models
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
-                using (var comando = new SqlCommand())
-                {
-                    var pos = (pagina - 1) * tamPagina;
 
-                    comando.Connection = conexao;
-                    comando.CommandText = string.Format(
-                        "select *" +
-                        " from unidade_medida" +
-                        " order by " + (!string.IsNullOrEmpty(ordem) ? ordem : "nome") +
-                        " offset {0} rows fetch next {1} rows only",
-                        pos > 0 ? pos - 1 : 0, tamPagina);
-                    var reader = comando.ExecuteReader();
-                    while (reader.Read())
-                    {
-                        ret.Add(new UnidadeMedidaModel
-                        {
-                            Id = (int)reader["id"],
-                            Nome = (string)reader["nome"],
-                            Sigla = (string)reader["sigla"],
-                            Ativo = (bool)reader["ativo"]
-                        });
-                    }
-                }
+                var pos = (pagina - 1) * tamPagina;
+
+                var sql = string.Format(
+                    "select *" +
+                    " from unidade_medida" +
+                    " order by " + (!string.IsNullOrEmpty(ordem) ? ordem : "nome") +
+                    " offset {0} rows fetch next {1} rows only",
+                    pos > 0 ? pos - 1 : 0, tamPagina);
+
+                ret = conexao.Query<UnidadeMedidaModel>(sql).ToList();
             }
 
             return ret;
@@ -84,25 +66,10 @@ namespace ControleEstoque.Web.Models
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
-                using (var comando = new SqlCommand())
-                {
-                    comando.Connection = conexao;
-                    comando.CommandText = "select * from unidade_medida where (id = @id)";
 
-                    comando.Parameters.Add("@id", SqlDbType.Int).Value = id;
-
-                    var reader = comando.ExecuteReader();
-                    if (reader.Read())
-                    {
-                        ret = new UnidadeMedidaModel
-                        {
-                            Id = (int)reader["id"],
-                            Nome = (string)reader["nome"],
-                            Sigla = (string)reader["sigla"],
-                            Ativo = (bool)reader["ativo"]
-                        };
-                    }
-                }
+                var sql = "select * from unidade_medida where (id = @id)";
+                var parametros = new { id };
+                ret = conexao.Query<UnidadeMedidaModel>(sql, parametros).SingleOrDefault();
             }
 
             return ret;
@@ -118,15 +85,10 @@ namespace ControleEstoque.Web.Models
                 {
                     conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                     conexao.Open();
-                    using (var comando = new SqlCommand())
-                    {
-                        comando.Connection = conexao;
-                        comando.CommandText = "delete from unidade_medida where (id = @id)";
 
-                        comando.Parameters.Add("@id", SqlDbType.Int).Value = id;
-
-                        ret = (comando.ExecuteNonQuery() > 0);
-                    }
+                    var sql = "delete from unidade_medida where (id = @id)";
+                    var parametros = new { id };
+                    ret = (conexao.Execute(sql, parametros) > 0);
                 }
             }
 
@@ -143,33 +105,20 @@ namespace ControleEstoque.Web.Models
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
-                using (var comando = new SqlCommand())
+
+                if (model == null)
                 {
-                    comando.Connection = conexao;
-
-                    if (model == null)
+                    var sql = "insert into unidade_medida (nome, sigla, ativo) values (@nome, @sigla, @ativo); select convert(int, scope_identity())";
+                    var parametros = new { nome = this.Nome, sigla = this.Sigla, ativo = (this.Ativo ? 1 : 0) };
+                    ret = conexao.ExecuteScalar<int>(sql, parametros);
+                }
+                else
+                {
+                    var sql = "update unidade_medida set nome=@nome, sigla=@sigla, ativo=@ativo where id = @id";
+                    var parametros = new { id = this.Id, nome = this.Nome, sigla = this.Sigla, ativo = (this.Ativo ? 1 : 0) };
+                    if (conexao.Execute(sql, parametros) > 0)
                     {
-                        comando.CommandText = "insert into unidade_medida (nome, sigla, ativo) values (@nome, @sigla, @ativo); select convert(int, scope_identity())";
-
-                        comando.Parameters.Add("@nome", SqlDbType.VarChar).Value = this.Nome;
-                        comando.Parameters.Add("@sigla", SqlDbType.VarChar).Value = this.Sigla;
-                        comando.Parameters.Add("@ativo", SqlDbType.VarChar).Value = (this.Ativo ? 1 : 0);
-
-                        ret = (int)comando.ExecuteScalar();
-                    }
-                    else
-                    {
-                        comando.CommandText = "update unidade_medida set nome=@nome, sigla=@sigla, ativo=@ativo where id = @id";
-
-                        comando.Parameters.Add("@nome", SqlDbType.VarChar).Value = this.Nome;
-                        comando.Parameters.Add("@sigla", SqlDbType.VarChar).Value = this.Sigla;
-                        comando.Parameters.Add("@ativo", SqlDbType.VarChar).Value = (this.Ativo ? 1 : 0);
-                        comando.Parameters.Add("@id", SqlDbType.Int).Value = this.Id;
-
-                        if (comando.ExecuteNonQuery() > 0)
-                        {
-                            ret = this.Id;
-                        }
+                        ret = this.Id;
                     }
                 }
             }
