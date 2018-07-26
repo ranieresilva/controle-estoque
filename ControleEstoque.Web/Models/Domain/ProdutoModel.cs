@@ -32,17 +32,27 @@ namespace ControleEstoque.Web.Models
         [Required(ErrorMessage = "Selecione a unidade de medida.")]
         public int IdUnidadeMedida { get; set; }
 
+        public virtual UnidadeMedidaModel UnidadeMedida { get; set; }
+
         [Required(ErrorMessage = "Selecione o grupo.")]
         public int IdGrupo { get; set; }
+
+        public virtual GrupoProdutoModel Grupo { get; set; }
 
         [Required(ErrorMessage = "Selecione a marca.")]
         public int IdMarca { get; set; }
 
+        public virtual MarcaProdutoModel Marca { get; set; }
+
         [Required(ErrorMessage = "Selecione o fornecedor.")]
         public int IdFornecedor { get; set; }
 
+        public virtual FornecedorModel Fornecedor { get; set; }
+
         [Required(ErrorMessage = "Selecione o local de armazenamento.")]
         public int IdLocalArmazenamento { get; set; }
+
+        public virtual LocalArmazenamentoModel LocalArmazenamento { get; set; }
 
         public bool Ativo { get; set; }
 

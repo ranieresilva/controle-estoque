@@ -23,6 +23,8 @@ namespace ControleEstoque.Web.Models
         [Required(ErrorMessage = "Informe o e-mail")]
         public string Email { get; set; }
 
+        public virtual List<PerfilModel> Perfis { get; set; }
+
         public static UsuarioModel ValidarUsuario(string login, string senha)
         {
             UsuarioModel ret = null;

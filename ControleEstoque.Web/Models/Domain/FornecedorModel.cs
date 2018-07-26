@@ -47,11 +47,17 @@ namespace ControleEstoque.Web.Models
         [Required(ErrorMessage = "Selecione o país.")]
         public int IdPais { get; set; }
 
+        public virtual PaisModel Pais { get; set; }
+
         [Required(ErrorMessage = "Selecione o estado.")]
         public int IdEstado { get; set; }
 
+        public virtual EstadoModel Estado { get; set; }
+
         [Required(ErrorMessage = "Selecione a cidade.")]
         public int IdCidade { get; set; }
+
+        public virtual CidadeModel Cidade { get; set; }
 
         public bool Ativo { get; set; }
 

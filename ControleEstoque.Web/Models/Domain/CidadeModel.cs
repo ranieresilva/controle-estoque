@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace ControleEstoque.Web.Models
 {
-    public class EstadoModel
+    public class CidadeModel
     {
         public int Id { get; set; }
 
@@ -15,14 +15,15 @@ namespace ControleEstoque.Web.Models
         [MaxLength(30, ErrorMessage = "O nome pode ter no máximo 30 caracteres.")]
         public string Nome { get; set; }
 
-        [Required(ErrorMessage = "Preencha a UF.")]
-        [MaxLength(3, ErrorMessage = "A UF deve ter 2 caracteres.")]
-        public string UF { get; set; }
-
         public bool Ativo { get; set; }
 
         [Required(ErrorMessage = "Selecione o país.")]
         public int IdPais { get; set; }
+
+        [Required(ErrorMessage = "Selecione o estado.")]
+        public int IdEstado { get; set; }
+
+        public virtual EstadoModel Estado { get; set; }
 
         public static int RecuperarQuantidade()
         {
@@ -32,36 +33,34 @@ namespace ControleEstoque.Web.Models
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
-
-                ret = conexao.ExecuteScalar<int>("select count(*) from estado");
+                ret = conexao.ExecuteScalar<int>("select count(*) from cidade");
             }
 
             return ret;
         }
 
-        public static List<EstadoModel> RecuperarLista(int pagina = 0, int tamPagina = 0, string filtro = "", int idPais = 0, string ordem = "")
+        public static List<CidadeModel> RecuperarLista(int pagina = 0, int tamPagina = 0, string filtro = "", int idEstado = 0, string ordem = "")
         {
-            var ret = new List<EstadoModel>();
+            var ret = new List<CidadeModel>();
 
             using (var conexao = new SqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
 
+                var pos = (pagina - 1) * tamPagina;
+
                 var filtroWhere = "";
                 if (!string.IsNullOrEmpty(filtro))
                 {
-                    filtroWhere = string.Format(" where lower(nome) like '%{0}%'", filtro.ToLower());
+                    filtroWhere = string.Format(" (lower(c.nome) like '%{0}%') and", filtro.ToLower());
                 }
 
-                if (idPais > 0)
+                if (idEstado > 0)
                 {
-                    filtroWhere +=
-                        (string.IsNullOrEmpty(filtroWhere) ? " where" : " and") +
-                        string.Format(" id_pais = {0}", idPais);
+                    filtroWhere += string.Format(" (id_estado = {0}) and", idEstado);
                 }
 
-                var pos = (pagina - 1) * tamPagina;
                 var paginacao = "";
                 if (pagina > 0 && tamPagina > 0)
                 {
@@ -70,30 +69,31 @@ namespace ControleEstoque.Web.Models
                 }
 
                 var sql =
-                    "select id, nome, uf, id_pais as IdPais, ativo" +
-                    " from estado" +
+                    "select c.*, e.id_pais" +
+                    " from cidade c, estado e" +
+                    " where" +
                     filtroWhere +
-                    " order by " + (!string.IsNullOrEmpty(ordem) ? ordem : "nome") +
+                    " (c.id_estado = e.id)" +
+                    " order by " + (!string.IsNullOrEmpty(ordem) ? ordem : "c.nome") +
                     paginacao;
 
-                ret = conexao.Query<EstadoModel>(sql).ToList();
+                ret = conexao.Query<CidadeModel>(sql).ToList();
             }
 
             return ret;
         }
 
-        public static EstadoModel RecuperarPeloId(int id)
+        public static CidadeModel RecuperarPeloId(int id)
         {
-            EstadoModel ret = null;
+            CidadeModel ret = null;
 
             using (var conexao = new SqlConnection())
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
-
-                var sql = "select id, nome, uf, id_pais as IdPais, ativo from estado where (id = @id)";
+                var sql = "select c.id, c.nome, c.ativo, c.id_estado as IdEstado, e.id_pais as IdPais from cidade c, estado e where (c.id = @id) and (c.id_estado = e.id)";
                 var parametros = new { id };
-                ret = conexao.Query<EstadoModel>(sql, parametros).SingleOrDefault();
+                ret = conexao.Query<CidadeModel>(sql, parametros).SingleOrDefault();
             }
 
             return ret;
@@ -110,7 +110,7 @@ namespace ControleEstoque.Web.Models
                     conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                     conexao.Open();
 
-                    var sql = "delete from estado where (id = @id)";
+                    var sql = "delete from cidade where (id = @id)";
                     var parametros = new { id };
                     ret = (conexao.Execute(sql, parametros) > 0);
                 }
@@ -129,17 +129,16 @@ namespace ControleEstoque.Web.Models
             {
                 conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
                 conexao.Open();
-
                 if (model == null)
                 {
-                    var sql = "insert into estado (nome, uf, id_pais, ativo) values (@nome, @uf, @id_pais, @ativo); select convert(int, scope_identity())";
-                    var parametros = new { nome = this.Nome, uf = this.UF, id_pais = this.IdPais, ativo = (this.Ativo ? 1 : 0) };
+                    var sql = "insert into cidade (nome, id_estado, ativo) values (@nome, @id_estado, @ativo); select convert(int, scope_identity())";
+                    var parametros = new { nome = this.Nome, id_estado = this.IdEstado, ativo = (this.Ativo ? 1 : 0) };
                     ret = conexao.ExecuteScalar<int>(sql, parametros);
                 }
                 else
                 {
-                    var sql = "update estado set nome=@nome, uf=@uf, id_pais=@id_pais, ativo=@ativo where id = @id";
-                    var parametros = new { id = this.Id, nome = this.Nome, uf = this.UF, id_pais = this.IdPais, ativo = (this.Ativo ? 1 : 0) };
+                    var sql = "update cidade set nome=@nome, id_estado=@id_estado, ativo=@ativo where id = @id";
+                    var parametros = new { id = this.Id, nome = this.Nome, id_estado = this.IdEstado, ativo = (this.Ativo ? 1 : 0) };
                     if (conexao.Execute(sql, parametros) > 0)
                     {
                         ret = this.Id;

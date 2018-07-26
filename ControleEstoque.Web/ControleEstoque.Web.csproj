@@ -48,6 +48,14 @@
     <Reference Include="Dapper, Version=1.50.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapper.1.50.5\lib\net451\Dapper.dll</HintPath>
     </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.AI.Agent.Intercept, Version=1.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.1.2.1\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
       <Private>True</Private>
@@ -177,26 +185,49 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\CriptoHelper.cs" />
+    <Compile Include="Migrations\201807261042336_inicial.cs" />
+    <Compile Include="Migrations\201807261042336_inicial.Designer.cs">
+      <DependentUpon>201807261042336_inicial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AlteracaoSenhaUsuarioViewModel.cs" />
     <Compile Include="Models\Binders\EntradaSaidaProdutoViewModelModelBinder.cs" />
-    <Compile Include="Models\CidadeModel.cs" />
+    <Compile Include="Models\Domain\CidadeModel.cs" />
+    <Compile Include="Models\ContextoBD.cs" />
+    <Compile Include="Models\Domain\EntradaProdutoModel.cs" />
+    <Compile Include="Models\Domain\InventarioEstoqueModel.cs" />
+    <Compile Include="Models\Domain\SaidaProdutoModel.cs" />
     <Compile Include="Models\EntradaSaidaProdutoViewModel.cs" />
     <Compile Include="Models\EsqueciMinhaSenhaViewModel.cs" />
-    <Compile Include="Models\FornecedorModel.cs" />
-    <Compile Include="Models\GrupoProdutoModel.cs" />
+    <Compile Include="Models\Domain\FornecedorModel.cs" />
+    <Compile Include="Models\Domain\GrupoProdutoModel.cs" />
     <Compile Include="Models\ItemInventarioViewModel.cs" />
-    <Compile Include="Models\LocalArmazenamentoModel.cs" />
+    <Compile Include="Models\Domain\LocalArmazenamentoModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
-    <Compile Include="Models\MarcaProdutoModel.cs" />
-    <Compile Include="Models\EstadoModel.cs" />
+    <Compile Include="Models\Domain\MarcaProdutoModel.cs" />
+    <Compile Include="Models\Domain\EstadoModel.cs" />
+    <Compile Include="Models\Maps\CidadeMap.cs" />
+    <Compile Include="Models\Maps\SaidaProdutoMap.cs" />
+    <Compile Include="Models\Maps\UnidadeMedidaMap.cs" />
+    <Compile Include="Models\Maps\MarcaProdutoMap.cs" />
+    <Compile Include="Models\Maps\EntradaProdutoMap.cs" />
+    <Compile Include="Models\Maps\EstadoMap.cs" />
+    <Compile Include="Models\Maps\FornecedorMap.cs" />
+    <Compile Include="Models\Maps\GrupoProdutoMap.cs" />
+    <Compile Include="Models\Maps\InventarioEstoqueMap.cs" />
+    <Compile Include="Models\Maps\LocalArmazenamentoMap.cs" />
+    <Compile Include="Models\Maps\PaisMap.cs" />
+    <Compile Include="Models\Maps\PerfilMap.cs" />
+    <Compile Include="Models\Maps\ProdutoMap.cs" />
+    <Compile Include="Models\Maps\UsuarioMap.cs" />
     <Compile Include="Models\NovaSenhaViewModel.cs" />
-    <Compile Include="Models\PaisModel.cs" />
-    <Compile Include="Models\PerfilModel.cs" />
+    <Compile Include="Models\Domain\PaisModel.cs" />
+    <Compile Include="Models\Domain\PerfilModel.cs" />
     <Compile Include="Models\ProdutoInventarioViewModel.cs" />
-    <Compile Include="Models\ProdutoModel.cs" />
-    <Compile Include="Models\Tipos.cs" />
-    <Compile Include="Models\UnidadeMedidaModel.cs" />
-    <Compile Include="Models\UsuarioModel.cs" />
+    <Compile Include="Models\Domain\ProdutoModel.cs" />
+    <Compile Include="Models\Domain\Tipos.cs" />
+    <Compile Include="Models\Domain\UnidadeMedidaModel.cs" />
+    <Compile Include="Models\Domain\UsuarioModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -309,6 +340,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201807261042336_inicial.resx">
+      <DependentUpon>201807261042336_inicial.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

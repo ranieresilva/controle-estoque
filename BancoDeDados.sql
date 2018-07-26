@@ -40,10 +40,9 @@ CREATE TABLE [dbo].[usuario] (
 )
 GO
 CREATE TABLE [dbo].[perfil_usuario] (
-	[id] [int] IDENTITY(1,1) NOT NULL,
 	[id_perfil] [int] NOT NULL,
 	[id_usuario] [int] NOT NULL,
- CONSTRAINT [PK_perfil_usuario] PRIMARY KEY ([id])
+ CONSTRAINT [PK_perfil_usuario] PRIMARY KEY ([id_perfil], [id_usuario])
 )
 GO
 CREATE TABLE [dbo].[marca_produto] (
@@ -148,8 +147,6 @@ CREATE TABLE [dbo].[inventario_estoque] (
 	[motivo] [varchar](100),
  CONSTRAINT [PK_inventario_estoque] PRIMARY KEY ([id]) 
 )
-GO
-ALTER TABLE [dbo].[usuario] WITH CHECK ADD FOREIGN KEY([id_perfil]) REFERENCES [dbo].[perfil] ([id])
 GO
 ALTER TABLE [dbo].[perfil_usuario] WITH CHECK ADD FOREIGN KEY([id_perfil]) REFERENCES [dbo].[perfil] ([id])
 GO

@@ -16,7 +16,7 @@ namespace ControleEstoque.Web.Models
 
         public bool Ativo { get; set; }
 
-        public List<UsuarioModel> Usuarios { get; set; }
+        public virtual List<UsuarioModel> Usuarios { get; set; }
 
         public PerfilModel()
         {
