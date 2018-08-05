@@ -1,4 +1,5 @@
-﻿using ControleEstoque.Web.Models;
+﻿using AutoMapper;
+using ControleEstoque.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,12 +18,12 @@ namespace ControleEstoque.Web.Controllers
             ViewBag.QuantMaxLinhasPorPagina = _quantMaxLinhasPorPagina;
             ViewBag.PaginaAtual = 1;
 
-            var lista = CidadeModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhasPorPagina);
+            var lista = Mapper.Map<List<CidadeViewModel>>(CidadeModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhasPorPagina));
             var quant = CidadeModel.RecuperarQuantidade();
 
             var difQuantPaginas = (quant % ViewBag.QuantMaxLinhasPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (quant / ViewBag.QuantMaxLinhasPorPagina) + difQuantPaginas;
-            ViewBag.Paises = PaisModel.RecuperarLista();
+            ViewBag.Paises = Mapper.Map<List<PaisViewModel>>(PaisModel.RecuperarLista());
 
             return View(lista);
         }
@@ -31,7 +32,7 @@ namespace ControleEstoque.Web.Controllers
         [ValidateAntiForgeryToken]
         public JsonResult CidadePagina(int pagina, int tamPag, string ordem)
         {
-            var lista = CidadeModel.RecuperarLista(pagina, tamPag, ordem: ordem);
+            var lista = Mapper.Map<List<CidadeViewModel>>(CidadeModel.RecuperarLista(pagina, tamPag, ordem: ordem));
 
             return Json(lista);
         }
@@ -40,14 +41,16 @@ namespace ControleEstoque.Web.Controllers
         [ValidateAntiForgeryToken]
         public JsonResult RecuperarCidade(int id)
         {
-            return Json(CidadeModel.RecuperarPeloId(id));
+            var vm = Mapper.Map<CidadeViewModel>(CidadeModel.RecuperarPeloId(id));
+
+            return Json(vm);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult RecuperarCidadesDoEstado(int idEstado)
         {
-            var lista = CidadeModel.RecuperarLista(idEstado: idEstado);
+            var lista = Mapper.Map<List<CidadeViewModel>>(CidadeModel.RecuperarLista(idEstado: idEstado));
 
             return Json(lista);
         }
@@ -62,7 +65,7 @@ namespace ControleEstoque.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult SalvarCidade(CidadeModel model)
+        public JsonResult SalvarCidade(CidadeViewModel model)
         {
             var resultado = "OK";
             var mensagens = new List<string>();
@@ -77,7 +80,8 @@ namespace ControleEstoque.Web.Controllers
             {
                 try
                 {
-                    var id = model.Salvar();
+                    var vm = Mapper.Map<CidadeModel>(model);
+                    var id = vm.Salvar();
                     if (id > 0)
                     {
                         idSalvo = id.ToString();

@@ -1,4 +1,5 @@
-﻿using ControleEstoque.Web.Models;
+﻿using AutoMapper;
+using ControleEstoque.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,8 +20,8 @@ namespace ControleEstoque.Web.Controllers
             ViewBag.QuantMaxLinhasPorPagina = _quantMaxLinhasPorPagina;
             ViewBag.PaginaAtual = 1;
 
-            var lista = UsuarioModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhasPorPagina);
-            var quant = GrupoProdutoModel.RecuperarQuantidade();
+            var lista = Mapper.Map<List<UsuarioViewModel>>(UsuarioModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhasPorPagina));
+            var quant = UsuarioModel.RecuperarQuantidade();
 
             var difQuantPaginas = (quant % ViewBag.QuantMaxLinhasPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (quant / ViewBag.QuantMaxLinhasPorPagina) + difQuantPaginas;
@@ -32,7 +33,7 @@ namespace ControleEstoque.Web.Controllers
         [ValidateAntiForgeryToken]
         public JsonResult UsuarioPagina(int pagina, int tamPag, string ordem)
         {
-            var lista = UsuarioModel.RecuperarLista(pagina, tamPag, ordem: ordem);
+            var lista = Mapper.Map<List<UsuarioViewModel>>(UsuarioModel.RecuperarLista(pagina, tamPag, ordem: ordem));
 
             return Json(lista);
         }
@@ -41,7 +42,9 @@ namespace ControleEstoque.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult RecuperarUsuario(int id)
         {
-            return Json(UsuarioModel.RecuperarPeloId(id));
+            var vm = Mapper.Map<UsuarioViewModel>(UsuarioModel.RecuperarPeloId(id));
+
+            return Json(vm);
         }
 
         [HttpPost]
@@ -53,7 +56,7 @@ namespace ControleEstoque.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult SalvarUsuario(UsuarioModel model)
+        public ActionResult SalvarUsuario(UsuarioViewModel model)
         {
             var resultado = "OK";
             var mensagens = new List<string>();
@@ -73,7 +76,8 @@ namespace ControleEstoque.Web.Controllers
                         model.Senha = "";
                     }
 
-                    var id = model.Salvar();
+                    var vm = Mapper.Map<UsuarioModel>(model);
+                    var id = vm.Salvar();
                     if (id > 0)
                     {
                         idSalvo = id.ToString();

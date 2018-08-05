@@ -1,4 +1,5 @@
-﻿using ControleEstoque.Web.Models;
+﻿using AutoMapper;
+using ControleEstoque.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,16 +20,16 @@ namespace ControleEstoque.Web.Controllers
             ViewBag.QuantMaxLinhasPorPagina = _quantMaxLinhasPorPagina;
             ViewBag.PaginaAtual = 1;
 
-            var lista = ProdutoModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhasPorPagina);
+            var lista = Mapper.Map<List<ProdutoViewModel>>(ProdutoModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhasPorPagina));
             var quant = ProdutoModel.RecuperarQuantidade();
 
             var difQuantPaginas = (quant % ViewBag.QuantMaxLinhasPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (quant / ViewBag.QuantMaxLinhasPorPagina) + difQuantPaginas;
-            ViewBag.UnidadesMedida = UnidadeMedidaModel.RecuperarLista(1, 9999);
-            ViewBag.Grupos = GrupoProdutoModel.RecuperarLista(1, 9999);
-            ViewBag.Marcas = MarcaProdutoModel.RecuperarLista(1, 9999);
-            ViewBag.Fornecedores = FornecedorModel.RecuperarLista();
-            ViewBag.LocaisArmazenamento = LocalArmazenamentoModel.RecuperarLista(1, 9999);
+            ViewBag.UnidadesMedida = Mapper.Map<List<UnidadeMedidaViewModel>>(UnidadeMedidaModel.RecuperarLista(1, 9999));
+            ViewBag.Grupos = Mapper.Map<List<GrupoProdutoViewModel>>(GrupoProdutoModel.RecuperarLista(1, 9999));
+            ViewBag.Marcas = Mapper.Map<List<MarcaProdutoViewModel>>(MarcaProdutoModel.RecuperarLista(1, 9999));
+            ViewBag.Fornecedores = Mapper.Map<List<FornecedorViewModel>>(FornecedorModel.RecuperarLista());
+            ViewBag.LocaisArmazenamento = Mapper.Map<List<LocalArmazenamentoViewModel>>(LocalArmazenamentoModel.RecuperarLista(1, 9999));
 
             return View(lista);
         }
@@ -37,7 +38,7 @@ namespace ControleEstoque.Web.Controllers
         [ValidateAntiForgeryToken]
         public JsonResult ProdutoPagina(int pagina, int tamPag, string ordem)
         {
-            var lista = ProdutoModel.RecuperarLista(pagina, tamPag, ordem: ordem);
+            var lista = Mapper.Map<List<ProdutoViewModel>>(ProdutoModel.RecuperarLista(pagina, tamPag, ordem: ordem));
 
             return Json(lista);
         }
@@ -46,7 +47,9 @@ namespace ControleEstoque.Web.Controllers
         [ValidateAntiForgeryToken]
         public JsonResult RecuperarProduto(int id)
         {
-            return Json(ProdutoModel.RecuperarPeloId(id));
+            var vm = Mapper.Map<ProdutoViewModel>(ProdutoModel.RecuperarPeloId(id));
+
+            return Json(vm);
         }
 
         [HttpPost]
