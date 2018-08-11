@@ -1,27 +1,30 @@
 ﻿using Dapper;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data.SqlClient;
+using System.Data.Entity;
 using System.Linq;
 
 namespace ControleEstoque.Web.Models
 {
     public class PaisModel
     {
+        #region Atributos
+
         public int Id { get; set; }
         public string Nome { get; set; }
         public string Codigo { get; set; }
         public bool Ativo { get; set; }
 
+        #endregion
+
+        #region Métodos
+
         public static int RecuperarQuantidade()
         {
             var ret = 0;
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-                ret = conexao.ExecuteScalar<int>("select count(*) from pais");
+                ret = db.Paises.Count();
             }
 
             return ret;
@@ -31,11 +34,8 @@ namespace ControleEstoque.Web.Models
         {
             var ret = new List<PaisModel>();
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
                 var filtroWhere = "";
                 if (!string.IsNullOrEmpty(filtro))
                 {
@@ -57,7 +57,7 @@ namespace ControleEstoque.Web.Models
                     " order by " + (!string.IsNullOrEmpty(ordem) ? ordem : "nome") +
                     paginacao;
 
-                ret = conexao.Query<PaisModel>(sql).ToList();
+                ret = db.Database.Connection.Query<PaisModel>(sql).ToList();
             }
 
             return ret;
@@ -67,14 +67,9 @@ namespace ControleEstoque.Web.Models
         {
             PaisModel ret = null;
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
-                var sql = "select * from pais where (id = @id)";
-                var parametros = new { id };
-                ret = conexao.Query<PaisModel>(sql, parametros).SingleOrDefault();
+                ret = db.Paises.Find(id);
             }
 
             return ret;
@@ -86,14 +81,13 @@ namespace ControleEstoque.Web.Models
 
             if (RecuperarPeloId(id) != null)
             {
-                using (var conexao = new SqlConnection())
+                using (var db = new ContextoBD())
                 {
-                    conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                    conexao.Open();
-
-                    var sql = "delete from pais where (id = @id)";
-                    var parametros = new { id };
-                    ret = (conexao.Execute(sql, parametros) > 0);
+                    var pais = new PaisModel { Id = id };
+                    db.Paises.Attach(pais);
+                    db.Entry(pais).State = EntityState.Deleted;
+                    db.SaveChanges();
+                    ret = true;
                 }
             }
 
@@ -106,29 +100,25 @@ namespace ControleEstoque.Web.Models
 
             var model = RecuperarPeloId(this.Id);
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
                 if (model == null)
                 {
-                    var sql = "insert into pais (nome, codigo, ativo) values (@nome, @codigo, @ativo); select convert(int, scope_identity())";
-                    var parametros = new { nome = this.Nome, codigo = this.Codigo, ativo = (this.Ativo ? 1 : 0) };
-                    ret = conexao.ExecuteScalar<int>(sql, parametros);
+                    db.Paises.Add(this);
                 }
                 else
                 {
-                    var sql = "update pais set nome=@nome, codigo=@codigo, ativo=@ativo where id = @id";
-                    var parametros = new { id = this.Id, nome = this.Nome, codigo = this.Codigo, ativo = (this.Ativo ? 1 : 0) };
-                    if (conexao.Execute(sql, parametros) > 0)
-                    {
-                        ret = this.Id;
-                    }
+                    db.Paises.Attach(this);
+                    db.Entry(this).State = EntityState.Modified;
                 }
+
+                db.SaveChanges();
+                ret = this.Id;
             }
 
             return ret;
         }
+
+        #endregion
     }
 }

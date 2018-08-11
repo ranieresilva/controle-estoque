@@ -1,50 +1,57 @@
 ﻿using Dapper;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data.SqlClient;
+using System.Data.Entity;
 using System.Linq;
 
 namespace ControleEstoque.Web.Models
 {
     public class MarcaProdutoModel
     {
+        #region Atributos
+
         public int Id { get; set; }
         public string Nome { get; set; }
         public bool Ativo { get; set; }
+
+        #endregion
+
+        #region Métodos
 
         public static int RecuperarQuantidade()
         {
             var ret = 0;
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-                ret = conexao.ExecuteScalar<int>("select count(*) from marca_produto");
+                ret = db.MarcasProdutos.Count();
             }
 
             return ret;
         }
 
-        public static List<MarcaProdutoModel> RecuperarLista(int pagina, int tamPagina, string ordem = "")
+        public static List<MarcaProdutoModel> RecuperarLista(int pagina, int tamPagina, string filtro = "", string ordem = "")
         {
             var ret = new List<MarcaProdutoModel>();
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
+                var filtroWhere = "";
+                if (!string.IsNullOrEmpty(filtro))
+                {
+                    filtroWhere = string.Format(" where lower(nome) like '%{0}%'", filtro.ToLower());
+                }
 
                 var pos = (pagina - 1) * tamPagina;
 
                 var sql = string.Format(
                     "select *" +
                     " from marca_produto" +
+                    filtroWhere +
                     " order by " + (!string.IsNullOrEmpty(ordem) ? ordem : "nome") +
                     " offset {0} rows fetch next {1} rows only",
                     pos > 0 ? pos - 1 : 0, tamPagina);
 
-                ret = conexao.Query<MarcaProdutoModel>(sql).ToList();
+                ret = db.Database.Connection.Query<MarcaProdutoModel>(sql).ToList();
             }
 
             return ret;
@@ -54,14 +61,9 @@ namespace ControleEstoque.Web.Models
         {
             MarcaProdutoModel ret = null;
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
-                var sql = "select * from marca_produto where (id = @id)";
-                var parametros = new { id };
-                ret = conexao.Query<MarcaProdutoModel>(sql, parametros).SingleOrDefault();
+                ret = db.MarcasProdutos.Find(id);
             }
 
             return ret;
@@ -73,14 +75,13 @@ namespace ControleEstoque.Web.Models
 
             if (RecuperarPeloId(id) != null)
             {
-                using (var conexao = new SqlConnection())
+                using (var db = new ContextoBD())
                 {
-                    conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                    conexao.Open();
-
-                    var sql = "delete from marca_produto where (id = @id)";
-                    var parametros = new { id };
-                    ret = (conexao.Execute(sql, parametros) > 0);
+                    var marcas = new MarcaProdutoModel { Id = id };
+                    db.MarcasProdutos.Attach(marcas);
+                    db.Entry(marcas).State = EntityState.Deleted;
+                    db.SaveChanges();
+                    ret = true;
                 }
             }
 
@@ -93,29 +94,25 @@ namespace ControleEstoque.Web.Models
 
             var model = RecuperarPeloId(this.Id);
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
                 if (model == null)
                 {
-                    var sql = "insert into marca_produto (nome, ativo) values (@nome, @ativo); select convert(int, scope_identity())";
-                    var parametros = new { nome = this.Nome, ativo = (this.Ativo ? 1 : 0) };
-                    ret = conexao.ExecuteScalar<int>(sql, parametros);
+                    db.MarcasProdutos.Add(this);
                 }
                 else
                 {
-                    var sql = "update marca_produto set nome=@nome, ativo=@ativo where id = @id";
-                    var parametros = new { id = this.Id, nome = this.Nome, ativo = (this.Ativo ? 1 : 0) };
-                    if (conexao.Execute(sql, parametros) > 0)
-                    {
-                        ret = this.Id;
-                    }
+                    db.MarcasProdutos.Attach(this);
+                    db.Entry(this).State = EntityState.Modified;
                 }
+
+                db.SaveChanges();
+                ret = this.Id;
             }
 
             return ret;
         }
+
+        #endregion
     }
 }

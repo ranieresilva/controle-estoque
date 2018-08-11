@@ -18,7 +18,7 @@ namespace ControleEstoque.Web.Controllers
             ViewBag.QuantMaxLinhasPorPagina = _quantMaxLinhasPorPagina;
             ViewBag.PaginaAtual = 1;
 
-            var lista = Mapper.Map<List<CidadeViewModel>>(CidadeModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhasPorPagina));
+            var lista = CidadeModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhasPorPagina);
             var quant = CidadeModel.RecuperarQuantidade();
 
             var difQuantPaginas = (quant % ViewBag.QuantMaxLinhasPorPagina) > 0 ? 1 : 0;
@@ -30,9 +30,9 @@ namespace ControleEstoque.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult CidadePagina(int pagina, int tamPag, string ordem)
+        public JsonResult CidadePagina(int pagina, int tamPag, string filtro, string ordem)
         {
-            var lista = Mapper.Map<List<CidadeViewModel>>(CidadeModel.RecuperarLista(pagina, tamPag, ordem: ordem));
+            var lista = CidadeModel.RecuperarLista(pagina, tamPag, filtro, ordem);
 
             return Json(lista);
         }
@@ -41,7 +41,7 @@ namespace ControleEstoque.Web.Controllers
         [ValidateAntiForgeryToken]
         public JsonResult RecuperarCidade(int id)
         {
-            var vm = Mapper.Map<CidadeViewModel>(CidadeModel.RecuperarPeloId(id));
+            var vm = CidadeModel.RecuperarPeloId(id);
 
             return Json(vm);
         }
@@ -50,7 +50,7 @@ namespace ControleEstoque.Web.Controllers
         [ValidateAntiForgeryToken]
         public JsonResult RecuperarCidadesDoEstado(int idEstado)
         {
-            var lista = Mapper.Map<List<CidadeViewModel>>(CidadeModel.RecuperarLista(idEstado: idEstado));
+            var lista = CidadeModel.RecuperarLista(idEstado: idEstado);
 
             return Json(lista);
         }

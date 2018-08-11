@@ -30,9 +30,9 @@ namespace ControleEstoque.Web.Controllers.Cadastro
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult PerfilPagina(int pagina, int tamPag, string ordem)
+        public JsonResult PerfilPagina(int pagina, int tamPag, string filtro, string ordem)
         {
-            var lista = Mapper.Map<List<PerfilViewModel>>(PerfilModel.RecuperarLista(pagina, tamPag, ordem: ordem));
+            var lista = Mapper.Map<List<PerfilViewModel>>(PerfilModel.RecuperarLista(pagina, tamPag, filtro, ordem));
 
             return Json(lista);
         }

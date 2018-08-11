@@ -1,52 +1,58 @@
 ﻿using Dapper;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data.SqlClient;
+using System.Data.Entity;
 using System.Linq;
 
 namespace ControleEstoque.Web.Models
 {
     public class UnidadeMedidaModel
     {
+        #region Atributos
+
         public int Id { get; set; }
         public string Nome { get; set; }
         public string Sigla { get; set; }
         public bool Ativo { get; set; }
 
+        #endregion
+
+        #region Métodos
+
         public static int RecuperarQuantidade()
         {
             var ret = 0;
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
-                ret = conexao.ExecuteScalar<int>("select count(*) from unidade_medida");
+                ret = db.UnidadesMedida.Count();
             }
 
             return ret;
         }
 
-        public static List<UnidadeMedidaModel> RecuperarLista(int pagina, int tamPagina, string ordem = "")
+        public static List<UnidadeMedidaModel> RecuperarLista(int pagina, int tamPagina, string filtro = "", string ordem = "")
         {
             var ret = new List<UnidadeMedidaModel>();
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
+                var filtroWhere = "";
+                if (!string.IsNullOrEmpty(filtro))
+                {
+                    filtroWhere = string.Format(" where lower(nome) like '%{0}%'", filtro.ToLower());
+                }
 
                 var pos = (pagina - 1) * tamPagina;
 
                 var sql = string.Format(
                     "select *" +
                     " from unidade_medida" +
+                    filtroWhere +
                     " order by " + (!string.IsNullOrEmpty(ordem) ? ordem : "nome") +
                     " offset {0} rows fetch next {1} rows only",
                     pos > 0 ? pos - 1 : 0, tamPagina);
 
-                ret = conexao.Query<UnidadeMedidaModel>(sql).ToList();
+                ret = db.Database.Connection.Query<UnidadeMedidaModel>(sql).ToList();
             }
 
             return ret;
@@ -56,14 +62,9 @@ namespace ControleEstoque.Web.Models
         {
             UnidadeMedidaModel ret = null;
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
-                var sql = "select * from unidade_medida where (id = @id)";
-                var parametros = new { id };
-                ret = conexao.Query<UnidadeMedidaModel>(sql, parametros).SingleOrDefault();
+                ret = db.UnidadesMedida.Find(id);
             }
 
             return ret;
@@ -75,14 +76,13 @@ namespace ControleEstoque.Web.Models
 
             if (RecuperarPeloId(id) != null)
             {
-                using (var conexao = new SqlConnection())
+                using (var db = new ContextoBD())
                 {
-                    conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                    conexao.Open();
-
-                    var sql = "delete from unidade_medida where (id = @id)";
-                    var parametros = new { id };
-                    ret = (conexao.Execute(sql, parametros) > 0);
+                    var unidadeMedida = new UnidadeMedidaModel { Id = id };
+                    db.UnidadesMedida.Attach(unidadeMedida);
+                    db.Entry(unidadeMedida).State = EntityState.Deleted;
+                    db.SaveChanges();
+                    ret = true;
                 }
             }
 
@@ -95,29 +95,25 @@ namespace ControleEstoque.Web.Models
 
             var model = RecuperarPeloId(this.Id);
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
                 if (model == null)
                 {
-                    var sql = "insert into unidade_medida (nome, sigla, ativo) values (@nome, @sigla, @ativo); select convert(int, scope_identity())";
-                    var parametros = new { nome = this.Nome, sigla = this.Sigla, ativo = (this.Ativo ? 1 : 0) };
-                    ret = conexao.ExecuteScalar<int>(sql, parametros);
+                    db.UnidadesMedida.Add(this);
                 }
                 else
                 {
-                    var sql = "update unidade_medida set nome=@nome, sigla=@sigla, ativo=@ativo where id = @id";
-                    var parametros = new { id = this.Id, nome = this.Nome, sigla = this.Sigla, ativo = (this.Ativo ? 1 : 0) };
-                    if (conexao.Execute(sql, parametros) > 0)
-                    {
-                        ret = this.Id;
-                    }
+                    db.UnidadesMedida.Attach(this);
+                    db.Entry(this).State = EntityState.Modified;
                 }
+
+                db.SaveChanges();
+                ret = this.Id;
             }
 
             return ret;
         }
+
+        #endregion
     }
 }

@@ -1,14 +1,14 @@
 ﻿using Dapper;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Configuration;
-using System.Data.SqlClient;
+using System.Data.Entity;
 using System.Linq;
 
 namespace ControleEstoque.Web.Models
 {
     public class EstadoModel
     {
+        #region Atributos
+
         public int Id { get; set; }
         public string Nome { get; set; }
         public string UF { get; set; }
@@ -16,30 +16,28 @@ namespace ControleEstoque.Web.Models
         public int IdPais { get; set; }
         public virtual PaisModel Pais { get; set; }
 
+        #endregion
+
+        #region Métodos
+
         public static int RecuperarQuantidade()
         {
             var ret = 0;
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
-                ret = conexao.ExecuteScalar<int>("select count(*) from estado");
+                ret = db.Estados.Count();
             }
 
             return ret;
         }
 
-        public static List<EstadoModel> RecuperarLista(int pagina = 0, int tamPagina = 0, string filtro = "", int idPais = 0, string ordem = "")
+        public static List<EstadoModel> RecuperarLista(int pagina = 0, int tamPagina = 0, string filtro = "", string ordem = "", int idPais = 0)
         {
             var ret = new List<EstadoModel>();
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
                 var filtroWhere = "";
                 if (!string.IsNullOrEmpty(filtro))
                 {
@@ -68,7 +66,7 @@ namespace ControleEstoque.Web.Models
                     " order by " + (!string.IsNullOrEmpty(ordem) ? ordem : "nome") +
                     paginacao;
 
-                ret = conexao.Query<EstadoModel>(sql).ToList();
+                ret = db.Database.Connection.Query<EstadoModel>(sql).ToList();
             }
 
             return ret;
@@ -78,14 +76,9 @@ namespace ControleEstoque.Web.Models
         {
             EstadoModel ret = null;
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
-                var sql = "select id, nome, uf, id_pais as IdPais, ativo from estado where (id = @id)";
-                var parametros = new { id };
-                ret = conexao.Query<EstadoModel>(sql, parametros).SingleOrDefault();
+                ret = db.Estados.Find(id);
             }
 
             return ret;
@@ -97,14 +90,13 @@ namespace ControleEstoque.Web.Models
 
             if (RecuperarPeloId(id) != null)
             {
-                using (var conexao = new SqlConnection())
+                using (var db = new ContextoBD())
                 {
-                    conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                    conexao.Open();
-
-                    var sql = "delete from estado where (id = @id)";
-                    var parametros = new { id };
-                    ret = (conexao.Execute(sql, parametros) > 0);
+                    var estado = new EstadoModel { Id = id };
+                    db.Estados.Attach(estado);
+                    db.Entry(estado).State = EntityState.Deleted;
+                    db.SaveChanges();
+                    ret = true;
                 }
             }
 
@@ -117,29 +109,25 @@ namespace ControleEstoque.Web.Models
 
             var model = RecuperarPeloId(this.Id);
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
                 if (model == null)
                 {
-                    var sql = "insert into estado (nome, uf, id_pais, ativo) values (@nome, @uf, @id_pais, @ativo); select convert(int, scope_identity())";
-                    var parametros = new { nome = this.Nome, uf = this.UF, id_pais = this.IdPais, ativo = (this.Ativo ? 1 : 0) };
-                    ret = conexao.ExecuteScalar<int>(sql, parametros);
+                    db.Estados.Add(this);
                 }
                 else
                 {
-                    var sql = "update estado set nome=@nome, uf=@uf, id_pais=@id_pais, ativo=@ativo where id = @id";
-                    var parametros = new { id = this.Id, nome = this.Nome, uf = this.UF, id_pais = this.IdPais, ativo = (this.Ativo ? 1 : 0) };
-                    if (conexao.Execute(sql, parametros) > 0)
-                    {
-                        ret = this.Id;
-                    }
+                    db.Estados.Attach(this);
+                    db.Entry(this).State = EntityState.Modified;
                 }
+
+                db.SaveChanges();
+                ret = this.Id;
             }
 
             return ret;
         }
+
+        #endregion
     }
 }

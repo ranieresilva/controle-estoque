@@ -30,9 +30,9 @@ namespace ControleEstoque.Web.Controllers.Cadastro
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public JsonResult UnidadeMedidaPagina(int pagina, int tamPag, string ordem)
+        public JsonResult UnidadeMedidaPagina(int pagina, int tamPag, string filtro, string ordem)
         {
-            var lista = Mapper.Map<List<UnidadeMedidaViewModel>>(UnidadeMedidaModel.RecuperarLista(pagina, tamPag, ordem: ordem));
+            var lista = Mapper.Map<List<UnidadeMedidaViewModel>>(UnidadeMedidaModel.RecuperarLista(pagina, tamPag, filtro, ordem));
 
             return Json(lista);
         }

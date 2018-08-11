@@ -196,9 +196,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\CriptoHelper.cs" />
-    <Compile Include="Migrations\201807261042336_inicial.cs" />
-    <Compile Include="Migrations\201807261042336_inicial.Designer.cs">
-      <DependentUpon>201807261042336_inicial.cs</DependentUpon>
+    <Compile Include="Migrations\201808051630506_inicial.cs" />
+    <Compile Include="Migrations\201808051630506_inicial.Designer.cs">
+      <DependentUpon>201808051630506_inicial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ViewModel\AlteracaoSenhaUsuarioViewModel.cs" />
@@ -364,8 +364,8 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201807261042336_inicial.resx">
-      <DependentUpon>201807261042336_inicial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201808051630506_inicial.resx">
+      <DependentUpon>201808051630506_inicial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

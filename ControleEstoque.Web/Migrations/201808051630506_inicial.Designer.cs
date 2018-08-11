@@ -13,7 +13,7 @@ namespace ControleEstoque.Web.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201807261042336_inicial"; }
+            get { return "201808051630506_inicial"; }
         }
         
         string IMigrationMetadata.Source

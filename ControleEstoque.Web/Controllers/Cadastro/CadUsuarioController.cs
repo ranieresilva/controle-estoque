@@ -31,9 +31,9 @@ namespace ControleEstoque.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public JsonResult UsuarioPagina(int pagina, int tamPag, string ordem)
+        public JsonResult UsuarioPagina(int pagina, int tamPag, string filtro, string ordem)
         {
-            var lista = Mapper.Map<List<UsuarioViewModel>>(UsuarioModel.RecuperarLista(pagina, tamPag, ordem: ordem));
+            var lista = Mapper.Map<List<UsuarioViewModel>>(UsuarioModel.RecuperarLista(pagina, tamPag, filtro, ordem));
 
             return Json(lista);
         }

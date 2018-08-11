@@ -1,13 +1,14 @@
 ﻿using Dapper;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data.SqlClient;
+using System.Data.Entity;
 using System.Linq;
 
 namespace ControleEstoque.Web.Models
 {
     public class FornecedorModel
     {
+        #region Atributos
+
         public int Id { get; set; }
         public string Nome { get; set; }
         public string RazaoSocial { get; set; }
@@ -27,16 +28,17 @@ namespace ControleEstoque.Web.Models
         public virtual CidadeModel Cidade { get; set; }
         public bool Ativo { get; set; }
 
+        #endregion
+
+        #region Métodos
+
         public static int RecuperarQuantidade()
         {
             var ret = 0;
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
-                ret = conexao.ExecuteScalar<int>("select count(*) from fornecedor");
+                ret = db.Fornecedores.Count();
             }
 
             return ret;
@@ -46,11 +48,8 @@ namespace ControleEstoque.Web.Models
         {
             var ret = new List<FornecedorModel>();
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
                 var filtroWhere = "";
                 if (!string.IsNullOrEmpty(filtro))
                 {
@@ -74,7 +73,7 @@ namespace ControleEstoque.Web.Models
                     " order by " + (!string.IsNullOrEmpty(ordem) ? ordem : "nome") +
                     paginacao;
 
-                ret = conexao.Query<FornecedorModel>(sql).ToList();
+                ret = db.Database.Connection.Query<FornecedorModel>(sql).ToList();
             }
 
             return ret;
@@ -84,19 +83,9 @@ namespace ControleEstoque.Web.Models
         {
             FornecedorModel ret = null;
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
-                var sql =
-                    "select id, nome, tipo, telefone, contato, logradouro, numero, complemento, cep, ativo, " +
-                    "razao_social as RazaoSocial, num_documento as NumDocumento, id_pais as IdPais, " +
-                    "id_estado as IdEstado, id_cidade as IdCidade " +
-                    "from fornecedor " +
-                    "where (id = @id)";
-                var parametros = new { id };
-                ret = conexao.Query<FornecedorModel>(sql, parametros).SingleOrDefault();
+                ret = db.Fornecedores.Find(id);
             }
 
             return ret;
@@ -108,14 +97,13 @@ namespace ControleEstoque.Web.Models
 
             if (RecuperarPeloId(id) != null)
             {
-                using (var conexao = new SqlConnection())
+                using (var db = new ContextoBD())
                 {
-                    conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                    conexao.Open();
-
-                    var sql = "delete from fornecedor where (id = @id)";
-                    var parametros = new { id };
-                    ret = (conexao.Execute(sql, parametros) > 0);
+                    var fornecedor = new FornecedorModel { Id = id };
+                    db.Fornecedores.Attach(fornecedor);
+                    db.Entry(fornecedor).State = EntityState.Deleted;
+                    db.SaveChanges();
+                    ret = true;
                 }
             }
 
@@ -128,69 +116,25 @@ namespace ControleEstoque.Web.Models
 
             var model = RecuperarPeloId(this.Id);
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
                 if (model == null)
                 {
-                    var sql =
-                        "insert into fornecedor (nome, razao_social, num_documento, tipo, telefone, contato, logradouro," +
-                        " numero, complemento, cep, id_pais, id_estado, id_cidade, ativo) values (@nome, @razao_social, @num_documento," +
-                        " @tipo, @telefone, @contato, @logradouro, @numero, @complemento, @cep, @id_pais, @id_estado, @id_cidade, @ativo);" +
-                        " select convert(int, scope_identity())";
-                    var parametros = new
-                    {
-                        nome = this.Nome,
-                        razao_social = this.RazaoSocial ?? "",
-                        num_documento = this.NumDocumento ?? "",
-                        tipo = this.Tipo,
-                        telefone = this.Telefone ?? "",
-                        contato = this.Contato ?? "",
-                        logradouro = this.Logradouro ?? "",
-                        numero = this.Numero ?? "",
-                        complemento = this.Complemento ?? "",
-                        cep = this.Cep ?? "",
-                        id_pais = this.IdPais,
-                        id_estado = this.IdEstado,
-                        id_cidade = this.IdCidade,
-                        ativo = (this.Ativo ? 1 : 0)
-                    };
-                    ret = conexao.ExecuteScalar<int>(sql, parametros);
+                    db.Fornecedores.Add(this);
                 }
                 else
                 {
-                    var sql =
-                        "update fornecedor set nome=@nome, razao_social=@razao_social, num_documento=@num_documento," +
-                        " tipo=@tipo, telefone=@telefone, contato=@contato, logradouro=@logradouro, numero=@numero, complemento=@complemento," +
-                        " cep=@cep, id_pais=@id_pais, id_estado=@id_estado, id_cidade=@id_cidade, ativo=@ativo where id = @id";
-                    var parametros = new
-                    {
-                        id = this.Id,
-                        nome = this.Nome,
-                        razao_social = this.RazaoSocial ?? "",
-                        num_documento = this.NumDocumento ?? "",
-                        tipo = this.Tipo,
-                        telefone = this.Telefone ?? "",
-                        contato = this.Contato ?? "",
-                        logradouro = this.Logradouro ?? "",
-                        numero = this.Numero ?? "",
-                        complemento = this.Complemento ?? "",
-                        cep = this.Cep ?? "",
-                        id_pais = this.IdPais,
-                        id_estado = this.IdEstado,
-                        id_cidade = this.IdCidade,
-                        ativo = (this.Ativo ? 1 : 0)
-                    };
-                    if (conexao.Execute(sql, parametros) > 0)
-                    {
-                        ret = this.Id;
-                    }
+                    db.Fornecedores.Attach(this);
+                    db.Entry(this).State = EntityState.Modified;
                 }
+
+                db.SaveChanges();
+                ret = this.Id;
             }
 
             return ret;
         }
+
+        #endregion
     }
 }

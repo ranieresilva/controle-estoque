@@ -1,14 +1,15 @@
 ﻿using Dapper;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data.SqlClient;
+using System.Data.Entity;
 using System.Linq;
 
 namespace ControleEstoque.Web.Models
 {
     public class ProdutoModel
     {
+        #region Atributos
+
         public int Id { get; set; }
         public string Codigo { get; set; }
         public string Nome { get; set; }
@@ -28,16 +29,17 @@ namespace ControleEstoque.Web.Models
         public bool Ativo { get; set; }
         public string Imagem { get; set; }
 
+        #endregion
+
+        #region Métodos
+
         public static int RecuperarQuantidade()
         {
             var ret = 0;
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
-                ret = conexao.ExecuteScalar<int>("select count(*) from produto");
+                ret = db.Produtos.Count();
             }
 
             return ret;
@@ -47,11 +49,8 @@ namespace ControleEstoque.Web.Models
         {
             var ret = new List<ProdutoModel>();
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
                 var filtroWhere = "";
                 if (!string.IsNullOrEmpty(filtro))
                 {
@@ -80,7 +79,7 @@ namespace ControleEstoque.Web.Models
                     "order by " + (!string.IsNullOrEmpty(ordem) ? ordem : "nome") +
                     paginacao;
 
-                ret = conexao.Query<ProdutoModel>(sql).ToList();
+                ret = db.Database.Connection.Query<ProdutoModel>(sql).ToList();
             }
 
             return ret;
@@ -90,19 +89,9 @@ namespace ControleEstoque.Web.Models
         {
             ProdutoModel ret = null;
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
-                var sql =
-                    "select id, codigo, nome, ativo, imagem, preco_custo as PrecoCusto, preco_venda as PrecoVenda, " +
-                    "quant_estoque as QuantEstoque, id_unidade_medida as IdUnidadeMedida, id_grupo as IdGrupo, " +
-                    "id_marca as IdMarca, id_fornecedor as IdFornecedor, id_local_armazenamento as IdLocalArmazenamento " +
-                    "from produto " +
-                    "where (id = @id)";
-                var parametros = new { id };
-                ret = conexao.Query<ProdutoModel>(sql, parametros).SingleOrDefault();
+                ret = db.Produtos.Find(id);
             }
 
             return ret;
@@ -112,14 +101,12 @@ namespace ControleEstoque.Web.Models
         {
             string ret = "";
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
-                var sql = "select imagem from produto where (id = @id)";
-                var parametros = new { id };
-                ret = conexao.ExecuteScalar<string>(sql, parametros);
+                ret = db.Produtos
+                    .Where(x => x.Id == id)
+                    .Select(x => x.Imagem)
+                    .SingleOrDefault();
             }
 
             return ret;
@@ -131,14 +118,13 @@ namespace ControleEstoque.Web.Models
 
             if (RecuperarPeloId(id) != null)
             {
-                using (var conexao = new SqlConnection())
+                using (var db = new ContextoBD())
                 {
-                    conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                    conexao.Open();
-
-                    var sql = "delete from produto where (id = @id)";
-                    var parametros = new { id };
-                    ret = (conexao.Execute(sql, parametros) > 0);
+                    var produto = new ProdutoModel { Id = id };
+                    db.Produtos.Attach(produto);
+                    db.Entry(produto).State = EntityState.Deleted;
+                    db.SaveChanges();
+                    ret = true;
                 }
             }
 
@@ -151,64 +137,20 @@ namespace ControleEstoque.Web.Models
 
             var model = RecuperarPeloId(this.Id);
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
                 if (model == null)
                 {
-                    var sql =
-                        "insert into produto " +
-                        "(codigo, nome, preco_custo, preco_venda, quant_estoque, id_unidade_medida, id_grupo, id_marca, " +
-                        "id_fornecedor, id_local_armazenamento, ativo, imagem) values " +
-                        "(@codigo, @nome, @preco_custo, @preco_venda, @quant_estoque, @id_unidade_medida, @id_grupo, @id_marca, " +
-                        "@id_fornecedor, @id_local_armazenamento, @ativo, @imagem); select convert(int, scope_identity())";
-                    var parametros = new
-                    {
-                        codigo = this.Codigo,
-                        nome = this.Nome,
-                        preco_custo = this.PrecoCusto,
-                        preco_venda = this.PrecoVenda,
-                        quant_estoque = this.QuantEstoque,
-                        id_unidade_medida = this.IdUnidadeMedida,
-                        id_grupo = this.IdGrupo,
-                        id_marca = this.IdMarca,
-                        id_fornecedor = this.IdFornecedor,
-                        id_local_armazenamento = this.IdLocalArmazenamento,
-                        ativo = (this.Ativo ? 1 : 0),
-                        imagem = this.Imagem
-                    };
-                    ret = conexao.ExecuteScalar<int>(sql, parametros);
+                    db.Produtos.Add(this);
                 }
                 else
                 {
-                    var sql =
-                        "update produto set codigo=@codigo, nome=@nome, preco_custo=@preco_custo, " +
-                        "preco_venda=@preco_venda, quant_estoque=@quant_estoque, id_unidade_medida=@id_unidade_medida, " +
-                        "id_grupo=@id_grupo, id_marca=@id_marca, id_fornecedor=@id_fornecedor, " +
-                        "id_local_armazenamento=@id_local_armazenamento, ativo=@ativo, imagem=@imagem where id = @id";
-                    var parametros = new
-                    {
-                        codigo = this.Codigo,
-                        nome = this.Nome,
-                        preco_custo = this.PrecoCusto,
-                        preco_venda = this.PrecoVenda,
-                        quant_estoque = this.QuantEstoque,
-                        id_unidade_medida = this.IdUnidadeMedida,
-                        id_grupo = this.IdGrupo,
-                        id_marca = this.IdMarca,
-                        id_fornecedor = this.IdFornecedor,
-                        id_local_armazenamento = this.IdLocalArmazenamento,
-                        ativo = (this.Ativo ? 1 : 0),
-                        imagem = this.Imagem,
-                        id = this.Id
-                    };
-                    if (conexao.Execute(sql, parametros) > 0)
-                    {
-                        ret = this.Id;
-                    }
+                    db.Produtos.Attach(this);
+                    db.Entry(this).State = EntityState.Modified;
                 }
+
+                db.SaveChanges();
+                ret = this.Id;
             }
 
             return ret;
@@ -230,32 +172,33 @@ namespace ControleEstoque.Web.Models
 
             try
             {
-                using (var conexao = new SqlConnection())
-                {
-                    conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                    conexao.Open();
+                // TODO: salvar pedido
+                //using (var conexao = new SqlConnection())
+                //{
+                //    conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
+                //    conexao.Open();
 
-                    var numPedido = conexao.ExecuteScalar<int>($"select next value for sec_{nomeTabela}").ToString("D10");
+                //    var numPedido = conexao.ExecuteScalar<int>($"select next value for sec_{nomeTabela}").ToString("D10");
 
-                    using (var transacao = conexao.BeginTransaction())
-                    {
-                        foreach (var produto in produtos)
-                        {
-                            var sql = $"insert into {nomeTabela} (numero, data, id_produto, quant) values (@numero, @data, @id_produto, @quant)";
-                            var parametrosInsert = new { numero = numPedido, data, id_produto = produto.Key, quant = produto.Value };
-                            conexao.Execute(sql, parametrosInsert, transacao);
+                //    using (var transacao = conexao.BeginTransaction())
+                //    {
+                //        foreach (var produto in produtos)
+                //        {
+                //            var sql = $"insert into {nomeTabela} (numero, data, id_produto, quant) values (@numero, @data, @id_produto, @quant)";
+                //            var parametrosInsert = new { numero = numPedido, data, id_produto = produto.Key, quant = produto.Value };
+                //            conexao.Execute(sql, parametrosInsert, transacao);
 
-                            var sinal = (entrada ? "+" : "-");
-                            sql = $"update produto set quant_estoque = quant_estoque {sinal} @quant_estoque where (id = @id)";
-                            var parametrosUpdate = new { id = produto.Key, quant_estoque = produto.Value };
-                            conexao.Execute(sql, parametrosUpdate, transacao);
-                        }
+                //            var sinal = (entrada ? "+" : "-");
+                //            sql = $"update produto set quant_estoque = quant_estoque {sinal} @quant_estoque where (id = @id)";
+                //            var parametrosUpdate = new { id = produto.Key, quant_estoque = produto.Value };
+                //            conexao.Execute(sql, parametrosUpdate, transacao);
+                //        }
 
-                        transacao.Commit();
+                //        transacao.Commit();
 
-                        ret = numPedido;
-                    }
-                }
+                //        ret = numPedido;
+                //    }
+                //}
             }
             catch (Exception ex)
             {
@@ -268,11 +211,8 @@ namespace ControleEstoque.Web.Models
         {
             var ret = new List<ProdutoInventarioViewModel>();
 
-            using (var conexao = new SqlConnection())
+            using (var db = new ContextoBD())
             {
-                conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                conexao.Open();
-
                 var sql =
                     "select " +
                     "p.id, p.codigo, p.nome as NomeProduto, p.quant_estoque as QuantEstoque, " +
@@ -282,7 +222,7 @@ namespace ControleEstoque.Web.Models
                     "(p.id_local_armazenamento = l.id) and " +
                     "(p.id_unidade_medida = u.id) " +
                     "order by l.nome, p.nome";
-                ret = conexao.Query<ProdutoInventarioViewModel>(sql).ToList();
+                ret = db.Database.Connection.Query<ProdutoInventarioViewModel>(sql).ToList();
             }
 
             return ret;
@@ -296,28 +236,26 @@ namespace ControleEstoque.Web.Models
             {
                 var data = DateTime.Now;
 
-                using (var conexao = new SqlConnection())
+                using (var db = new ContextoBD())
                 {
-                    conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                    conexao.Open();
-
-                    using (var transacao = conexao.BeginTransaction())
-                    {
-                        foreach (var produtoInventario in dados)
-                        {
-                            var sql = "insert into inventario_estoque (data, id_produto, quant_estoque, quant_inventario, motivo) values (@data, @id_produto, @quant_estoque, @quant_inventario, @motivo)";
-                            var parametrosInsert = new
-                            {
-                                data,
-                                id_produto = produtoInventario.IdProduto,
-                                quant_estoque = produtoInventario.QuantidadeEstoque,
-                                quant_inventario = produtoInventario.QuantidadeInventario,
-                                motivo = produtoInventario.Motivo ?? ""
-                            };
-                            conexao.Execute(sql, parametrosInsert, transacao);
-                        }
-                        transacao.Commit();
-                    }
+                    // TODO: salvar vários itens de inventário
+                    //using (var transacao = conexao.BeginTransaction())
+                    //{
+                    //    foreach (var produtoInventario in dados)
+                    //    {
+                    //        var sql = "insert into inventario_estoque (data, id_produto, quant_estoque, quant_inventario, motivo) values (@data, @id_produto, @quant_estoque, @quant_inventario, @motivo)";
+                    //        var parametrosInsert = new
+                    //        {
+                    //            data,
+                    //            id_produto = produtoInventario.IdProduto,
+                    //            quant_estoque = produtoInventario.QuantidadeEstoque,
+                    //            quant_inventario = produtoInventario.QuantidadeInventario,
+                    //            motivo = produtoInventario.Motivo ?? ""
+                    //        };
+                    //        conexao.Execute(sql, parametrosInsert, transacao);
+                    //    }
+                    //    transacao.Commit();
+                    //}
                 }
             }
             catch (Exception ex)
@@ -327,5 +265,7 @@ namespace ControleEstoque.Web.Models
 
             return ret;
         }
+
+        #endregion
     }
 }

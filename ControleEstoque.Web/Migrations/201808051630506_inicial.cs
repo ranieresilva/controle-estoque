@@ -14,7 +14,6 @@ namespace ControleEstoque.Web.Migrations
                         id = c.Int(nullable: false, identity: true),
                         nome = c.String(nullable: false, maxLength: 30),
                         ativo = c.Boolean(nullable: false),
-                        IdPais = c.Int(nullable: false),
                         id_estado = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.id)
