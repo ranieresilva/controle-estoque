@@ -28,6 +28,7 @@ namespace ControleEstoque.Web.Models
             using (var db = new ContextoBD())
             {
                 ret = db.Usuarios
+                    .Include(x => x.Perfis)
                     .Where(x => x.Login == login && x.Senha == senha)
                     .SingleOrDefault();
             }
@@ -148,7 +149,14 @@ namespace ControleEstoque.Web.Models
                     db.Usuarios.Attach(this);
                     db.Entry(this).State = EntityState.Modified;
 
-                    // TODO: alterar ou não a senha
+                    if (string.IsNullOrEmpty(this.Senha))
+                    {
+                        db.Entry(this).Property(x => x.Senha).IsModified = false;
+                    }
+                    else
+                    {
+                        this.Senha = CriptoHelper.HashMD5(this.Senha);
+                    }
                 }
 
                 db.SaveChanges();
@@ -162,23 +170,11 @@ namespace ControleEstoque.Web.Models
         {
             var ret = string.Empty;
 
-            // TODO: lista de nomes de perfis
-            //using (var conexao = new SqlConnection())
-            //{
-            //    conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-            //    conexao.Open();
-
-            //    var sql =
-            //            "select p.nome " +
-            //            "from perfil_usuario pu, perfil p " +
-            //            "where (pu.id_usuario = @id_usuario) and (pu.id_perfil = p.id) and (p.ativo = 1)";
-            //    var parametros = new { id_usuario = this.Id };
-            //    var matriculas = conexao.Query<string>(sql, parametros).ToList();
-            //    if (matriculas.Count > 0)
-            //    {
-            //        ret = string.Join(";", matriculas);
-            //    }
-            //}
+            if (this.Perfis != null && this.Perfis.Count > 0)
+            {
+                var perfis = this.Perfis.Select(x => x.Nome);
+                ret = string.Join(";", perfis);
+            }
 
             return ret;
         }

@@ -43,6 +43,7 @@ namespace ControleEstoque.Web.Controllers
         public ActionResult RecuperarUsuario(int id)
         {
             var vm = Mapper.Map<UsuarioViewModel>(UsuarioModel.RecuperarPeloId(id));
+            vm.Senha = _senhaPadrao;
 
             return Json(vm);
         }
