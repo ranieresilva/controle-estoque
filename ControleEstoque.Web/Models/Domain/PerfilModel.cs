@@ -58,25 +58,6 @@ namespace ControleEstoque.Web.Models
             return ret;
         }
 
-        // TODO: carregar os usuários do perfil
-        //public void CarregarUsuarios()
-        //{
-        //    this.Usuarios.Clear();
-
-        //    using (var conexao = new SqlConnection())
-        //    {
-        //        conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-        //        conexao.Open();
-
-        //        var sql =
-        //            "select u.* " +
-        //            "from perfil_usuario pu, usuario u " +
-        //            "where (pu.id_perfil = @id_perfil) and (pu.id_usuario = u.id)";
-        //        var parametros = new { id_perfil = this.Id };
-        //        this.Usuarios = conexao.Query<UsuarioModel>(sql, parametros).ToList();
-        //    }
-        //}
-
         public static List<PerfilModel> RecuperarListaAtivos()
         {
             var ret = new List<PerfilModel>();
@@ -98,7 +79,10 @@ namespace ControleEstoque.Web.Models
 
             using (var db = new ContextoBD())
             {
-                ret = db.PerfisUsuarios.Find(id);
+                ret = db.PerfisUsuarios
+                    .Include(x => x.Usuarios)
+                    .Where(x => x.Id == id)
+                    .SingleOrDefault();
             }
 
             return ret;
@@ -127,37 +111,46 @@ namespace ControleEstoque.Web.Models
         {
             var ret = 0;
 
-            var model = RecuperarPeloId(this.Id);
-
             using (var db = new ContextoBD())
             {
+                var model = db.PerfisUsuarios
+                    .Include(x => x.Usuarios)
+                    .Where(x => x.Id == this.Id)
+                    .SingleOrDefault();
+
                 if (model == null)
                 {
+                    if (this.Usuarios != null && this.Usuarios.Count > 0)
+                    {
+                        foreach (var usuario in this.Usuarios)
+                        {
+                            db.Usuarios.Attach(usuario);
+                            db.Entry(usuario).State = EntityState.Unchanged;
+                        }
+                    }
+
                     db.PerfisUsuarios.Add(this);
                 }
                 else
                 {
-                    db.PerfisUsuarios.Attach(this);
-                    db.Entry(this).State = EntityState.Modified;
+                    model.Nome = this.Nome;
+                    model.Ativo = this.Ativo;
+
+                    if (this.Usuarios != null)
+                    {
+                        foreach (var usuario in model.Usuarios.FindAll(x => !this.Usuarios.Exists(u => u.Id == x.Id)))
+                        {
+                            model.Usuarios.Remove(usuario);
+                        }
+
+                        foreach (var usuario in this.Usuarios.FindAll(x => x.Id > 0 && !model.Usuarios.Exists(u => u.Id == x.Id)))
+                        {
+                            db.Usuarios.Attach(usuario);
+                            db.Entry(usuario).State = EntityState.Unchanged;
+                            model.Usuarios.Add(usuario);
+                        }
+                    }
                 }
-
-                // TODO: salva os usuários do perfil
-                //if (this.Usuarios != null && this.Usuarios.Count > 0)
-                //{
-                //    var sql = "delete from perfil_usuario where (id_perfil = @id_perfil)";
-                //    var parametros = new { id_perfil = this.Id };
-                //    conexao.Execute(sql, parametros, transacao);
-
-                //    if (this.Usuarios[0].Id != -1)
-                //    {
-                //        foreach (var usuario in this.Usuarios)
-                //        {
-                //            sql = "insert into perfil_usuario (id_perfil, id_usuario) values (@id_perfil, @id_usuario)";
-                //            var parametrosUsuario = new { id_perfil = this.Id, id_usuario = usuario.Id };
-                //            conexao.Execute(sql, parametrosUsuario, transacao);
-                //        }
-                //    }
-                //}
 
                 db.SaveChanges();
                 ret = this.Id;

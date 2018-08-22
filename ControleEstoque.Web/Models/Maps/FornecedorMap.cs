@@ -28,10 +28,10 @@ namespace ControleEstoque.Web.Models
             HasRequired(x => x.Pais).WithMany().HasForeignKey(x => x.IdPais).WillCascadeOnDelete(false);
 
             Property(x => x.IdEstado).HasColumnName("id_estado").IsRequired();
-            HasRequired(x => x.Estado).WithMany().HasForeignKey(x => x.IdPais).WillCascadeOnDelete(false);
+            HasRequired(x => x.Estado).WithMany().HasForeignKey(x => x.IdEstado).WillCascadeOnDelete(false);
 
             Property(x => x.IdCidade).HasColumnName("id_cidade").IsRequired();
-            HasRequired(x => x.Cidade).WithMany().HasForeignKey(x => x.IdPais).WillCascadeOnDelete(false);
+            HasRequired(x => x.Cidade).WithMany().HasForeignKey(x => x.IdCidade).WillCascadeOnDelete(false);
         }
     }
 }

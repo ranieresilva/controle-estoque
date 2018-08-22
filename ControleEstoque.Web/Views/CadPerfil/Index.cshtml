@@ -37,7 +37,7 @@
                 <h4 class="text-center">Usuários</h4>
                 <div class="well" style="max-height: 300px; padding: 5px; margin: 0; overflow: auto">
                     <ul id="lista_usuario" class="list-group checked-list-box" style="margin-bottom: 0">
-                        @foreach (var usuario in (List<ControleEstoque.Web.Models.UsuarioModel>)ViewBag.ListaUsuario)
+                        @foreach (var usuario in (List<ControleEstoque.Web.Models.UsuarioViewModel>)ViewBag.ListaUsuario)
                         {
                             <li class="list-group-item">
                                 <label style="margin-bottom: 0">

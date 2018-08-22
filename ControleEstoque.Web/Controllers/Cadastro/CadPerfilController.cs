@@ -42,8 +42,6 @@ namespace ControleEstoque.Web.Controllers.Cadastro
         public JsonResult RecuperarPerfil(int id)
         {
             var ret = Mapper.Map<PerfilViewModel>(PerfilModel.RecuperarPeloId(id));
-            // TODO: carregar os usuários do perfil
-            //ret.CarregarUsuarios();
             return Json(ret);
         }
 
@@ -69,22 +67,22 @@ namespace ControleEstoque.Web.Controllers.Cadastro
             }
             else
             {
-                model.Usuarios = new List<UsuarioModel>();
+                model.Usuarios = new List<UsuarioViewModel>();
                 if (idUsuarios == null || idUsuarios.Count == 0)
                 {
-                    model.Usuarios.Add(new UsuarioModel() { Id = -1 });
+                    model.Usuarios.Add(new UsuarioViewModel() { Id = -1 });
                 }
                 else
                 {
                     foreach (var id in idUsuarios)
                     {
-                        model.Usuarios.Add(new UsuarioModel() { Id = id });
+                        model.Usuarios.Add(new UsuarioViewModel() { Id = id });
                     }
                 }
 
                 try
                 {
-                    var vm = Mapper.Map<UsuarioModel>(model);
+                    var vm = Mapper.Map<PerfilModel>(model);
                     var id = vm.Salvar();
                     if (id > 0)
                     {

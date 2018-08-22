@@ -110,10 +110,12 @@ namespace ControleEstoque.Web.Migrations
                         ativo = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.id)
-                .ForeignKey("dbo.cidade", t => t.id_pais)
-                .ForeignKey("dbo.estado", t => t.id_pais)
+                .ForeignKey("dbo.cidade", t => t.id_cidade)
+                .ForeignKey("dbo.estado", t => t.id_estado)
                 .ForeignKey("dbo.pais", t => t.id_pais)
-                .Index(t => t.id_pais);
+                .Index(t => t.id_pais)
+                .Index(t => t.id_estado)
+                .Index(t => t.id_cidade);
             
             CreateTable(
                 "dbo.grupo_produto",
@@ -163,8 +165,8 @@ namespace ControleEstoque.Web.Migrations
                         id = c.Int(nullable: false, identity: true),
                         data = c.DateTime(nullable: false),
                         motivo = c.String(maxLength: 100),
+                        quant_estoque = c.Int(nullable: false),
                         quant_inventario = c.Int(nullable: false),
-                        QuantidadeInventario = c.Int(nullable: false),
                         id_produto = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.id)
@@ -235,14 +237,16 @@ namespace ControleEstoque.Web.Migrations
             DropForeignKey("dbo.produto", "id_grupo", "dbo.grupo_produto");
             DropForeignKey("dbo.produto", "id_fornecedor", "dbo.fornecedor");
             DropForeignKey("dbo.fornecedor", "id_pais", "dbo.pais");
-            DropForeignKey("dbo.fornecedor", "id_pais", "dbo.estado");
-            DropForeignKey("dbo.fornecedor", "id_pais", "dbo.cidade");
+            DropForeignKey("dbo.fornecedor", "id_estado", "dbo.estado");
+            DropForeignKey("dbo.fornecedor", "id_cidade", "dbo.cidade");
             DropForeignKey("dbo.cidade", "id_estado", "dbo.estado");
             DropForeignKey("dbo.estado", "id_pais", "dbo.pais");
             DropIndex("dbo.perfil_usuario", new[] { "id_usuario" });
             DropIndex("dbo.perfil_usuario", new[] { "id_perfil" });
             DropIndex("dbo.saida_produto", new[] { "id_produto" });
             DropIndex("dbo.inventario_estoque", new[] { "id_produto" });
+            DropIndex("dbo.fornecedor", new[] { "id_cidade" });
+            DropIndex("dbo.fornecedor", new[] { "id_estado" });
             DropIndex("dbo.fornecedor", new[] { "id_pais" });
             DropIndex("dbo.produto", new[] { "id_local_armazenamento" });
             DropIndex("dbo.produto", new[] { "id_fornecedor" });

@@ -12,11 +12,11 @@ namespace ControleEstoque.Web.Models
 
         public bool Ativo { get; set; }
 
-        public virtual List<UsuarioModel> Usuarios { get; set; }
+        public virtual List<UsuarioViewModel> Usuarios { get; set; }
 
         public PerfilViewModel()
         {
-            this.Usuarios = new List<UsuarioModel>();
+            this.Usuarios = new List<UsuarioViewModel>();
         }
     }
 }

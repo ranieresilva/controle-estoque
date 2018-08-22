@@ -172,33 +172,31 @@ namespace ControleEstoque.Web.Models
 
             try
             {
-                // TODO: salvar pedido
-                //using (var conexao = new SqlConnection())
-                //{
-                //    conexao.ConnectionString = ConfigurationManager.ConnectionStrings["principal"].ConnectionString;
-                //    conexao.Open();
+                using (var db = new ContextoBD())
+                {
+                    db.Database.Connection.Open();
 
-                //    var numPedido = conexao.ExecuteScalar<int>($"select next value for sec_{nomeTabela}").ToString("D10");
+                    var numPedido = db.Database.Connection.ExecuteScalar<int>($"select next value for sec_{nomeTabela}").ToString("D10");
 
-                //    using (var transacao = conexao.BeginTransaction())
-                //    {
-                //        foreach (var produto in produtos)
-                //        {
-                //            var sql = $"insert into {nomeTabela} (numero, data, id_produto, quant) values (@numero, @data, @id_produto, @quant)";
-                //            var parametrosInsert = new { numero = numPedido, data, id_produto = produto.Key, quant = produto.Value };
-                //            conexao.Execute(sql, parametrosInsert, transacao);
+                    using (var transacao = db.Database.Connection.BeginTransaction())
+                    {
+                        foreach (var produto in produtos)
+                        {
+                            var sql = $"insert into {nomeTabela} (numero, data, id_produto, quant) values (@numero, @data, @id_produto, @quant)";
+                            var parametrosInsert = new { numero = numPedido, data, id_produto = produto.Key, quant = produto.Value };
+                            db.Database.Connection.Execute(sql, parametrosInsert, transacao);
 
-                //            var sinal = (entrada ? "+" : "-");
-                //            sql = $"update produto set quant_estoque = quant_estoque {sinal} @quant_estoque where (id = @id)";
-                //            var parametrosUpdate = new { id = produto.Key, quant_estoque = produto.Value };
-                //            conexao.Execute(sql, parametrosUpdate, transacao);
-                //        }
+                            var sinal = (entrada ? "+" : "-");
+                            sql = $"update produto set quant_estoque = quant_estoque {sinal} @quant_estoque where (id = @id)";
+                            var parametrosUpdate = new { id = produto.Key, quant_estoque = produto.Value };
+                            db.Database.Connection.Execute(sql, parametrosUpdate, transacao);
+                        }
 
-                //        transacao.Commit();
+                        transacao.Commit();
 
-                //        ret = numPedido;
-                //    }
-                //}
+                        ret = numPedido;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -238,24 +236,19 @@ namespace ControleEstoque.Web.Models
 
                 using (var db = new ContextoBD())
                 {
-                    // TODO: salvar vários itens de inventário
-                    //using (var transacao = conexao.BeginTransaction())
-                    //{
-                    //    foreach (var produtoInventario in dados)
-                    //    {
-                    //        var sql = "insert into inventario_estoque (data, id_produto, quant_estoque, quant_inventario, motivo) values (@data, @id_produto, @quant_estoque, @quant_inventario, @motivo)";
-                    //        var parametrosInsert = new
-                    //        {
-                    //            data,
-                    //            id_produto = produtoInventario.IdProduto,
-                    //            quant_estoque = produtoInventario.QuantidadeEstoque,
-                    //            quant_inventario = produtoInventario.QuantidadeInventario,
-                    //            motivo = produtoInventario.Motivo ?? ""
-                    //        };
-                    //        conexao.Execute(sql, parametrosInsert, transacao);
-                    //    }
-                    //    transacao.Commit();
-                    //}
+                    foreach (var produtoInventario in dados)
+                    {
+                        db.InventariosEstoque.Add(new InventarioEstoqueModel
+                        {
+                            Data = data,
+                            IdProduto = produtoInventario.IdProduto,
+                            QuantidadeEstoque = produtoInventario.QuantidadeEstoque,
+                            QuantidadeInventario = produtoInventario.QuantidadeInventario,
+                            Motivo = produtoInventario.Motivo
+                        });
+                    }
+
+                    db.SaveChanges();
                 }
             }
             catch (Exception ex)

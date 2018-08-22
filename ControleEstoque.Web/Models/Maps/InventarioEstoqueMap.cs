@@ -15,7 +15,7 @@ namespace ControleEstoque.Web.Models
             Property(x => x.Data).HasColumnName("data").IsRequired();
             Property(x => x.Motivo).HasColumnName("motivo").HasMaxLength(100).IsOptional();
             Property(x => x.QuantidadeEstoque).HasColumnName("quant_estoque").IsRequired();
-            Property(x => x.QuantidadeEstoque).HasColumnName("quant_inventario").IsRequired();
+            Property(x => x.QuantidadeInventario).HasColumnName("quant_inventario").IsRequired();
 
             Property(x => x.IdProduto).HasColumnName("id_produto").IsRequired();
             HasRequired(x => x.Produto).WithMany().HasForeignKey(x => x.IdProduto).WillCascadeOnDelete(false);
