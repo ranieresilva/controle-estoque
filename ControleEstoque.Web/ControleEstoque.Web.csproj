@@ -186,9 +186,9 @@
     <Compile Include="Controllers\ContaController.cs" />
     <Compile Include="Controllers\GraficoController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\OperacaoController.cs" />
     <Compile Include="Controllers\Operacao\OperEntradaSaidaProdutoController.cs" />
     <Compile Include="Controllers\Operacao\OperInventarioController.cs" />
+    <Compile Include="Controllers\Operacao\OperLancamentoPerdaProdutoController.cs" />
     <Compile Include="Controllers\Operacao\OperSaidaProdutoController.cs" />
     <Compile Include="Controllers\Operacao\OperEntradaProdutoController.cs" />
     <Compile Include="Controllers\RelatorioController.cs" />
@@ -330,8 +330,6 @@
     <Content Include="Views\CadUsuario\Index.cshtml" />
     <Content Include="Views\Grafico\PerdaMes.cshtml" />
     <Content Include="Views\Grafico\EntradaSaidaMesa.cshtml" />
-    <Content Include="Views\Operacao\LancPerdaProduto.cshtml" />
-    <Content Include="Views\Operacao\Inventario.cshtml" />
     <Content Include="Views\Relatorio\PosicaoEstoque.cshtml" />
     <Content Include="Views\Relatorio\Ressuprimento.cshtml" />
     <Content Include="Views\Conta\Login.cshtml" />
@@ -351,6 +349,7 @@
     <Content Include="Views\OperEntradaProduto\Index.cshtml" />
     <Content Include="Views\OperSaidaProduto\Index.cshtml" />
     <Content Include="Views\OperInventario\Index.cshtml" />
+    <Content Include="Views\OperLancamentoPerdaProduto\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
