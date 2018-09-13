@@ -30,7 +30,7 @@
         <hr />
         <div class="row">
             <div class="col-md-4" style="margin-bottom: 15px">
-                @Html.DropDownList("ddl_inventario", new SelectList(""), new { @class = "form-control" })
+                @Html.DropDownList("ddl_inventario", new SelectList(ViewBag.Inventarios, "Id", "Nome"), new { @class = "form-control" })
             </div>
         </div>
         <div id="msg_mensagem_aviso" class="text-danger invisivel"></div>
@@ -69,10 +69,10 @@
     <script src="~/Scripts/mustache.min.js"></script>
     <script id="template-grid" type="x-tmpl-mustache">
         <tr data-id="{{ Id }}">
-            <td>{{ Codigo }}</td>
+            <td>{{ CodigoProduto }}</td>
             <td>{{ NomeProduto }}</td>
-            <td>{{ QuantEstoque }}</td>
-            <td>{{ QuantInventario }}</td>
+            <td>{{ QuantidadeEstoque }}</td>
+            <td>{{ QuantidadeInventario }}</td>
             <td><input type="text" class="form-control" value="{{ Motivo }}" /></td>
         </tr>
     </script>
@@ -80,7 +80,7 @@
         function preecher_tela() {
             var id_inventario = $('#ddl_inventario').val(),
                 url = '@Url.Action("RecuperarListaProdutoComDiferencaEmInventario", "OperLancamentoPerdaProduto")?inventario=' + id_inventario,
-                grid = $('#grid').find('body');
+                grid = $('#grid').find('tbody');
 
             grid.empty();
 

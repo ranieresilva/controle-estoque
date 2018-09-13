@@ -216,8 +216,10 @@
     <Compile Include="Models\ViewModel\EstadoViewModel.cs" />
     <Compile Include="Models\ViewModel\FornecedorViewModel.cs" />
     <Compile Include="Models\ViewModel\GrupoProdutoViewModel.cs" />
+    <Compile Include="Models\ViewModel\InventarioComDiferencaViewModel.cs" />
     <Compile Include="Models\ViewModel\ItemInventarioViewModel.cs" />
     <Compile Include="Models\Domain\LocalArmazenamentoModel.cs" />
+    <Compile Include="Models\ViewModel\LancamentoPerdaViewModel.cs" />
     <Compile Include="Models\ViewModel\LocalArmazenamentoViewModel.cs" />
     <Compile Include="Models\ViewModel\LoginViewModel.cs" />
     <Compile Include="Models\Domain\MarcaProdutoModel.cs" />
@@ -242,6 +244,7 @@
     <Compile Include="Models\Domain\PerfilModel.cs" />
     <Compile Include="Models\ViewModel\PaisViewModel.cs" />
     <Compile Include="Models\ViewModel\PerfilViewModel.cs" />
+    <Compile Include="Models\ViewModel\ProdutoComDiferencaEmInventarioViewModel.cs" />
     <Compile Include="Models\ViewModel\ProdutoInventarioViewModel.cs" />
     <Compile Include="Models\Domain\ProdutoModel.cs" />
     <Compile Include="Models\Domain\Tipos.cs" />

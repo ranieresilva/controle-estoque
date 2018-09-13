@@ -13,6 +13,7 @@ namespace ControleEstoque.Web.Models
         public int Id { get; set; }
         public string Codigo { get; set; }
         public string Nome { get; set; }
+
         public decimal PrecoCusto { get; set; }
         public decimal PrecoVenda { get; set; }
         public int QuantEstoque { get; set; }
@@ -248,6 +249,98 @@ namespace ControleEstoque.Web.Models
                         });
                     }
 
+                    db.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                ret = false;
+            }
+
+            return ret;
+        }
+
+        public static List<InventarioComDiferencaViewModel> RecuperarListaInventarioComDiferenca()
+        {
+            var ret = new List<InventarioComDiferencaViewModel>();
+
+            using (var db = new ContextoBD())
+            {
+                var dados = db.InventariosEstoque
+                    .Where(x => x.QuantidadeEstoque > x.QuantidadeInventario)
+                    .OrderBy(x => x.Data)
+                    .GroupBy(x => new
+                    {
+                        Ano = x.Data.Year,
+                        Mes = x.Data.Month,
+                        Dia = x.Data.Day,
+                        x.Produto.IdLocalArmazenamento,
+                        NomeLocalArmazenamento = x.Produto.LocalArmazenamento.Nome
+                    })
+                    .Select(g => new
+                    {
+                        g.Key.Ano,
+                        g.Key.Mes,
+                        g.Key.Dia,
+                        g.Key.IdLocalArmazenamento,
+                        g.Key.NomeLocalArmazenamento
+                    })
+                    .ToList();
+
+                foreach (var item in dados)
+                {
+                    var data = new DateTime(item.Ano, item.Mes, item.Dia);
+                    ret.Add(new InventarioComDiferencaViewModel
+                    {
+                        Id = $"{data.ToString("dd/MM/yyyy")},{item.IdLocalArmazenamento}",
+                        Nome = $"{data.ToString("dd/MM/yyyy")} - {item.NomeLocalArmazenamento}"
+                    });
+                }
+            }
+
+            return ret;
+        }
+
+        public static List<ProdutoComDiferencaEmInventarioViewModel> RecuperarListaProdutoComDiferencaEmInventario(string inventario)
+        {
+            var ret = new List<ProdutoComDiferencaEmInventarioViewModel>();
+
+            var data = DateTime.ParseExact(inventario.Split(',')[0], "dd/MM/yyyy", null);
+            var idLocal = Int32.Parse(inventario.Split(',')[1]);
+
+            using (var db = new ContextoBD())
+            {
+                ret = db.InventariosEstoque
+                    .Where(x => DbFunctions.TruncateTime(x.Data) == data)
+                    .Where(x => x.Produto.IdLocalArmazenamento == idLocal)
+                    .Where(x => x.QuantidadeEstoque > x.QuantidadeInventario)
+                    .Select(x => new ProdutoComDiferencaEmInventarioViewModel
+                    {
+                        Id = x.Id,
+                        NomeProduto = x.Produto.Nome,
+                        CodigoProduto = x.Produto.Codigo,
+                        QuantidadeEstoque = x.QuantidadeEstoque,
+                        QuantidadeInventario = x.QuantidadeInventario,
+                        Motivo = x.Motivo
+                    }).ToList();
+            }
+
+            return ret;
+        }
+
+        public static bool SalvarLancamentoPerda(List<LancamentoPerdaViewModel> dados)
+        {
+            var ret = true;
+
+            try
+            {
+                using (var db = new ContextoBD())
+                {
+                    foreach (var lanc in dados)
+                    {
+                        var inventario = db.InventariosEstoque.Find(lanc.Id);
+                        inventario.Motivo = lanc.Motivo;
+                    }
                     db.SaveChanges();
                 }
             }
