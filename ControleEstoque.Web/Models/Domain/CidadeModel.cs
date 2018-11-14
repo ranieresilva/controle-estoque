@@ -58,11 +58,13 @@ namespace ControleEstoque.Web.Models
                 }
 
                 var sql =
-                    "select c.id, c.nome, c.ativo, c.id_estado as IdEstado, e.id_pais as IdPais" +
-                    " from cidade c, estado e" +
+                    "select c.id, c.nome, c.ativo, c.id_estado as IdEstado, e.id_pais as IdPais," +
+                    " e.nome as NomeEstado, p.nome as NomePais" +
+                    " from cidade c, estado e, pais p" +
                     " where" +
                     filtroWhere +
-                    " (c.id_estado = e.id)" +
+                    " (c.id_estado = e.id) and" +
+                    " (e.id_pais = p.id)" +
                     " order by " + (!string.IsNullOrEmpty(ordem) ? ordem : "c.nome") +
                     paginacao;
 

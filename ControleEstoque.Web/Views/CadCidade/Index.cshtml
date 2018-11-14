@@ -12,6 +12,8 @@
 
 @section TituloGrid {
     <th><span class="coluna-ordenacao" data-campo="c.nome">Nome</span></th>
+    <th><span class="coluna-ordenacao" data-campo="p.nome">País</span></th>
+    <th><span class="coluna-ordenacao" data-campo="e.nome">Estado</span></th>
     <th><span class="coluna-ordenacao" data-campo="c.ativo">Ativo</span></th>
     <th>Ação</th>
 }
@@ -66,7 +68,7 @@
                 if (linha <= ViewBag.QuantMaxLinhasPorPagina)
                 {
                     @:linhas.push(@Html.Raw(Json.Encode(item)));
-                                                                }
+                                                                        }
                 else
                 {
                     break;
@@ -77,6 +79,8 @@
     <script id="template-grid" type="x-tmpl-mustache">
         <tr data-id="{{ Id }}">
             <td>{{ Nome }}</td>
+            <td>{{ NomePais }}</td>
+            <td>{{ NomeEstado }}</td>
             <td>{{ #Ativo }}SIM{{ /Ativo }}{{ ^Ativo }}NÃO{{ /Ativo }}</td>
             <td>
                 <a class="btn btn-primary btn-alterar" role="button"><i class="glyphicon glyphicon-pencil"></i> Alterar</a>

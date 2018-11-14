@@ -17,5 +17,9 @@ namespace ControleEstoque.Web.Models
 
         [Required(ErrorMessage = "Selecione o estado.")]
         public int IdEstado { get; set; }
+
+        public string NomePais { get; set; }
+
+        public string NomeEstado { get; set; }
     }
 }

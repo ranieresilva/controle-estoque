@@ -142,6 +142,10 @@ namespace ControleEstoque.Web.Models
             {
                 if (model == null)
                 {
+                    if (!string.IsNullOrEmpty(this.Senha))
+                    {
+                        this.Senha = CriptoHelper.HashMD5(this.Senha);
+                    }
                     db.Usuarios.Add(this);
                 }
                 else
