@@ -15,7 +15,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ControleEstoque.Web</RootNamespace>
     <AssemblyName>ControleEstoque.Web</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
@@ -26,6 +26,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <Use64BitIISExpress />
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -105,11 +106,7 @@
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Xml" />
@@ -192,6 +189,7 @@
     <Compile Include="Controllers\Operacao\OperSaidaProdutoController.cs" />
     <Compile Include="Controllers\Operacao\OperEntradaProdutoController.cs" />
     <Compile Include="Controllers\RelatorioController.cs" />
+    <Compile Include="Controllers\Relatorio\RelatPosicaoEstoqueController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -251,6 +249,7 @@
     <Compile Include="Models\Domain\UnidadeMedidaModel.cs" />
     <Compile Include="Models\Domain\UsuarioModel.cs" />
     <Compile Include="Models\ViewModel\ProdutoViewModel.cs" />
+    <Compile Include="Models\ViewModel\RelatPosicaoEstoqueViewModel.cs" />
     <Compile Include="Models\ViewModel\UnidadeMedidaViewModel.cs" />
     <Compile Include="Models\ViewModel\UsuarioViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -271,11 +270,13 @@
     <Content Include="Content\Cadastro\Produto.css" />
     <Content Include="Content\Cadastro\UnidadeMedida.css" />
     <Content Include="Content\Cadastro\Usuario.css" />
+    <Content Include="Content\Imagens\logo.png" />
     <Content Include="Content\sweetalert2.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Rotativa\wkhtmltopdf.exe" />
     <Content Include="Scripts\ai.0.22.19-build00125.js" />
     <Content Include="Scripts\ai.0.22.19-build00125.min.js" />
     <Content Include="Scripts\bootbox.min.js" />
@@ -333,7 +334,7 @@
     <Content Include="Views\CadUsuario\Index.cshtml" />
     <Content Include="Views\Grafico\PerdaMes.cshtml" />
     <Content Include="Views\Grafico\EntradaSaidaMesa.cshtml" />
-    <Content Include="Views\Relatorio\PosicaoEstoque.cshtml" />
+    <Content Include="Views\Relatorio\RelatPosicaoEstoqueView.cshtml" />
     <Content Include="Views\Relatorio\Ressuprimento.cshtml" />
     <Content Include="Views\Conta\Login.cshtml" />
     <Content Include="Views\Shared\_Cadastro.cshtml" />
@@ -356,19 +357,26 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\Imagens\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201808151200366_inicial.resx">
       <DependentUpon>201808151200366_inicial.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rotativa\Rotativa.csproj">
+      <Project>{d93faa11-31f0-4629-b53c-aa8680283529}</Project>
+      <Name>Rotativa</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

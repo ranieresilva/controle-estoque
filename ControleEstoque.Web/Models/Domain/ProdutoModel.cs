@@ -113,6 +113,26 @@ namespace ControleEstoque.Web.Models
             return ret;
         }
 
+        public static List<RelatPosicaoEstoqueViewModel> RecuperarRelatPosicaoEstoque()
+        {
+            var ret = new List<RelatPosicaoEstoqueViewModel>();
+
+            using (var db = new ContextoBD())
+            {
+                ret = db.Produtos
+                    .Where(x => x.Ativo)
+                    .OrderBy(x => x.Nome)
+                    .Select(x => new RelatPosicaoEstoqueViewModel()
+                    {
+                        CodigoProduto = x.Codigo,
+                        NomeProduto = x.Nome,
+                        QuantidadeProduto = x.QuantEstoque
+                    }).ToList();
+            }
+
+            return ret;
+        }
+
         public static bool ExcluirPeloId(int id)
         {
             var ret = false;

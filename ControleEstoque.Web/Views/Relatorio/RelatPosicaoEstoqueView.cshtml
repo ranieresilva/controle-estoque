@@ -1,0 +1,59 @@
+﻿@model List<ControleEstoque.Web.Models.RelatPosicaoEstoqueViewModel>
+@{
+    Layout = "";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Posição no Estoque</title>
+    @Styles.Render("~/Content/css")
+    <style>
+        table th:nth-child(1) {
+            width: 10%;
+        }
+
+        table td:nth-child(1) {
+            text-align: right;
+        }
+
+        table td:nth-child(2) {
+            text-align: left;
+        }
+
+        table th:nth-child(3) {
+            width: 10%;
+        }
+
+        table td:nth-child(3) {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="col-md-12 text-center">
+        <img src="~/Content/Imagens/logo.png" style="height: 80px" />
+        <h3>Posição no Estoque</h3>
+    </div>
+    <h3>Posição no Estoque</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Produto</th>
+                <th>Quantidade</th>
+            </tr>
+        </thead>
+        @{
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.CodigoProduto</td>
+                    <td>@item.NomeProduto</td>
+                    <td>@item.QuantidadeProduto</td>
+                </tr>
+            }
+        }
+    </table>
+</body>
+</html>
