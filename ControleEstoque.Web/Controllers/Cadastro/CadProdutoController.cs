@@ -53,6 +53,21 @@ namespace ControleEstoque.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        public JsonResult RecuperarQuantidadeEstoqueProduto(int id)
+        {
+            var model = ProdutoModel.RecuperarPeloId(id);
+            if (model != null)
+            {
+                return Json(new { OK = true, Result = model.QuantEstoque });
+            }
+            else
+            {
+                return Json(new { OK = false });
+            }
+        }
+
+        [HttpPost]
         [Authorize(Roles = "Gerente,Administrativo")]
         [ValidateAntiForgeryToken]
         public JsonResult ExcluirProduto(int id)

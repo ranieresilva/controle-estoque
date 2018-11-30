@@ -4,10 +4,14 @@
 
 <style>
     #grid th:nth-child(2) {
-        width: 150px;
+        width: 70px;
     }
 
     #grid th:nth-child(3) {
+        width: 150px;
+    }
+
+    #grid th:nth-child(4) {
         width: 70px;
     }
 
@@ -47,6 +51,7 @@
                             <thead>
                                 <tr>
                                     <th>Produto</th>
+                                    <th>Estoque</th>
                                     <th>Quantidade</th>
                                     <th></th>
                                 </tr>
@@ -91,6 +96,11 @@
             $('#txt_numero').val('');
             $('#grid tbody').empty();
             incluir_linha_produto();
+
+            var ddl = $('#grid tbody tr select:first');
+            if (ddl.length > 0) {
+                ddl.trigger('change');
+            }
         }
 
         function obter_lista_saidas() {
@@ -170,7 +180,24 @@
         .on('click', '.btn_remover', function () {
             var linha = $(this).closest('tr');
             linha.remove();
-        });
+        })
+            .on('change', 'select[id^="ddl_produto_"]', function () {
+                var url = '@Url.Action("RecuperarQuantidadeEstoqueProduto", "CadProduto")',
+                    ddl = $(this),
+                    div_quant_estoque = ddl.closest('tr').find('td[class=quant-estoque]'),
+                    dados = {
+                        id: parseInt(ddl.val())
+                    };
+
+                $.post(url, add_anti_forgery_token(dados), function (response) {
+                    if (response.OK) {
+                        div_quant_estoque.text(response.Result);
+                    }
+                })
+                    .fail(function () {
+                        swal('Aviso', 'Não foi possível obter a quantidade em estoque do produto.', 'warning');
+                    });
+            });
     </script>
     <script id="template-produto" type="x-tmpl-mustache">
         <tr>
@@ -182,6 +209,7 @@
                     }
                 </select>
             </td>
+            <td class="quant-estoque"></td>
             <td>
                 <input type="number" id="txt_quantidade_{{ Sequencia }}" class="form-control" value="">
             </td>
