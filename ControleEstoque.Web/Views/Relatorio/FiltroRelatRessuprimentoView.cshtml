@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Filtro - Relatório de Ressuprimento";
+}
+
+<div class="row">
+    <div style="margin: 15px" class="col-md-12">
+        <div class="col-md-offset-3 col-md-6">
+            <h3 class="text-center">@ViewBag.Title</h3>
+            <hr />
+            @if (ViewBag.Mensagem != null)
+            {
+                <span class="text-danger">@ViewBag.Mensagem</span>
+            }
+            @using (Html.BeginForm("Filtro", "RelatRessuprimento", FormMethod.Post))
+            {
+                <div class="row">
+                    <div class="form-group col-md-5">
+                        <label for="minimo" class="control-label">Quantidade Mínima</label>
+                        @Html.TextBox("minimo", "", new { type="number", @class = "form-control" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        <button type="submit" class="btn btn-primary" role="button">
+                            <i class="glyphicon glyphicon-forward"></i> Exibir Relatório
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

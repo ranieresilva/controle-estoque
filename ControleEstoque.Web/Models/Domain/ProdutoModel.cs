@@ -133,6 +133,28 @@ namespace ControleEstoque.Web.Models
             return ret;
         }
 
+        public static List<RelatRessuprimentoViewModel> RecuperarRelatRessuprimento(int minimo)
+        {
+            var ret = new List<RelatRessuprimentoViewModel>();
+
+            using (var db = new ContextoBD())
+            {
+                ret = db.Produtos
+                    .Where(x => x.Ativo && x.QuantEstoque < minimo)
+                    .OrderBy(x => x.QuantEstoque)
+                    .ThenBy(x => x.Nome)
+                    .Select(x => new RelatRessuprimentoViewModel()
+                    {
+                        CodigoProduto = x.Codigo,
+                        NomeProduto = x.Nome,
+                        QuantidadeProduto = x.QuantEstoque,
+                        Compra = (minimo - x.QuantEstoque)
+                    }).ToList();
+            }
+
+            return ret;
+        }
+
         public static bool ExcluirPeloId(int id)
         {
             var ret = false;

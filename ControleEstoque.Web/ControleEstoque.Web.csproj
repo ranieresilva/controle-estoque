@@ -189,6 +189,7 @@
     <Compile Include="Controllers\Operacao\OperSaidaProdutoController.cs" />
     <Compile Include="Controllers\Operacao\OperEntradaProdutoController.cs" />
     <Compile Include="Controllers\RelatorioController.cs" />
+    <Compile Include="Controllers\Relatorio\RelatRessuprimentoController.cs" />
     <Compile Include="Controllers\Relatorio\RelatPosicaoEstoqueController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -250,6 +251,7 @@
     <Compile Include="Models\Domain\UsuarioModel.cs" />
     <Compile Include="Models\ViewModel\ProdutoViewModel.cs" />
     <Compile Include="Models\ViewModel\RelatPosicaoEstoqueViewModel.cs" />
+    <Compile Include="Models\ViewModel\RelatRessuprimentoViewModel.cs" />
     <Compile Include="Models\ViewModel\UnidadeMedidaViewModel.cs" />
     <Compile Include="Models\ViewModel\UsuarioViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -335,7 +337,7 @@
     <Content Include="Views\Grafico\PerdaMes.cshtml" />
     <Content Include="Views\Grafico\EntradaSaidaMesa.cshtml" />
     <Content Include="Views\Relatorio\RelatPosicaoEstoqueView.cshtml" />
-    <Content Include="Views\Relatorio\Ressuprimento.cshtml" />
+    <Content Include="Views\Relatorio\RelatRessuprimentoView.cshtml" />
     <Content Include="Views\Conta\Login.cshtml" />
     <Content Include="Views\Shared\_Cadastro.cshtml" />
     <Content Include="Views\CadUnidadeMedida\Index.cshtml" />
@@ -354,6 +356,7 @@
     <Content Include="Views\OperSaidaProduto\Index.cshtml" />
     <Content Include="Views\OperInventario\Index.cshtml" />
     <Content Include="Views\OperLancamentoPerdaProduto\Index.cshtml" />
+    <Content Include="Views\Relatorio\FiltroRelatRessuprimentoView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
