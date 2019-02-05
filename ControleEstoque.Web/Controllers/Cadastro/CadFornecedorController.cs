@@ -44,7 +44,17 @@ namespace ControleEstoque.Web.Controllers
             var vm = Mapper.Map<FornecedorViewModel>(FornecedorModel.RecuperarPeloId(id));
             return Json(vm);
         }
-
+        
+        [HttpPost]
+        public JsonResult BuscaCep(string cep)
+        {
+            var ws = new ServicesCorreios.AtendeClienteClient();
+            var buscaCep = ws.consultaCEP(cep);
+            var logradouro = buscaCep.end;
+            
+            return Json(new { Cep = cep, Logradouro = logradouro });
+        }
+        
         [HttpPost]
         [Authorize(Roles = "Gerente,Administrativo")]
         [ValidateAntiForgeryToken]
