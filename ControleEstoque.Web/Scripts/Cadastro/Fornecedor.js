@@ -150,6 +150,7 @@ $(document)
 .ready(function () {
     $('#txt_telefone').mask('(00) 0000-0000');
     $('#txt_cep').mask('00000-000');
+    $('#txt_logradouro').prop('disabled', true);
 })
 .on('click', '#cbx_pessoa_juridica', function () {
     $('label[for="txt_num_documento"]').text('CNPJ');
