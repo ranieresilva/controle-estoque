@@ -27,14 +27,14 @@ namespace ControleEstoque.Web.Controllers
             }
         }
 
-        public ActionResult Index(int minimo)
+        public ActionResult Index(int? minimo)
         {
-            if (minimo == 0)
+            if (minimo == 0 || !minimo.HasValue)
             {
                 return RedirectToAction("Filtro");
             }
 
-            var estoque = ProdutoModel.RecuperarRelatRessuprimento(minimo);
+            var estoque = ProdutoModel.RecuperarRelatRessuprimento(minimo.GetValueOrDefault());
 
             return new ViewAsPdf("~/Views/Relatorio/RelatRessuprimentoView.cshtml", estoque);
         }
