@@ -6,6 +6,7 @@
     $('#txt_telefone').val(dados.Telefone);
     $('#txt_contato').val(dados.Contato);
     $('#txt_logradouro').val(dados.Logradouro);
+    $('#txt_numero').val(dados.Numero);
     $('#txt_complemento').val(dados.Complemento);
     $('#txt_cep').val(dados.Cep);
     $('#cbx_ativo').prop('checked', dados.Ativo);
@@ -55,6 +56,7 @@ function mudar_pais(id_estado, id_cidade) {
                     ddl_estado.append('<option value=' + response[i].Id + '>' + response[i].Nome + '</option>');
                 }
                 ddl_estado.prop('disabled', false);
+                ddl_estado.find('option: eq(1)').prop('selected', true);
             }
             sel_estado(id_estado);
             mudar_estado(id_cidade);
@@ -80,6 +82,7 @@ function mudar_estado(id_cidade) {
                     ddl_cidade.append('<option value=' + response[i].Id + '>' + response[i].Nome + '</option>');
                 }
                 ddl_cidade.prop('disabled', false);
+                ddl_cidade.find('option: eq(1)').prop('selected', true);
             }
             sel_cidade(id_cidade);
         });
@@ -110,6 +113,7 @@ function get_dados_inclusao() {
         Telefone: '',
         Contato: '',
         Logradouro: '',
+        Numero: '',
         Complemento: '',
         Cep: '',
         IdPais: 0,
@@ -129,6 +133,7 @@ function get_dados_form() {
         Telefone: $('#txt_telefone').val(),
         Contato: $('#txt_contato').val(),
         Logradouro: $('#txt_logradouro').val(),
+        Numero: $('#txt_numero').val(),
         Complemento: $('#txt_complemento').val(),
         Cep: $('#txt_cep').val(),
         IdPais: $('#ddl_pais').val(),

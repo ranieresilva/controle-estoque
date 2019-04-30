@@ -23,7 +23,9 @@ namespace ControleEstoque.Web.Controllers
 
             var difQuantPaginas = (quant % ViewBag.QuantMaxLinhasPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (quant / ViewBag.QuantMaxLinhasPorPagina) + difQuantPaginas;
-            ViewBag.Paises = Mapper.Map<List<PaisViewModel>>(PaisModel.RecuperarLista());
+            var paises = Mapper.Map<List<PaisViewModel>>(PaisModel.RecuperarLista());
+            paises.Insert(0, new PaisViewModel { Id = -1, Nome = "-- Não Selecionado --" });
+            ViewBag.Paises = paises;
 
             return View(lista);
         }

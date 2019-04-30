@@ -51,7 +51,7 @@ namespace ControleEstoque.Web.Controllers
         public JsonResult RecuperarCidadesDoEstado(int idEstado)
         {
             var lista = CidadeModel.RecuperarLista(idEstado: idEstado);
-
+            lista.Insert(0, new CidadeViewModel { Id = -1, Nome = "-- Não Selecionado --" });
             return Json(lista);
         }
 

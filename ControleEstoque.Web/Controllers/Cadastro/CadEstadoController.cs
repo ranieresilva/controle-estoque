@@ -42,7 +42,7 @@ namespace ControleEstoque.Web.Controllers
         public JsonResult RecuperarEstadosDoPais(int idPais)
         {
             var lista = Mapper.Map<List<EstadoViewModel>>(EstadoModel.RecuperarLista(idPais: idPais));
-
+            lista.Insert(0, new EstadoViewModel { Id = -1, Nome = "-- Não Selecionado --" });
             return Json(lista);
         }
 
