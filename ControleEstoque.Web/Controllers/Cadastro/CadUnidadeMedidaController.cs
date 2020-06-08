@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using ControleEstoque.Web.Models;
+﻿using ControleEstoque.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Web.Mvc;
 namespace ControleEstoque.Web.Controllers.Cadastro
 {
     [Authorize(Roles = "Gerente,Administrativo,Operador")]
-    public class CadUnidadeMedidaController : Controller
+    public class CadUnidadeMedidaController : BaseController
     {
         private const int _quantMaxLinhasPorPagina = 5;
 

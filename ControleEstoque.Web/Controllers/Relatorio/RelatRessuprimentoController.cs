@@ -5,7 +5,7 @@ using System.Web.Mvc;
 namespace ControleEstoque.Web.Controllers
 {
     [Authorize(Roles = "Gerente,Administrativo,Operador")]
-    public class RelatRessuprimentoController : Controller
+    public class RelatRessuprimentoController : BaseController
     {
         public ActionResult Filtro()
         {

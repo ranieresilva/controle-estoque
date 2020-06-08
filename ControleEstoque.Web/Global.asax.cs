@@ -16,7 +16,11 @@ namespace ControleEstoque.Web
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            AutoMapperConfig.RegisterMappings();
+        }
+
+        protected void Application_BeginRequest()
+        {
+            Context.Items["Mapper"] = AutoMapperProfile.CreateConfig();
         }
 
         void Application_Error(object sender, EventArgs e)

@@ -1,11 +1,10 @@
-﻿using AutoMapper;
-using ControleEstoque.Web.Models;
+﻿using ControleEstoque.Web.Models;
 using System.Collections.Generic;
 using System.Web.Mvc;
 
 namespace ControleEstoque.Web.Controllers
 {
-    public abstract class OperEntradaSaidaProdutoController : Controller
+    public abstract class OperEntradaSaidaProdutoController : BaseController
     {
         public ActionResult Index()
         {

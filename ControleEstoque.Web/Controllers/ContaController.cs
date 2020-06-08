@@ -9,7 +9,7 @@ using System.Web.Security;
 
 namespace ControleEstoque.Web.Controllers
 {
-    public class ContaController : Controller
+    public class ContaController : BaseController
     {
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
