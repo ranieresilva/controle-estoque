@@ -394,6 +394,21 @@ namespace ControleEstoque.Web.Models
             return ret;
         }
 
+        public static List<dynamic> PerdasNoMes(int mes, int ano)
+        {
+            var ret = new List<dynamic>();
+
+            using (var db = new ContextoBD())
+            {
+                ret = db.InventariosEstoque
+                    .Where(x => x.Data.Month == mes && x.Data.Year == ano && x.QuantidadeEstoque > x.QuantidadeInventario)
+                    .Select(x => new { Dia = x.Data.Day, Quant = x.QuantidadeEstoque - x.QuantidadeInventario })
+                    .ToList<dynamic>();
+            }
+
+            return ret;
+        }
+
         #endregion
     }
 }
