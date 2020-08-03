@@ -54,7 +54,7 @@ namespace ControleEstoque.Web.Models
                 if (pagina > 0 && tamPagina > 0)
                 {
                     paginacao = string.Format(" offset {0} rows fetch next {1} rows only",
-                        pos > 0 ? pos - 1 : 0, tamPagina);
+                        pos, tamPagina);
                 }
 
                 var sql =

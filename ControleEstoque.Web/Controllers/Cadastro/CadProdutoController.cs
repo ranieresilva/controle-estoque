@@ -1,6 +1,7 @@
 ﻿using ControleEstoque.Web.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -90,30 +91,51 @@ namespace ControleEstoque.Web.Controllers
                 nomeArquivoImagem = Guid.NewGuid().ToString() + ".jpg";
             }
 
-            var model = new ProdutoModel()
+            var vm = new ProdutoViewModel()
             {
                 Id = Int32.Parse(Request.Form["Id"]),
                 Codigo = Request.Form["Codigo"],
                 Nome = Request.Form["Nome"],
-                PrecoCusto = Decimal.Parse(Request.Form["PrecoCusto"]),
-                PrecoVenda = Decimal.Parse(Request.Form["PrecoVenda"]),
-                QuantEstoque = Int32.Parse(Request.Form["QuantEstoque"]),
-                IdUnidadeMedida = Int32.Parse(Request.Form["IdUnidadeMedida"]),
-                IdGrupo = Int32.Parse(Request.Form["IdGrupo"]),
-                IdMarca = Int32.Parse(Request.Form["IdMarca"]),
-                IdFornecedor = Int32.Parse(Request.Form["IdFornecedor"]),
-                IdLocalArmazenamento = Int32.Parse(Request.Form["IdLocalArmazenamento"]),
+                PrecoCusto = Request.Form["PrecoCusto"].ToDecimal(),
+                PrecoVenda = Request.Form["PrecoVenda"].ToDecimal(),
+                QuantEstoque = Request.Form["QuantEstoque"].ToInt32(),
+                IdUnidadeMedida = Request.Form["IdUnidadeMedida"].ToInt32(),
+                IdGrupo = Request.Form["IdGrupo"].ToInt32(),
+                IdMarca = Request.Form["IdMarca"].ToInt32(),
+                IdFornecedor = Request.Form["IdFornecedor"].ToInt32(),
+                IdLocalArmazenamento = Request.Form["IdLocalArmazenamento"].ToInt32(),
                 Ativo = (Request.Form["Ativo"] == "true"),
                 Imagem = nomeArquivoImagem
             };
 
-            if (!ModelState.IsValid)
+            var context = new ValidationContext(vm);
+            var results = new List<ValidationResult>();
+            var valido = Validator.TryValidateObject(vm, context, results);
+
+            if (!valido)
             {
                 resultado = "AVISO";
-                mensagens = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage).ToList();
+                mensagens = results.Select(x => x.ErrorMessage).ToList();
             }
             else
             {
+                var model = new ProdutoModel()
+                {
+                    Id = vm.Id,
+                    Codigo = vm.Codigo,
+                    Nome = vm.Nome,
+                    PrecoCusto = vm.PrecoCusto,
+                    PrecoVenda = vm.PrecoVenda,
+                    QuantEstoque = vm.QuantEstoque,
+                    IdUnidadeMedida = vm.IdUnidadeMedida,
+                    IdGrupo = vm.IdGrupo,
+                    IdMarca = vm.IdMarca,
+                    IdFornecedor = vm.IdFornecedor,
+                    IdLocalArmazenamento = vm.IdLocalArmazenamento,
+                    Ativo = vm.Ativo,
+                    Imagem = vm.Imagem
+                };
+
                 try
                 {
                     var nomeArquivoImagemAnterior = "";

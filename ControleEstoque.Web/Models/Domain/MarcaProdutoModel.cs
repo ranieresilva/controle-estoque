@@ -49,7 +49,7 @@ namespace ControleEstoque.Web.Models
                     filtroWhere +
                     " order by " + (!string.IsNullOrEmpty(ordem) ? ordem : "nome") +
                     " offset {0} rows fetch next {1} rows only",
-                    pos > 0 ? pos - 1 : 0, tamPagina);
+                    pos, tamPagina);
 
                 ret = db.Database.Connection.Query<MarcaProdutoModel>(sql).ToList();
             }
