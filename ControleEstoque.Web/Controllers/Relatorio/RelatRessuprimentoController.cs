@@ -7,26 +7,27 @@ namespace ControleEstoque.Web.Controllers
     [Authorize(Roles = "Gerente,Administrativo,Operador")]
     public class RelatRessuprimentoController : BaseController
     {
+        [HttpGet]
         public ActionResult Filtro()
         {
-            if (Request.HttpMethod == "GET")
-            {
-                return View("~/Views/Relatorio/FiltroRelatRessuprimentoView.cshtml");
-            }
-            else
-            {
-                var minimo = 0;
-                int.TryParse(Request.Form.Get("minimo"), out minimo);
-                if (minimo <= 0)
-                {
-                    ViewBag.Mensagem = "Informe a quantidade mínima de cada produto.";
-                    return View("~/Views/Relatorio/FiltroRelatRessuprimentoView.cshtml");
-                }
-
-                return RedirectToAction("Index", new { minimo });
-            }
+            return View("~/Views/Relatorio/FiltroRelatRessuprimentoView.cshtml");
         }
 
+        [HttpPost]
+        public ActionResult ValidarFiltro(int? minimo)
+        {
+            var ok = true;
+            var mensagem = "";
+            if ((minimo ?? 0) <= 0)
+            {
+                ok = false;
+                mensagem = "Informe a quantidade mínima de cada produto.";
+            }
+
+            return Json(new { ok, mensagem });
+        }
+
+        [HttpGet]
         public ActionResult Index(int minimo)
         {
             if (minimo == 0)
