@@ -19,6 +19,7 @@ namespace ControleEstoque.Web.Controllers
 
             var lista = Mapper.Map<List<GrupoProdutoViewModel>>(GrupoProdutoModel.RecuperarLista(ViewBag.PaginaAtual, _quantMaxLinhasPorPagina));
             var quant = GrupoProdutoModel.RecuperarQuantidade();
+            ViewBag.QuantidadeRegistros = quant;
 
             var difQuantPaginas = (quant % ViewBag.QuantMaxLinhasPorPagina) > 0 ? 1 : 0;
             ViewBag.QuantPaginas = (quant / ViewBag.QuantMaxLinhasPorPagina) + difQuantPaginas;
@@ -49,7 +50,9 @@ namespace ControleEstoque.Web.Controllers
         [ValidateAntiForgeryToken]
         public JsonResult ExcluirGrupoProduto(int id)
         {
-            return Json(GrupoProdutoModel.ExcluirPeloId(id));
+            var ok = GrupoProdutoModel.ExcluirPeloId(id);
+            var quant = GrupoProdutoModel.RecuperarQuantidade();
+            return Json(new { Ok = ok, Quantidade = quant });
         }
 
         [HttpPost]
@@ -59,6 +62,7 @@ namespace ControleEstoque.Web.Controllers
             var resultado = "OK";
             var mensagens = new List<string>();
             var idSalvo = string.Empty;
+            var quant = 0;
 
             if (!ModelState.IsValid)
             {
@@ -74,6 +78,7 @@ namespace ControleEstoque.Web.Controllers
                     if (id > 0)
                     {
                         idSalvo = id.ToString();
+                        quant = GrupoProdutoModel.RecuperarQuantidade();
                     }
                     else
                     {
@@ -86,7 +91,7 @@ namespace ControleEstoque.Web.Controllers
                 }
             }
 
-            return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo });
+            return Json(new { Resultado = resultado, Mensagens = mensagens, IdSalvo = idSalvo, Quantidade = quant });
         }
     }
 }

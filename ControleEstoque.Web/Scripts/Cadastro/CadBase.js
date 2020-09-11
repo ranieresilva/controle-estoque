@@ -95,6 +95,7 @@ function salvar_ok(response, param) {
             table.append(linha);
             $('#grid_cadastro').removeClass('invisivel');
             $('#mensagem_grid').addClass('invisivel');
+            $('#quantidade_registros').text(response.Quantidade);
         }
         else {
             var linha = $('#grid_cadastro').find('tr[data-id=' + param.Id + ']').find('td');
@@ -160,13 +161,14 @@ $(document).on('click', '#btn_incluir', function () {
         callback: function (result) {
             if (result) {
                 $.post(url, add_anti_forgery_token(param), function (response) {
-                    if (response) {
+                    if (response.Ok) {
                         tr.remove();
                         var quant = $('#grid_cadastro > tbody > tr').length;
                         if (quant == 0) {
                             $('#grid_cadastro').addClass('invisivel');
                             $('#mensagem_grid').removeClass('invisivel');
                         }
+                        $('#quantidade_registros').text(response.Quantidade);
                     }
                 })
                 .fail(function () {

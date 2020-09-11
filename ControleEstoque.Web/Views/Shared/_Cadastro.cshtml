@@ -21,7 +21,10 @@
                     <div class="col-md-2">
                         <a id="btn_incluir" class="btn btn-success" role="button"><i class="glyphicon glyphicon-plus"></i> Incluir</a>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-2">
+                        Registros:<span id="quantidade_registros">@ViewBag.QuantidadeRegistros</span>
+                    </div>
+                    <div class="col-md-2" id="ddl_tam_pag_container">
                         @Html.DropDownList("ddl_tam_pag", (SelectList)ViewBag.ListaTamPag, new { @class = "selectpicker" })
                     </div>
                     <div class="col-md-6">
@@ -48,19 +51,19 @@
         </div>
         @if (ViewBag.QuantPaginas > 1)
         {
-        <div class="row">
-            <div class="col-md-12">
-                <nav>
-                    <ul class="pagination">
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        @for (int i = 2; i <= ViewBag.QuantPaginas; i++)
+            <div class="row">
+                <div class="col-md-12">
+                    <nav>
+                        <ul class="pagination">
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            @for (int i = 2; i <= ViewBag.QuantPaginas; i++)
                             {
-                            <li class="page-item"><a class="page-link" href="#">@i</a></li>
+                                <li class="page-item"><a class="page-link" href="#">@i</a></li>
                             }
-                    </ul>
-                </nav>
+                        </ul>
+                    </nav>
+                </div>
             </div>
-        </div>
         }
     </section>
 </div>
