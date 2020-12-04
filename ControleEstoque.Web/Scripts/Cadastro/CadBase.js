@@ -89,13 +89,13 @@ function salvar_ok(response, param) {
     if (response.Resultado == "OK") {
         if (param.Id == 0) {
             param.Id = response.IdSalvo;
-            var table = $('#grid_cadastro').find('tbody'),
-                linha = criar_linha_grid(param);
-
-            table.append(linha);
             $('#grid_cadastro').removeClass('invisivel');
             $('#mensagem_grid').addClass('invisivel');
             $('#quantidade_registros').text(response.Quantidade);
+
+            var btn = $('ul.pagination > li.active').first();
+            var pagina = (btn && btn.length == 1) ? parseInt(btn.text()) : 1;
+            atualizar_grid(pagina);
         }
         else {
             var linha = $('#grid_cadastro').find('tr[data-id=' + param.Id + ']').find('td');
@@ -119,6 +119,42 @@ function salvar_ok(response, param) {
 
 function salvar_erro() {
     swal('Aviso', 'Não foi possível salvar. Tente novamente em instantes.', 'warning');
+}
+
+function atualizar_grid(pagina, btn) {
+    var ordem = obter_ordem_grid(),
+        filtro = $('#txt_filtro'),
+        tamPag = $('#ddl_tam_pag').val(),
+        url = url_page_click,
+        param = { 'pagina': pagina, 'tamPag': tamPag, 'filtro': filtro.val(), 'ordem': ordem };
+
+    $.post(url, add_anti_forgery_token(param), function (response) {
+        if (response) {
+            var table = $('#grid_cadastro').find('tbody');
+
+            table.empty();
+            if (response.length > 0) {
+                $('#grid_cadastro').removeClass('invisivel');
+                $('#mensagem_grid').addClass('invisivel');
+
+                for (var i = 0; i < response.length; i++) {
+                    table.append(criar_linha_grid(response[i]));
+                }
+            }
+            else {
+                $('#grid_cadastro').addClass('invisivel');
+                $('#mensagem_grid').removeClass('invisivel');
+            }
+
+            if (btn) {
+                btn.siblings().removeClass('active');
+                btn.addClass('active');
+            }
+        }
+    })
+    .fail(function () {
+        swal('Aviso', 'Não foi possível recuperar as informações. Tente novamente em instantes.', 'warning');
+    });
 }
 
 $(document).on('click', '#btn_incluir', function () {
@@ -196,39 +232,9 @@ $(document).on('click', '#btn_incluir', function () {
     }
 })
 .on('click', '.page-item', function () {
-    var ordem = obter_ordem_grid(),
-        btn = $(this),
-        filtro = $('#txt_filtro'),
-        tamPag = $('#ddl_tam_pag').val(),
-        pagina = btn.text(),
-        url = url_page_click,
-        param = { 'pagina': pagina, 'tamPag': tamPag, 'filtro': filtro.val(), 'ordem': ordem };
-
-    $.post(url, add_anti_forgery_token(param), function (response) {
-        if (response) {
-            var table = $('#grid_cadastro').find('tbody');
-
-            table.empty();
-            if (response.length > 0) {
-                $('#grid_cadastro').removeClass('invisivel');
-                $('#mensagem_grid').addClass('invisivel');
-
-                for (var i = 0; i < response.length; i++) {
-                    table.append(criar_linha_grid(response[i]));
-                }
-            }
-            else {
-                $('#grid_cadastro').addClass('invisivel');
-                $('#mensagem_grid').removeClass('invisivel');
-            }
-
-            btn.siblings().removeClass('active');
-            btn.addClass('active');
-        }
-    })
-    .fail(function () {
-        swal('Aviso', 'Não foi possível recuperar as informações. Tente novamente em instantes.', 'warning');
-    });
+    var btn = $(this);
+    var pagina = parseInt(btn.text());
+    atualizar_grid(pagina, btn);
 })
 .on('change', '#ddl_tam_pag', function () {
     var ordem = obter_ordem_grid(),
